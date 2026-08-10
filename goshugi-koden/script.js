@@ -70,6 +70,8 @@ const affIcon = document.getElementById('aff-icon');
 const affTitle = document.getElementById('aff-title');
 const mannerWedding = document.getElementById('manner-wedding');
 const mannerFuneral = document.getElementById('manner-funeral');
+const rateTableWedding = document.getElementById('rate-table-wedding');
+const rateTableFuneral = document.getElementById('rate-table-funeral');
 
 function populateRelations() {
   relationSelect.innerHTML = '';
@@ -93,6 +95,8 @@ function setScene(scene) {
   affCard.classList.remove('show');
   mannerWedding.classList.remove('show');
   mannerFuneral.classList.remove('show');
+  rateTableWedding.classList.toggle('show', scene === 'wedding');
+  rateTableFuneral.classList.toggle('show', scene === 'funeral');
 }
 
 function roundTo(amount, step) {

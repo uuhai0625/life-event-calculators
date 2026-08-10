@@ -133,8 +133,11 @@ function calc() {
     }
   }
 
-  const rangeLow = Math.max(3000, amount - 5000);
-  const rangeHigh = amount + 5000;
+  // レンジ算出は他ページ(出産祝い/プレゼント予算)と同じ「金額の±20%」方式に統一(2026-08-11)。
+  // 旧「固定±5,000円」だと、3,000円台の少額(香典の近所枠等)ではレンジが実質2.7倍まで広がってしまい、
+  // 高額帯(10万円超)ではレンジがほぼ意味をなさないほど狭くなる不整合があった。
+  const rangeLow = Math.max(1000, roundTo(amount * 0.8, 1000));
+  const rangeHigh = roundTo(amount * 1.2, 1000);
 
   resultLabel.textContent = currentScene === 'wedding' ? 'ご祝儀の目安' : '香典の目安';
   resultAmount.textContent = amount.toLocaleString('ja-JP');

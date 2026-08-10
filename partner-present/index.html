@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>彼氏・彼女・夫婦へのプレゼント予算 計算機|相場ノート</title>
+<meta name="description" content="誕生日・クリスマス・記念日など、彼氏・彼女・夫・妻へのプレゼント予算の目安を、間柄と交際・結婚年数を選ぶだけで計算できる無料ツールです。">
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="彼氏・彼女・夫婦へのプレゼント予算 計算機|相場ノート">
+<meta property="og:description" content="間柄とイベントを選ぶだけで、プレゼント予算の目安がわかります。">
+<meta property="og:locale" content="ja_JP">
+<!-- TODO: 公開時にog:url・canonicalを実URLに更新してください -->
+
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="彼氏・彼女・夫婦へのプレゼント予算 計算機">
+<meta name="twitter:description" content="間柄とイベントを選ぶだけで、プレゼント予算の目安がわかります。">
+
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🧭</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Old+Mincho:wght@700;900&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <h1 class="site-logo">相場<span class="accent">ノート</span></h1>
+    <p class="site-tagline">彼氏・彼女・夫婦へのプレゼント予算計算機</p>
+  </div>
+</header>
+
+<main class="wrap">
+  <a class="back-link" href="../">← ツール一覧にもどる</a>
+
+  <div class="calc-card">
+    <div class="field">
+      <label for="select-relation">プレゼントを贈る相手</label>
+      <select id="select-relation">
+        <option value="girlfriend" selected>彼女</option>
+        <option value="boyfriend">彼氏</option>
+        <option value="wife">妻</option>
+        <option value="husband">夫</option>
+      </select>
+    </div>
+    <div class="field">
+      <label for="select-event">イベント</label>
+      <select id="select-event">
+        <option value="birthday" selected>誕生日</option>
+        <option value="christmas">クリスマス</option>
+        <option value="valentine">バレンタインデー</option>
+        <option value="whiteday">ホワイトデー</option>
+        <option value="anniversary">交際・結婚記念日</option>
+      </select>
+    </div>
+    <div class="field">
+      <label for="select-years">交際・結婚年数</label>
+      <select id="select-years">
+        <option value="under1">1年未満</option>
+        <option value="1to3" selected>1〜3年</option>
+        <option value="over3">3年以上</option>
+      </select>
+    </div>
+    <button class="btn-calc" id="btn-calc" type="button">予算を計算する</button>
+  </div>
+
+  <div class="result-card" id="result-card">
+    <p class="result-label">プレゼント予算の目安</p>
+    <p class="result-amount"><span class="yen">¥</span><span id="result-amount">--</span></p>
+    <p class="result-note" id="result-range"></p>
+    <div class="result-advice" id="result-advice"></div>
+  </div>
+
+  <a class="aff-card" id="aff-card" href="#" target="_blank" rel="noopener sponsored">
+    <div class="aff-icon">💝</div>
+    <div class="aff-text">
+      <p class="aff-title" id="aff-title">プレゼントを探す</p>
+      <p class="aff-sub">Amazonで見てみる</p>
+    </div>
+    <span class="aff-pr">PR</span>
+  </a>
+
+  <div class="manner-box show">
+    <h3>💡 パートナーへのプレゼントのメモ</h3>
+    <ul>
+      <li>クリスマスは年間で最も予算が上がりやすいイベントです。食事代は予算に含めず別枠で考えると安心です。</li>
+      <li>バレンタイン・ホワイトデーは本命チョコ+ちょっとした小物の組み合わせが近年の定番。「もらった額の3倍返し」は都市伝説に近く、実際は同額〜1.5倍程度が主流です。</li>
+      <li>交際5年・結婚10年など節目の年は相場が上がる傾向があります。ペアアイテムやジュエリーも人気です。</li>
+      <li>金額よりも「相手の好みをリサーチしているか」の方が満足度に直結するというアンケート結果も多く見られます。</li>
+    </ul>
+  </div>
+
+</main>
+
+<footer class="site-footer">
+  <p>掲載している金額はあくまで一般的な目安です。相手との関係性や価値観により大きく異なりますので、参考程度にご覧ください。</p>
+  <p>🔖 商品リンクにはアフィリエイト(広告)リンクを含みます。リンク経由の購入により、当サイトが紹介料を得ることがあります。</p>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>

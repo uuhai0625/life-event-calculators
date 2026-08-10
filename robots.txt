@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://uuhai0625.github.io/life-event-calculators/sitemap.xml

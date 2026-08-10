@@ -11,14 +11,20 @@ function affiliateUrl(keyword) {
   return `https://hb.afl.rakuten.co.jp/hgc/${RAKUTEN_AFFILIATE_ID}/?pc=${encoded}&m=${encoded}`;
 }
 
+// 2026-08-11、実データ(楽天カード「みんなのマネ活」等)と突き合わせて再較正。
+// 「親戚(姪・甥・いとこ)10,000〜30,000円」「親から子(≒自分の孫)30,000〜100,000円」の
+// 実勢に対し、旧数値(親族10,000/孫30,000固定)は下限寄りすぎたため引き上げ。
+// 兄弟姉妹は「年上→年下」「年下→年上」で相場が倍近く異なるため、baseは使わずcalc()内で分岐する。
 const RELATIONS = {
-  colleague:    { label: '職場の同僚・部下', base: 3000 },
+  colleague:    { label: '職場の同僚・部下', base: 4000 },
   friend:       { label: '友人・知人',        base: 5000 },
-  relative:     { label: 'いとこ・叔父叔母などの親族', base: 10000 },
-  niece_nephew: { label: '甥・姪',            base: 10000 },
-  sibling:      { label: '兄弟姉妹',           base: 20000 },
-  grandchild:   { label: '自分の孫',           base: 30000 },
+  relative:     { label: 'いとこ・叔父叔母などの親族', base: 15000 },
+  niece_nephew: { label: '甥・姪',            base: 15000 },
+  sibling:      { label: '兄弟姉妹',           base: null },
+  grandchild:   { label: '自分の孫',           base: 50000 },
 };
+
+const SIBLING_BASE = { older: 25000, younger: 15000 };
 
 function roundTo(amount, step) {
   return Math.round(amount / step) * step;
@@ -36,7 +42,13 @@ function calc() {
   const giving = document.querySelector('input[name="giving"]:checked').value;
   const config = RELATIONS[relationValue];
 
-  let amount = config.base;
+  let amount;
+  if (relationValue === 'sibling') {
+    const siblingOrder = document.querySelector('input[name="siblingorder"]:checked').value;
+    amount = SIBLING_BASE[siblingOrder];
+  } else {
+    amount = config.base;
+  }
   if (birthOrder === 'second') {
     amount = roundTo(amount * 0.85, 1000);
   }
@@ -61,5 +73,11 @@ function calc() {
 
   resultCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
+
+const relationSelect = document.getElementById('select-relation');
+const fieldSiblingOrder = document.getElementById('field-sibling-order');
+relationSelect.addEventListener('change', () => {
+  fieldSiblingOrder.style.display = relationSelect.value === 'sibling' ? '' : 'none';
+});
 
 document.getElementById('btn-calc').addEventListener('click', calc);

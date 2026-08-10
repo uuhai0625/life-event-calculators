@@ -72,6 +72,7 @@ const mannerWedding = document.getElementById('manner-wedding');
 const mannerFuneral = document.getElementById('manner-funeral');
 const rateTableWedding = document.getElementById('rate-table-wedding');
 const rateTableFuneral = document.getElementById('rate-table-funeral');
+const calcPanel = document.getElementById('calc-panel');
 
 function populateRelations() {
   relationSelect.innerHTML = '';
@@ -86,7 +87,10 @@ function populateRelations() {
 function setScene(scene) {
   currentScene = scene;
   document.querySelectorAll('.scene-tab').forEach((btn) => {
-    btn.classList.toggle('active', btn.dataset.scene === scene);
+    const isActive = btn.dataset.scene === scene;
+    btn.classList.toggle('active', isActive);
+    btn.setAttribute('aria-selected', String(isActive));
+    if (isActive) calcPanel.setAttribute('aria-labelledby', btn.id);
   });
   fieldWeddingAttend.style.display = scene === 'wedding' ? '' : 'none';
   fieldFuneralMeal.style.display = scene === 'funeral' ? '' : 'none';

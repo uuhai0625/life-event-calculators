@@ -18,6 +18,8 @@
 <meta name="twitter:description" content="間柄と年代を選ぶだけで、ご祝儀・香典の金額の目安がわかります。">
 
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🧭</text></svg>">
+<meta name="theme-color" content="#1f3a5c" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#1c1a17" media="(prefers-color-scheme: dark)">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Zen+Old+Mincho:wght@700;900&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
@@ -50,11 +52,11 @@
   <a class="back-link" href="../">← ツール一覧にもどる</a>
 
   <div class="scene-tabs" role="tablist">
-    <button class="scene-tab active" data-scene="wedding" type="button">🎉 結婚式(ご祝儀)</button>
-    <button class="scene-tab" data-scene="funeral" type="button">🙏 通夜・葬儀(香典)</button>
+    <button class="scene-tab active" data-scene="wedding" type="button" role="tab" aria-selected="true" aria-controls="calc-panel" id="tab-wedding">🎉 結婚式(ご祝儀)</button>
+    <button class="scene-tab" data-scene="funeral" type="button" role="tab" aria-selected="false" aria-controls="calc-panel" id="tab-funeral">🙏 通夜・葬儀(香典)</button>
   </div>
 
-  <div class="calc-card">
+  <div class="calc-card" id="calc-panel" role="tabpanel" aria-labelledby="tab-wedding">
     <div class="field">
       <label for="select-relation">相手との間柄</label>
       <select id="select-relation"></select>

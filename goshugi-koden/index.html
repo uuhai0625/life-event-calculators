@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ご祝儀・香典の相場 計算機|相場ノート</title>
+<meta name="description" content="結婚式のご祝儀、通夜・葬儀の香典の相場を、間柄と年代を選ぶだけで計算。出欠・会食の有無にも対応した無料の相場計算機です。">
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="ご祝儀・香典の相場 計算機|相場ノート">
+<meta property="og:description" content="間柄と年代を選ぶだけで、ご祝儀・香典の金額の目安がわかります。">
+<meta property="og:locale" content="ja_JP">
+<!-- TODO: 公開時にog:url・canonicalを実URLに更新してください -->
+
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="ご祝儀・香典の相場 計算機">
+<meta name="twitter:description" content="間柄と年代を選ぶだけで、ご祝儀・香典の金額の目安がわかります。">
+
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🧭</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Old+Mincho:wght@700;900&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <h1 class="site-logo">相場<span class="accent">ノート</span></h1>
+    <p class="site-tagline">ご祝儀・香典の相場計算機</p>
+  </div>
+</header>
+
+<main class="wrap">
+  <a class="back-link" href="../">← ツール一覧にもどる</a>
+
+  <div class="scene-tabs" role="tablist">
+    <button class="scene-tab active" data-scene="wedding" type="button">🎉 結婚式(ご祝儀)</button>
+    <button class="scene-tab" data-scene="funeral" type="button">🙏 通夜・葬儀(香典)</button>
+  </div>
+
+  <div class="calc-card">
+    <div class="field">
+      <label for="select-relation">相手との間柄</label>
+      <select id="select-relation"></select>
+    </div>
+    <div class="field">
+      <label for="select-age">あなたの年代</label>
+      <select id="select-age">
+        <option value="20s">20代以下</option>
+        <option value="30s" selected>30代</option>
+        <option value="40s">40代</option>
+        <option value="50s">50代以上</option>
+      </select>
+    </div>
+    <div class="field" id="field-wedding-attend">
+      <label>結婚式に出席しますか?</label>
+      <div class="radio-group">
+        <label><input type="radio" name="attend" value="present" checked> 出席する</label>
+        <label><input type="radio" name="attend" value="absent"> 欠席する</label>
+      </div>
+    </div>
+    <div class="field" id="field-funeral-meal" style="display:none;">
+      <label>通夜振る舞い・お斎(会食)に参加しますか?</label>
+      <div class="radio-group">
+        <label><input type="radio" name="meal" value="no" checked> 参加しない</label>
+        <label><input type="radio" name="meal" value="yes"> 参加する</label>
+      </div>
+    </div>
+    <button class="btn-calc" id="btn-calc" type="button">相場を計算する</button>
+  </div>
+
+  <div class="result-card" id="result-card">
+    <p class="result-label" id="result-label">ご祝儀の目安</p>
+    <p class="result-amount"><span class="yen">¥</span><span id="result-amount">--</span></p>
+    <p class="result-note" id="result-range"></p>
+    <div class="result-advice" id="result-advice"></div>
+  </div>
+
+  <a class="aff-card" id="aff-card" href="#" target="_blank" rel="noopener sponsored">
+    <div class="aff-icon" id="aff-icon">🎁</div>
+    <div class="aff-text">
+      <p class="aff-title" id="aff-title">ご祝儀袋を探す</p>
+      <p class="aff-sub">Amazonで見てみる</p>
+    </div>
+    <span class="aff-pr">PR</span>
+  </a>
+
+  <div class="manner-box" id="manner-wedding">
+    <h3>💡 ご祝儀のマナーメモ</h3>
+    <ul>
+      <li>新札を用意するのが正式なマナーです(慶事は「新たな門出を祝う」ため)。</li>
+      <li>金額は偶数(割り切れる数)や「4」「9」のつく数字を避けるのが基本です。ただし2万円は近年例外的に広く使われています。</li>
+      <li>ご祝儀袋の水引は「結び切り」または「あわじ結び」を選びましょう(一度きりであってほしいお祝いのため)。</li>
+      <li>欠席する場合も、式の前日までにお祝いの気持ちを贈ると丁寧です。</li>
+    </ul>
+  </div>
+
+  <div class="manner-box" id="manner-funeral">
+    <h3>💡 香典のマナーメモ</h3>
+    <ul>
+      <li>香典には基本的に新札を使いません。新札しかない場合は一度折り目をつけてから包みます。</li>
+      <li>表書きは宗教により異なります(仏式:御霊前・御香典/神式:御玉串料/キリスト教式:お花料)。迷う場合は「御霊前」が広く使われます(浄土真宗を除く)。</li>
+      <li>金額は「4」「9」のつく数字を避けます。新札同様、偶数もできれば避けるのが望ましいとされます。</li>
+      <li>会食(通夜振る舞い・お斎)に招かれた場合は、辞退しないのが基本的なマナーとされています。</li>
+    </ul>
+  </div>
+
+</main>
+
+<footer class="site-footer">
+  <p>掲載している金額はあくまで一般的な目安です。地域・宗派・家庭の慣習により大きく異なる場合がありますので、実際にお包みになる際はご家族や周囲の方にもご確認ください。</p>
+  <p>🔖 商品リンクにはアフィリエイト(広告)リンクを含みます。リンク経由の購入により、当サイトが紹介料を得ることがあります。</p>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>

@@ -25,10 +25,15 @@ const RAKUTEN_APP_ID = 'f9f8dd97-c7a4-4ae1-a2c1-38b4572a702e';
 const RAKUTEN_ACCESS_KEY = 'pk_gJd3Q0JkttKeBF4DcfYjD8zYljezjxNxEFiUssXZhFs';
 const RAKUTEN_API_AFFILIATE_ID = '567fd2ff.507b4e2c.567fd300.5261c56d';
 
+// 連打・素早い選択変更で複数のAPIリクエストが同時に飛んだ場合、後から返ってきたはずの古いレスポンスが
+// 新しい選択結果を上書きしてしまうレース状態を防ぐためのリクエストID(2026-08-11)。
+let productRequestId = 0;
+
 async function showProducts(keyword, labelText) {
   const grid = document.getElementById('product-grid');
   const label = document.getElementById('product-grid-label');
   if (!grid) return;
+  const requestId = ++productRequestId;
   grid.innerHTML = '';
   grid.classList.remove('show');
   if (label) label.style.display = 'none';
@@ -42,8 +47,10 @@ async function showProducts(keyword, labelText) {
   url.searchParams.set('format', 'json');
   try {
     const res = await fetch(url.toString());
+    if (requestId !== productRequestId) return; // このリクエストより後の選択操作が発生済み、結果を破棄
     if (!res.ok) return;
     const data = await res.json();
+    if (requestId !== productRequestId) return;
     const items = (data.Items || []).map((entry) => entry.Item || entry);
     if (!items.length) return;
     grid.innerHTML = items.map((item) => {

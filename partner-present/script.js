@@ -4,11 +4,66 @@
 // 楽天アフィリエイトの公式「リンク作成」ツールで実際に生成したリンクの形式に合わせている。
 const RAKUTEN_AFFILIATE_ID = '567f9cc6.631b3687.567f9cc7.3d3a8a85';
 
+// 楽天市場の検索結果には「売れ筋順」という直接の並び替えはないため、実際の検索画面のソート
+// ドロップダウンで確認した「レビュー件数順」(?s=5、購入者が多いほどレビューが集まる=人気の代用指標)
+// を使い、人気の高い商品が上位に出るようにしている(2026-08-11)。
 function affiliateUrl(keyword) {
-  const searchUrl = `https://search.rakuten.co.jp/search/mall/${encodeURIComponent(keyword)}/`;
+  const searchUrl = `https://search.rakuten.co.jp/search/mall/${encodeURIComponent(keyword)}/?s=5`;
   if (!RAKUTEN_AFFILIATE_ID) return searchUrl;
   const encoded = encodeURIComponent(searchUrl);
   return `https://hb.afl.rakuten.co.jp/hgc/${RAKUTEN_AFFILIATE_ID}/?pc=${encoded}&link_type=text&ut=eyJwYWdlIjoidXJsIiwidHlwZSI6InRleHQiLCJjb2wiOjF9`;
+}
+
+// 楽天商品検索API(2026-08-11導入): 計算結果に応じたおすすめ商品をカードで複数表示する。
+// アプリID・アクセスキー・APIリクエスト用アフィリエイトIDは楽天ウェブサービスのアプリ登録画面で発行されたもの。
+// リンク作成ツールで手動生成した RAKUTEN_AFFILIATE_ID とは異なる値だが、楽天の仕様上「APIやサービスに
+// 応じて別のアフィリエイトIDが割り当てられる」設計であり、成果は同じ楽天会員IDに正しく集約される
+// (楽天ウェブサービスFAQで確認済み)。
+// エンドポイントは旧app.rakuten.co.jp/services/api/版(2026-08-17に完全廃止予定)ではなく、
+// 新openapi.rakuten.co.jp/ichibams/api/版(20220601)を使用。新版はaccessKeyも必須パラメータ。
+const RAKUTEN_APP_ID = 'f9f8dd97-c7a4-4ae1-a2c1-38b4572a702e';
+const RAKUTEN_ACCESS_KEY = 'pk_gJd3Q0JkttKeBF4DcfYjD8zYljezjxNxEFiUssXZhFs';
+const RAKUTEN_API_AFFILIATE_ID = '567fd2ff.507b4e2c.567fd300.5261c56d';
+
+async function showProducts(keyword, labelText) {
+  const grid = document.getElementById('product-grid');
+  const label = document.getElementById('product-grid-label');
+  if (!grid) return;
+  grid.innerHTML = '';
+  grid.classList.remove('show');
+  if (label) label.style.display = 'none';
+  const url = new URL('https://openapi.rakuten.co.jp/ichibams/api/IchibaItem/Search/20220601');
+  url.searchParams.set('applicationId', RAKUTEN_APP_ID);
+  url.searchParams.set('accessKey', RAKUTEN_ACCESS_KEY);
+  url.searchParams.set('affiliateId', RAKUTEN_API_AFFILIATE_ID);
+  url.searchParams.set('keyword', keyword);
+  url.searchParams.set('sort', '-reviewCount');
+  url.searchParams.set('hits', '4');
+  url.searchParams.set('format', 'json');
+  try {
+    const res = await fetch(url.toString());
+    if (!res.ok) return;
+    const data = await res.json();
+    const items = (data.Items || []).map((entry) => entry.Item || entry);
+    if (!items.length) return;
+    grid.innerHTML = items.map((item) => {
+      const imgRaw = item.mediumImageUrls && item.mediumImageUrls[0];
+      const img = typeof imgRaw === 'string' ? imgRaw : (imgRaw && imgRaw.imageUrl) || '';
+      const price = Number(item.itemPrice).toLocaleString('ja-JP');
+      const name = String(item.itemName || '').replace(/</g, '&lt;');
+      return `
+        <a class="product-card" href="${item.itemUrl}" target="_blank" rel="noopener sponsored">
+          <img src="${img}" alt="" loading="lazy">
+          <p class="product-name">${name}</p>
+          <p class="product-price">¥${price}</p>
+        </a>`;
+    }).join('');
+    grid.classList.add('show');
+    if (label) { label.textContent = labelText; label.style.display = ''; }
+  } catch (e) {
+    // API呼び出しに失敗しても既存の検索リンクCTA(aff-card)がフォールバックとして機能するため、
+    // ここでは静かに諦める(エラー表示はしない)。
+  }
 }
 
 const RELATIONS = {
@@ -61,6 +116,7 @@ function calc() {
   affTitle.textContent = `${relation.label}への${event.label}プレゼントを探す`;
   affCard.href = affiliateUrl(`${relation.keyword} ${event.label}`);
   affCard.classList.add('show');
+  showProducts(relation.keyword, `🛒 人気の${relation.label}へのプレゼント`);
 
   resultCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }

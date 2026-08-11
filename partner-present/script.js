@@ -1,14 +1,14 @@
-// RAKUTEN_AFFILIATE_ID: uuhai0625ブランド用の楽天アフィリエイトID。未取得のため空文字。
+// RAKUTEN_AFFILIATE_ID: uuhai0625ブランド用の楽天アフィリエイトID(2026-08-11登録・取得済み)。
 // (Desk Animals/TinyWonders側のAmazonアソシエイト'tinywonders-22'はこのプロジェクトでは使わない
 // — 複数アカウント規約リスクを避けるため、uuhai0625ブランドは楽天アフィリエイトに一本化する方針、2026-08-10決定)
-// IDを取得したら楽天アフィリエイトの公式「リンク作成」ツールで生成したURLを使うよう実装し直すこと。
-const RAKUTEN_AFFILIATE_ID = '';
+// 楽天アフィリエイトの公式「リンク作成」ツールで実際に生成したリンクの形式に合わせている。
+const RAKUTEN_AFFILIATE_ID = '567f9cc6.631b3687.567f9cc7.3d3a8a85';
 
 function affiliateUrl(keyword) {
   const searchUrl = `https://search.rakuten.co.jp/search/mall/${encodeURIComponent(keyword)}/`;
   if (!RAKUTEN_AFFILIATE_ID) return searchUrl;
   const encoded = encodeURIComponent(searchUrl);
-  return `https://hb.afl.rakuten.co.jp/hgc/${RAKUTEN_AFFILIATE_ID}/?pc=${encoded}&m=${encoded}`;
+  return `https://hb.afl.rakuten.co.jp/hgc/${RAKUTEN_AFFILIATE_ID}/?pc=${encoded}&link_type=text&ut=eyJwYWdlIjoidXJsIiwidHlwZSI6InRleHQiLCJjb2wiOjF9`;
 }
 
 const RELATIONS = {

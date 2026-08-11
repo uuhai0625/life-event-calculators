@@ -1,18 +1,15 @@
-// RAKUTEN_AFFILIATE_ID: uuhai0625ブランド用の楽天アフィリエイトID。
-// 未取得のため現時点では空文字(空の間は通常の楽天市場検索リンクとして機能する)。
+// RAKUTEN_AFFILIATE_ID: uuhai0625ブランド用の楽天アフィリエイトID(2026-08-11登録・取得済み)。
 // Amazonアソシエイトは複数アカウント保有の規約リスクを避けるためDesk Animals/TinyWonders
 // ブランド専用(tinywonders-22)のままとし、uuhai0625ブランドはこちらの楽天アフィリエイトを使う方針
-// (2026-08-10決定)。IDを取得したら、この定数に直接ID文字列を入れるのではなく、
-// 楽天アフィリエイトの公式「リンク作成」ツールで実際に検索リンクを生成し、
-// 生成されたURL(トラッキング用のscid等が付与されている可能性がある)をそのまま
-// affiliateUrl()の戻り値として使うよう実装し直すこと(手打ちのURL組み立ては計測漏れリスクがあるため)。
-const RAKUTEN_AFFILIATE_ID = '';
+// (2026-08-10決定)。楽天アフィリエイトの公式「リンク作成」ツールで実際に生成したリンクの形式
+// (https://hb.afl.rakuten.co.jp/hgc/{ID}/?pc={url}&link_type=text&ut={固定メタデータ}) に合わせている。
+const RAKUTEN_AFFILIATE_ID = '567f9cc6.631b3687.567f9cc7.3d3a8a85';
 
 function affiliateUrl(keyword) {
   const searchUrl = `https://search.rakuten.co.jp/search/mall/${encodeURIComponent(keyword)}/`;
   if (!RAKUTEN_AFFILIATE_ID) return searchUrl;
   const encoded = encodeURIComponent(searchUrl);
-  return `https://hb.afl.rakuten.co.jp/hgc/${RAKUTEN_AFFILIATE_ID}/?pc=${encoded}&m=${encoded}`;
+  return `https://hb.afl.rakuten.co.jp/hgc/${RAKUTEN_AFFILIATE_ID}/?pc=${encoded}&link_type=text&ut=eyJwYWdlIjoidXJsIiwidHlwZSI6InRleHQiLCJjb2wiOjF9`;
 }
 
 // ageTier補正倍率(近い関係=scalableな項目にのみ適用)

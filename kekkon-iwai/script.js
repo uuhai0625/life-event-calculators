@@ -94,6 +94,10 @@ const resultAmount = document.getElementById('result-amount');
 const resultRange = document.getElementById('result-range');
 const resultAdvice = document.getElementById('result-advice');
 const affCard = document.getElementById('aff-card');
+const shareRow = document.getElementById('share-row');
+const btnCopyLink = document.getElementById('btn-copy-link');
+const btnShareX = document.getElementById('btn-share-x');
+let lastAmount = 0;
 
 function calc() {
   const relationValue = document.getElementById('select-relation').value;
@@ -114,6 +118,9 @@ function calc() {
   resultRange.textContent = `目安レンジ:¥${rangeLow.toLocaleString('ja-JP')} 〜 ¥${rangeHigh.toLocaleString('ja-JP')}`;
   resultAdvice.textContent = advice;
   resultCard.classList.add('show');
+  lastAmount = amount;
+  updateShareUrl();
+  shareRow.classList.add('show');
 
   affCard.href = affiliateUrl('結婚祝い ギフト');
   affCard.classList.add('show');
@@ -123,3 +130,56 @@ function calc() {
 }
 
 document.getElementById('btn-calc').addEventListener('click', calc);
+
+// 結果の共有機能(2026-08-14): 詳細はgoshugi-koden/script.jsのコメント参照
+function paramsFromState() {
+  const params = new URLSearchParams();
+  params.set('relation', document.getElementById('select-relation').value);
+  params.set('closeness', document.querySelector('input[name="closeness"]:checked').value);
+  params.set('giving', document.querySelector('input[name="giving"]:checked').value);
+  return params;
+}
+
+function updateShareUrl() {
+  const params = paramsFromState();
+  history.replaceState(null, '', `${location.pathname}?${params.toString()}`);
+}
+
+function shareText(amount) {
+  const relation = RELATIONS[document.getElementById('select-relation').value];
+  return `${relation.label}への結婚祝いの相場を計算しました。\n目安:¥${amount.toLocaleString('ja-JP')}\n`;
+}
+
+btnCopyLink.addEventListener('click', async () => {
+  try {
+    await navigator.clipboard.writeText(location.href);
+    const original = btnCopyLink.textContent;
+    btnCopyLink.textContent = 'コピーしました✓';
+    setTimeout(() => { btnCopyLink.textContent = original; }, 2000);
+  } catch (e) {
+    // clipboard APIが使えない環境では静かに諦める
+  }
+});
+btnShareX.addEventListener('click', () => {
+  const text = shareText(lastAmount);
+  const intentUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(location.href)}`;
+  window.open(intentUrl, '_blank', 'noopener');
+});
+
+function initFromQuery() {
+  const params = new URLSearchParams(location.search);
+  const relation = params.get('relation');
+  if (!relation || !RELATIONS[relation]) return;
+  document.getElementById('select-relation').value = relation;
+  const closeness = params.get('closeness');
+  if (closeness === 'normal' || closeness === 'close') {
+    document.querySelector(`input[name="closeness"][value="${closeness}"]`).checked = true;
+  }
+  const giving = params.get('giving');
+  if (giving === 'solo' || giving === 'group') {
+    document.querySelector(`input[name="giving"][value="${giving}"]`).checked = true;
+  }
+  calc();
+}
+
+initFromQuery();

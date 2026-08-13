@@ -288,6 +288,28 @@ a { color: var(--navy); }
   color: var(--ink);
 }
 
+/* ---- 結果の共有 ---- */
+.share-row {
+  display: none;
+  gap: 10px;
+  margin-top: 14px;
+}
+.share-row.show { display: flex; }
+.share-btn {
+  flex: 1;
+  padding: 10px 10px;
+  border-radius: 10px;
+  border: 1.5px solid var(--line);
+  background: var(--bg-card);
+  color: var(--ink);
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: inherit;
+  transition: border-color 0.15s ease, color 0.15s ease;
+}
+.share-btn:hover { border-color: var(--navy); color: var(--navy); }
+
 /* ---- マナーメモ ---- */
 .manner-box {
   background: var(--bg-card);
@@ -379,6 +401,12 @@ a { color: var(--navy); }
   color: var(--navy);
   white-space: nowrap;
 }
+.rate-source {
+  margin: 10px 0 0;
+  font-size: 0.72rem;
+  color: var(--ink-sub);
+}
+.rate-source a { color: var(--ink-sub); }
 
 /* ---- FAQ ---- */
 .faq-section {

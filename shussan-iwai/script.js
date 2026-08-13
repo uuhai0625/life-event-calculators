@@ -97,6 +97,10 @@ const resultAmount = document.getElementById('result-amount');
 const resultRange = document.getElementById('result-range');
 const resultAdvice = document.getElementById('result-advice');
 const affCard = document.getElementById('aff-card');
+const shareRow = document.getElementById('share-row');
+const btnCopyLink = document.getElementById('btn-copy-link');
+const btnShareX = document.getElementById('btn-share-x');
+let lastAmount = 0;
 
 function calc() {
   const relationValue = document.getElementById('select-relation').value;
@@ -129,6 +133,9 @@ function calc() {
   resultRange.textContent = `目安レンジ:¥${rangeLow.toLocaleString('ja-JP')} 〜 ¥${rangeHigh.toLocaleString('ja-JP')}`;
   resultAdvice.textContent = advice;
   resultCard.classList.add('show');
+  lastAmount = amount;
+  updateShareUrl();
+  shareRow.classList.add('show');
 
   affCard.href = affiliateUrl('出産祝い ギフト');
   affCard.classList.add('show');
@@ -144,3 +151,67 @@ relationSelect.addEventListener('change', () => {
 });
 
 document.getElementById('btn-calc').addEventListener('click', calc);
+
+// 結果の共有機能(2026-08-14): 詳細はgoshugi-koden/script.jsのコメント参照
+function paramsFromState() {
+  const params = new URLSearchParams();
+  const relationValue = relationSelect.value;
+  params.set('relation', relationValue);
+  if (relationValue === 'sibling') {
+    params.set('siblingorder', document.querySelector('input[name="siblingorder"]:checked').value);
+  }
+  params.set('birthorder', document.querySelector('input[name="birthorder"]:checked').value);
+  params.set('giving', document.querySelector('input[name="giving"]:checked').value);
+  return params;
+}
+
+function updateShareUrl() {
+  const params = paramsFromState();
+  history.replaceState(null, '', `${location.pathname}?${params.toString()}`);
+}
+
+function shareText(amount) {
+  const label = RELATIONS[relationSelect.value].label;
+  return `${label}への出産祝いの相場を計算しました。\n目安:¥${amount.toLocaleString('ja-JP')}\n`;
+}
+
+btnCopyLink.addEventListener('click', async () => {
+  try {
+    await navigator.clipboard.writeText(location.href);
+    const original = btnCopyLink.textContent;
+    btnCopyLink.textContent = 'コピーしました✓';
+    setTimeout(() => { btnCopyLink.textContent = original; }, 2000);
+  } catch (e) {
+    // clipboard APIが使えない環境では静かに諦める
+  }
+});
+btnShareX.addEventListener('click', () => {
+  const text = shareText(lastAmount);
+  const intentUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(location.href)}`;
+  window.open(intentUrl, '_blank', 'noopener');
+});
+
+function initFromQuery() {
+  const params = new URLSearchParams(location.search);
+  const relation = params.get('relation');
+  if (!relation || !RELATIONS[relation]) return;
+  relationSelect.value = relation;
+  fieldSiblingOrder.style.display = relation === 'sibling' ? '' : 'none';
+  if (relation === 'sibling') {
+    const so = params.get('siblingorder');
+    if (so === 'older' || so === 'younger') {
+      document.querySelector(`input[name="siblingorder"][value="${so}"]`).checked = true;
+    }
+  }
+  const birthorder = params.get('birthorder');
+  if (birthorder === 'first' || birthorder === 'second') {
+    document.querySelector(`input[name="birthorder"][value="${birthorder}"]`).checked = true;
+  }
+  const giving = params.get('giving');
+  if (giving === 'solo' || giving === 'group') {
+    document.querySelector(`input[name="giving"][value="${giving}"]`).checked = true;
+  }
+  calc();
+}
+
+initFromQuery();

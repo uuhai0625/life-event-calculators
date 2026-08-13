@@ -132,6 +132,10 @@ const mannerFuneral = document.getElementById('manner-funeral');
 const rateTableWedding = document.getElementById('rate-table-wedding');
 const rateTableFuneral = document.getElementById('rate-table-funeral');
 const calcPanel = document.getElementById('calc-panel');
+const shareRow = document.getElementById('share-row');
+const btnCopyLink = document.getElementById('btn-copy-link');
+const btnShareX = document.getElementById('btn-share-x');
+let lastAmount = 0;
 
 function populateRelations() {
   relationSelect.innerHTML = '';
@@ -155,6 +159,7 @@ function setScene(scene) {
   fieldFuneralMeal.style.display = scene === 'funeral' ? '' : 'none';
   populateRelations();
   resultCard.classList.remove('show');
+  shareRow.classList.remove('show');
   affCard.classList.remove('show');
   mannerWedding.classList.remove('show');
   mannerFuneral.classList.remove('show');
@@ -211,6 +216,9 @@ function calc() {
   resultRange.textContent = `目安レンジ:¥${rangeLow.toLocaleString('ja-JP')} 〜 ¥${rangeHigh.toLocaleString('ja-JP')}`;
   resultAdvice.textContent = adviceText;
   resultCard.classList.add('show');
+  lastAmount = amount;
+  updateShareUrl();
+  shareRow.classList.add('show');
 
   let productKeyword;
   if (currentScene === 'wedding') {
@@ -240,4 +248,71 @@ document.querySelectorAll('.scene-tab').forEach((btn) => {
 });
 document.getElementById('btn-calc').addEventListener('click', calc);
 
+// 結果の共有機能(2026-08-14): 現在の入力状態をURLクエリに保持し、結果ページを直接共有できるようにする。
+// 「サイトを紹介する」より「計算結果を共有する」方が拡散されやすいというPerplexity調査(集客装置化第2弾)を踏まえた実装。
+function paramsFromState() {
+  const params = new URLSearchParams();
+  params.set('scene', currentScene);
+  params.set('relation', relationSelect.value);
+  params.set('age', ageSelect.value);
+  if (currentScene === 'wedding') {
+    params.set('attend', document.querySelector('input[name="attend"]:checked').value);
+  } else {
+    params.set('meal', document.querySelector('input[name="meal"]:checked').value);
+  }
+  return params;
+}
+
+function updateShareUrl() {
+  const params = paramsFromState();
+  history.replaceState(null, '', `${location.pathname}?${params.toString()}`);
+}
+
+function shareText(amount) {
+  const relationLabel = (RELATIONS[currentScene].find((r) => r.value === relationSelect.value) || {}).label || '';
+  const sceneLabel = currentScene === 'wedding' ? 'ご祝儀' : '香典';
+  return `${relationLabel}への${sceneLabel}の相場を計算しました。\n目安:¥${amount.toLocaleString('ja-JP')}\n`;
+}
+
+btnCopyLink.addEventListener('click', async () => {
+  try {
+    await navigator.clipboard.writeText(location.href);
+    const original = btnCopyLink.textContent;
+    btnCopyLink.textContent = 'コピーしました✓';
+    setTimeout(() => { btnCopyLink.textContent = original; }, 2000);
+  } catch (e) {
+    // clipboard APIが使えない環境では静かに諦める(主要ブラウザは概ね対応済みのため簡易対応に留める)
+  }
+});
+btnShareX.addEventListener('click', () => {
+  const text = shareText(lastAmount);
+  const intentUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(location.href)}`;
+  window.open(intentUrl, '_blank', 'noopener');
+});
+
+// 共有URLからの復元: 条件が有効な場合のみ自動計算する(不正・不完全なクエリは通常表示にフォールバック)
+function initFromQuery() {
+  const params = new URLSearchParams(location.search);
+  const scene = params.get('scene');
+  if (scene !== 'wedding' && scene !== 'funeral') return;
+  setScene(scene);
+  const relation = params.get('relation');
+  if (relation && RELATIONS[scene].some((r) => r.value === relation)) relationSelect.value = relation;
+  const age = params.get('age');
+  if (age && AGE_MULTIPLIER[age]) ageSelect.value = age;
+  if (scene === 'wedding') {
+    const attend = params.get('attend');
+    if (attend === 'present' || attend === 'absent') {
+      document.querySelector(`input[name="attend"][value="${attend}"]`).checked = true;
+    }
+  } else {
+    const meal = params.get('meal');
+    if (meal === 'yes' || meal === 'no') {
+      document.querySelector(`input[name="meal"][value="${meal}"]`).checked = true;
+    }
+  }
+  calc();
+}
+
 setScene('wedding');
+initFromQuery();

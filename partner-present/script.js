@@ -105,6 +105,10 @@ const resultRange = document.getElementById('result-range');
 const resultAdvice = document.getElementById('result-advice');
 const affCard = document.getElementById('aff-card');
 const affTitle = document.getElementById('aff-title');
+const shareRow = document.getElementById('share-row');
+const btnCopyLink = document.getElementById('btn-copy-link');
+const btnShareX = document.getElementById('btn-share-x');
+let lastAmount = 0;
 
 function calc() {
   const relation = RELATIONS[document.getElementById('select-relation').value];
@@ -119,6 +123,9 @@ function calc() {
   resultRange.textContent = `目安レンジ:¥${rangeLow.toLocaleString('ja-JP')} 〜 ¥${rangeHigh.toLocaleString('ja-JP')}`;
   resultAdvice.textContent = event.advice;
   resultCard.classList.add('show');
+  lastAmount = amount;
+  updateShareUrl();
+  shareRow.classList.add('show');
 
   affTitle.textContent = `${relation.label}への${event.label}プレゼントを探す`;
   affCard.href = affiliateUrl(`${relation.keyword} ${event.label}`);
@@ -129,3 +136,55 @@ function calc() {
 }
 
 document.getElementById('btn-calc').addEventListener('click', calc);
+
+// 結果の共有機能(2026-08-14): 詳細はgoshugi-koden/script.jsのコメント参照
+function paramsFromState() {
+  const params = new URLSearchParams();
+  params.set('relation', document.getElementById('select-relation').value);
+  params.set('event', document.getElementById('select-event').value);
+  params.set('years', document.getElementById('select-years').value);
+  return params;
+}
+
+function updateShareUrl() {
+  const params = paramsFromState();
+  history.replaceState(null, '', `${location.pathname}?${params.toString()}`);
+}
+
+function shareText(amount) {
+  const relation = RELATIONS[document.getElementById('select-relation').value];
+  const event = EVENTS[document.getElementById('select-event').value];
+  return `${relation.label}への${event.label}プレゼント予算を計算しました。\n目安:¥${amount.toLocaleString('ja-JP')}\n`;
+}
+
+btnCopyLink.addEventListener('click', async () => {
+  try {
+    await navigator.clipboard.writeText(location.href);
+    const original = btnCopyLink.textContent;
+    btnCopyLink.textContent = 'コピーしました✓';
+    setTimeout(() => { btnCopyLink.textContent = original; }, 2000);
+  } catch (e) {
+    // clipboard APIが使えない環境では静かに諦める
+  }
+});
+btnShareX.addEventListener('click', () => {
+  const text = shareText(lastAmount);
+  const intentUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(location.href)}`;
+  window.open(intentUrl, '_blank', 'noopener');
+});
+
+function initFromQuery() {
+  const params = new URLSearchParams(location.search);
+  const relation = params.get('relation');
+  const event = params.get('event');
+  const years = params.get('years');
+  if (!relation || !RELATIONS[relation]) return;
+  if (!event || !EVENTS[event]) return;
+  if (!years || !YEARS_MULTIPLIER[years]) return;
+  document.getElementById('select-relation').value = relation;
+  document.getElementById('select-event').value = event;
+  document.getElementById('select-years').value = years;
+  calc();
+}
+
+initFromQuery();

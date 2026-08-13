@@ -484,6 +484,57 @@ a { color: var(--navy); }
   border-bottom: 1px solid var(--navy);
 }
 
+/* ---- 間柄別の詳しい解説 ---- */
+.detail-section {
+  margin-bottom: 24px;
+}
+.detail-section h3 {
+  font-size: 1.05rem;
+  color: var(--navy);
+  margin: 0 0 14px;
+}
+.detail-section h4 {
+  font-size: 0.92rem;
+  color: var(--ink);
+  margin: 18px 0 6px;
+}
+.detail-section h4:first-of-type { margin-top: 0; }
+.detail-section p {
+  margin: 0;
+  font-size: 0.86rem;
+  color: var(--ink-sub);
+  line-height: 1.8;
+}
+
+/* ---- サイトについて(運営者情報) ---- */
+.about-box {
+  margin-top: 40px;
+  padding-top: 28px;
+  border-top: 1px solid var(--line);
+}
+.about-box h2 {
+  font-size: 1.05rem;
+  color: var(--navy);
+  margin: 0 0 14px;
+}
+.about-list {
+  margin: 0;
+  font-size: 0.86rem;
+  color: var(--ink);
+}
+.about-list dt {
+  font-weight: 700;
+  color: var(--ink-sub);
+  font-size: 0.76rem;
+  margin: 14px 0 4px;
+}
+.about-list dt:first-child { margin-top: 0; }
+.about-list dd {
+  margin: 0;
+  line-height: 1.7;
+}
+.about-list a { color: var(--navy); }
+
 /* ---- 関連ツール ---- */
 .related-tools {
   margin-bottom: 24px;

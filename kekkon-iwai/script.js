@@ -176,14 +176,36 @@ function shareText(amount) {
   return `${relation.label}への結婚祝いの相場を計算しました。\n目安:¥${amount.toLocaleString('ja-JP')}\n`;
 }
 
-btnCopyLink.addEventListener('click', async () => {
+// クリップボードAPIが権限待ちなどで応答しない環境があるため、1.5秒でタイムアウトし
+// 古いexecCommand('copy')にフォールバックする(2026-08-15、デバッグで発見した堅牢化)。
+function legacyCopyFallback(text) {
   try {
-    await navigator.clipboard.writeText(location.href);
-    const original = btnCopyLink.textContent;
+    const input = document.createElement('textarea');
+    input.value = text;
+    input.style.position = 'fixed';
+    input.style.opacity = '0';
+    document.body.appendChild(input);
+    input.select();
+    const ok = document.execCommand('copy');
+    document.body.removeChild(input);
+    return ok;
+  } catch (e) {
+    return false;
+  }
+}
+
+btnCopyLink.addEventListener('click', async () => {
+  const original = btnCopyLink.textContent;
+  const showCopied = () => {
     btnCopyLink.textContent = 'コピーしました✓';
     setTimeout(() => { btnCopyLink.textContent = original; }, 2000);
+  };
+  try {
+    const timeout = new Promise((_, reject) => setTimeout(() => reject(new Error('clipboard-timeout')), 1500));
+    await Promise.race([navigator.clipboard.writeText(location.href), timeout]);
+    showCopied();
   } catch (e) {
-    // clipboard APIが使えない環境では静かに諦める
+    if (legacyCopyFallback(location.href)) showCopied();
   }
 });
 btnShareX.addEventListener('click', () => {

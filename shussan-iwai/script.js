@@ -45,16 +45,16 @@ function cardHtml(item) {
     </a>`;
 }
 
-async function fetchProductBand(keyword, minPrice, maxPrice) {
+async function fetchProductBand(keyword, hits, minPrice, maxPrice) {
   const url = new URL('https://openapi.rakuten.co.jp/ichibams/api/IchibaItem/Search/20220601');
   url.searchParams.set('applicationId', RAKUTEN_APP_ID);
   url.searchParams.set('accessKey', RAKUTEN_ACCESS_KEY);
   url.searchParams.set('affiliateId', RAKUTEN_API_AFFILIATE_ID);
   url.searchParams.set('keyword', keyword);
   url.searchParams.set('sort', '-reviewCount');
-  url.searchParams.set('hits', '2');
-  url.searchParams.set('minPrice', String(Math.max(1, Math.round(minPrice))));
-  url.searchParams.set('maxPrice', String(Math.round(maxPrice)));
+  url.searchParams.set('hits', String(hits));
+  if (minPrice != null) url.searchParams.set('minPrice', String(Math.max(1, Math.round(minPrice))));
+  if (maxPrice != null) url.searchParams.set('maxPrice', String(Math.round(maxPrice)));
   url.searchParams.set('format', 'json');
   try {
     const res = await fetch(url.toString());
@@ -79,15 +79,21 @@ async function showProducts(keyword, labelText, rangeLow, rangeHigh) {
     { title: '予算ぴったり', reason: 'ちょうど目安の金額帯の商品です', minPrice: rangeLow, maxPrice: rangeHigh },
     { title: '少し奮発するなら', reason: '予算を少し上げると選べる商品です', minPrice: rangeHigh, maxPrice: Math.round(rangeHigh * 1.6) },
   ];
-  const results = await Promise.all(bands.map((b) => fetchProductBand(keyword, b.minPrice, b.maxPrice)));
+  const results = await Promise.all(bands.map((b) => fetchProductBand(keyword, 2, b.minPrice, b.maxPrice)));
   if (requestId !== productRequestId) return; // このリクエストより後の選択操作が発生済み、結果を破棄
 
-  const bandBlocks = bands.map((band, i) => ({ band, items: results[i] })).filter((b) => b.items.length);
-  if (!bandBlocks.length) return; // 両バンドとも該当なし。既存の検索リンクCTA(aff-card)がフォールバックとして機能するため静かに諦める
+  let bandBlocks = bands.map((band, i) => ({ band, items: results[i] })).filter((b) => b.items.length);
+  if (!bandBlocks.length) {
+    // 両バンドとも該当なし(価格帯とキーワードの組み合わせが特殊なケース)の保険: 価格指定なしの人気順にフォールバック
+    const fallback = await fetchProductBand(keyword, 4, null, null);
+    if (requestId !== productRequestId) return;
+    if (!fallback.length) return; // それでも0件なら既存の検索リンクCTA(aff-card)に任せて静かに諦める
+    bandBlocks = [{ band: { title: '', reason: '' }, items: fallback }];
+  }
 
   grid.innerHTML = bandBlocks.map(({ band, items }) => `
     <div class="product-band">
-      <p class="product-band-label">${band.title}<span class="product-band-reason">${band.reason}</span></p>
+      ${band.title ? `<p class="product-band-label">${band.title}<span class="product-band-reason">${band.reason}</span></p>` : ''}
       <div class="product-band-grid">${items.map(cardHtml).join('')}</div>
     </div>`).join('');
   grid.classList.add('show');

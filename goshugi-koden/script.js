@@ -30,44 +30,13 @@ const RAKUTEN_API_AFFILIATE_ID = '567fd2ff.507b4e2c.567fd300.5261c56d';
 // 新しい選択結果を上書きしてしまうレース状態を防ぐためのリクエストID(2026-08-11)。
 let productRequestId = 0;
 
-// 価格帯別の比較表示(2026-08-14): 単一の人気順4件だけだと似た商品が並びがちで決め手に欠けるという
-// 競合分析・Perplexity提案を反映し、「予算ぴったり(計算結果のレンジ内)」「少し奮発するなら(レンジ上限〜1.6倍)」
-// の2グループに分けて2件ずつ比較できるようにする。
-function cardHtml(item) {
-  const imgRaw = item.mediumImageUrls && item.mediumImageUrls[0];
-  const img = typeof imgRaw === 'string' ? imgRaw : (imgRaw && imgRaw.imageUrl) || '';
-  const price = Number(item.itemPrice).toLocaleString('ja-JP');
-  const name = String(item.itemName || '').replace(/</g, '&lt;');
-  return `
-    <a class="product-card" href="${item.itemUrl}" target="_blank" rel="noopener sponsored">
-      <img src="${img}" alt="" loading="lazy">
-      <p class="product-name">${name}</p>
-      <p class="product-price">¥${price}</p>
-    </a>`;
-}
-
-async function fetchProductBand(keyword, minPrice, maxPrice) {
-  const url = new URL('https://openapi.rakuten.co.jp/ichibams/api/IchibaItem/Search/20220601');
-  url.searchParams.set('applicationId', RAKUTEN_APP_ID);
-  url.searchParams.set('accessKey', RAKUTEN_ACCESS_KEY);
-  url.searchParams.set('affiliateId', RAKUTEN_API_AFFILIATE_ID);
-  url.searchParams.set('keyword', keyword);
-  url.searchParams.set('sort', '-reviewCount');
-  url.searchParams.set('hits', '2');
-  url.searchParams.set('minPrice', String(Math.max(1, Math.round(minPrice))));
-  url.searchParams.set('maxPrice', String(Math.round(maxPrice)));
-  url.searchParams.set('format', 'json');
-  try {
-    const res = await fetch(url.toString());
-    if (!res.ok) return [];
-    const data = await res.json();
-    return (data.Items || []).map((entry) => entry.Item || entry);
-  } catch (e) {
-    return [];
-  }
-}
-
-async function showProducts(keyword, labelText, rangeLow, rangeHigh) {
+// 価格帯別比較は導入しない(2026-08-15訂正): ご祝儀袋・香典袋は封筒自体の実売価格が¥1,000前後に
+// 集中しており、中に包む金額(数万円〜十数万円)とは無関係。価格帯を贈答金額に連動させると、
+// 高額な結果(例: 親への香典10万円台)でその価格帯に商品が存在せずカードが消える、または
+// 無関係な高額商品(バッグ等)が価格つじつま合わせで表示される不具合が実機検証で判明したため、
+// このページのみ元の「人気順4件をそのまま表示」に戻す(他3ページの出産祝い/結婚祝い/プレゼントは
+// 実際の贈り物価格が金額に連動するため価格帯比較のままでよい)。
+async function showProducts(keyword, labelText) {
   const grid = document.getElementById('product-grid');
   const label = document.getElementById('product-grid-label');
   if (!grid) return;
@@ -75,24 +44,40 @@ async function showProducts(keyword, labelText, rangeLow, rangeHigh) {
   grid.innerHTML = '';
   grid.classList.remove('show');
   if (label) label.style.display = 'none';
-
-  const bands = [
-    { title: '予算ぴったり', reason: 'ちょうど目安の金額帯の商品です', minPrice: rangeLow, maxPrice: rangeHigh },
-    { title: '少し奮発するなら', reason: '予算を少し上げると選べる商品です', minPrice: rangeHigh, maxPrice: Math.round(rangeHigh * 1.6) },
-  ];
-  const results = await Promise.all(bands.map((b) => fetchProductBand(keyword, b.minPrice, b.maxPrice)));
-  if (requestId !== productRequestId) return; // このリクエストより後の選択操作が発生済み、結果を破棄
-
-  const bandBlocks = bands.map((band, i) => ({ band, items: results[i] })).filter((b) => b.items.length);
-  if (!bandBlocks.length) return; // 両バンドとも該当なし。既存の検索リンクCTA(aff-card)がフォールバックとして機能するため静かに諦める
-
-  grid.innerHTML = bandBlocks.map(({ band, items }) => `
-    <div class="product-band">
-      <p class="product-band-label">${band.title}<span class="product-band-reason">${band.reason}</span></p>
-      <div class="product-band-grid">${items.map(cardHtml).join('')}</div>
-    </div>`).join('');
-  grid.classList.add('show');
-  if (label) { label.textContent = labelText; label.style.display = ''; }
+  const url = new URL('https://openapi.rakuten.co.jp/ichibams/api/IchibaItem/Search/20220601');
+  url.searchParams.set('applicationId', RAKUTEN_APP_ID);
+  url.searchParams.set('accessKey', RAKUTEN_ACCESS_KEY);
+  url.searchParams.set('affiliateId', RAKUTEN_API_AFFILIATE_ID);
+  url.searchParams.set('keyword', keyword);
+  url.searchParams.set('sort', '-reviewCount');
+  url.searchParams.set('hits', '4');
+  url.searchParams.set('format', 'json');
+  try {
+    const res = await fetch(url.toString());
+    if (requestId !== productRequestId) return;
+    if (!res.ok) return;
+    const data = await res.json();
+    if (requestId !== productRequestId) return;
+    const items = (data.Items || []).map((entry) => entry.Item || entry);
+    if (!items.length) return;
+    grid.innerHTML = items.map((item) => {
+      const imgRaw = item.mediumImageUrls && item.mediumImageUrls[0];
+      const img = typeof imgRaw === 'string' ? imgRaw : (imgRaw && imgRaw.imageUrl) || '';
+      const price = Number(item.itemPrice).toLocaleString('ja-JP');
+      const name = String(item.itemName || '').replace(/</g, '&lt;');
+      return `
+        <a class="product-card" href="${item.itemUrl}" target="_blank" rel="noopener sponsored">
+          <img src="${img}" alt="" loading="lazy">
+          <p class="product-name">${name}</p>
+          <p class="product-price">¥${price}</p>
+        </a>`;
+    }).join('');
+    grid.classList.add('show');
+    if (label) { label.textContent = labelText; label.style.display = ''; }
+  } catch (e) {
+    // API呼び出しに失敗しても既存の検索リンクCTA(aff-card)がフォールバックとして機能するため、
+    // ここでは静かに諦める(エラー表示はしない)。
+  }
 }
 
 // ageTier補正倍率(近い関係=scalableな項目にのみ適用)
@@ -259,7 +244,7 @@ function calc() {
   }
   affCard.classList.add('show');
   const productLabel = currentScene === 'wedding' ? '🛒 人気のご祝儀袋' : '🛒 人気の不祝儀袋(香典袋)';
-  showProducts(productKeyword, productLabel, rangeLow, rangeHigh);
+  showProducts(productKeyword, productLabel);
 
   resultCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }

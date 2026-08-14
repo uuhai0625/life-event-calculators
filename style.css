@@ -444,14 +444,31 @@ a { color: var(--navy); }
   line-height: 1.7;
 }
 
-/* ---- おすすめ商品(楽天商品検索API) ---- */
+/* ---- おすすめ商品(楽天商品検索API、価格帯別に「予算ぴったり」「少し奮発するなら」の2グループで比較表示) ---- */
 .product-grid {
   display: none;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 12px;
+  flex-direction: column;
+  gap: 16px;
   margin-bottom: 20px;
 }
-.product-grid.show { display: grid; }
+.product-grid.show { display: flex; }
+.product-band-label {
+  margin: 0 0 8px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--navy);
+}
+.product-band-reason {
+  margin-left: 6px;
+  font-size: 0.74rem;
+  font-weight: 400;
+  color: var(--ink-sub);
+}
+.product-band-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
 .product-card {
   background: var(--bg-card);
   border: 1px solid var(--line);

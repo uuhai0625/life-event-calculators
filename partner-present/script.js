@@ -100,22 +100,27 @@ async function showProducts(keyword, labelText, rangeLow, rangeHigh) {
 }
 
 const RELATIONS = {
-  girlfriend: { label: '彼女', keyword: '彼女 プレゼント', base: 15000 },
-  boyfriend:  { label: '彼氏', keyword: '彼氏 プレゼント', base: 10000 },
-  wife:       { label: '妻',   keyword: '妻 プレゼント',   base: 15000 },
-  husband:    { label: '夫',   keyword: '夫 プレゼント',   base: 10000 },
+  girlfriend: { label: '彼女', base: 15000 },
+  boyfriend:  { label: '彼氏', base: 10000 },
+  wife:       { label: '妻',   base: 15000 },
+  husband:    { label: '夫',   base: 10000 },
 };
 
+// productKeyword: 商品検索に使う語(2026-08-15追加)。以前はrelation.keywordのみで検索していたため、
+// 例えば「バレンタインデー」を選んでもアドバイス文は「本命チョコ+小物」なのに商品は無関係な
+// ネックレスや美顔器が出るというレビュー指摘があった(ユーザー目線レビューで発覚)。
+// イベントごとに検索語を分けることで、アドバイス文と商品の整合性を取る。
+// 各組み合わせ×価格帯で実際に数百〜数千件の該当商品があることをcurlで事前確認済み。
 const EVENTS = {
-  birthday:    { label: '誕生日',        multiplier: 1.0,
+  birthday:    { label: '誕生日',        productKeyword: '誕生日プレゼント',  multiplier: 1.0,
     advice: '相手の好きなものをさりげなくリサーチしておくと失敗が少ないです。' },
-  christmas:   { label: 'クリスマス',     multiplier: 1.0,
+  christmas:   { label: 'クリスマス',     productKeyword: 'クリスマスプレゼント', multiplier: 1.0,
     advice: '年間で最も予算が上がりやすいイベントです。食事代は予算に含めず別枠で考えると安心です。' },
-  valentine:   { label: 'バレンタインデー', multiplier: 0.4,
+  valentine:   { label: 'バレンタインデー', productKeyword: 'バレンタイン プレゼント', multiplier: 0.4,
     advice: '本命チョコ+ちょっとした小物を組み合わせるのが近年の定番です。' },
-  whiteday:    { label: 'ホワイトデー',    multiplier: 0.4,
+  whiteday:    { label: 'ホワイトデー',    productKeyword: 'ホワイトデー プレゼント', multiplier: 0.4,
     advice: '「もらった額の3倍返し」は都市伝説に近く、実際は同額〜1.5倍程度のお返しが主流です。' },
-  anniversary: { label: '交際・結婚記念日', multiplier: 0.8,
+  anniversary: { label: '交際・結婚記念日', productKeyword: '記念日 プレゼント', multiplier: 0.8,
     advice: '交際5年・結婚10年など節目の年は相場が上がる傾向があります。ペアアイテムやジュエリーも人気です。' },
 };
 
@@ -153,10 +158,11 @@ function calc() {
   updateShareUrl();
   shareRow.classList.add('show');
 
+  const eventKeyword = `${relation.label} ${event.productKeyword}`;
   affTitle.textContent = `${relation.label}への${event.label}プレゼントを探す`;
-  affCard.href = affiliateUrl(`${relation.keyword} ${event.label}`);
+  affCard.href = affiliateUrl(eventKeyword);
   affCard.classList.add('show');
-  showProducts(relation.keyword, `🛒 人気の${relation.label}へのプレゼント`, rangeLow, rangeHigh);
+  showProducts(eventKeyword, `🛒 人気の${relation.label}への${event.label}プレゼント`, rangeLow, rangeHigh);
 
   resultCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }

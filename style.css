@@ -176,6 +176,16 @@ a { color: var(--navy); }
   background: var(--slate-soft);
   color: var(--slate);
 }
+.scene-tab.active[data-scene="chugen"] {
+  border-color: var(--gold);
+  background: var(--gold-soft);
+  color: var(--navy);
+}
+.scene-tab.active[data-scene="seibo"] {
+  border-color: var(--navy);
+  background: var(--check-bg);
+  color: var(--navy);
+}
 
 /* ---- フォーム ---- */
 .calc-card {

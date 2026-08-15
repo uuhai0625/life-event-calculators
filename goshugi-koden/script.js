@@ -60,7 +60,10 @@ async function showProducts(keyword, labelText) {
     if (requestId !== productRequestId) return;
     const items = (data.Items || []).map((entry) => entry.Item || entry);
     if (!items.length) return;
-    grid.innerHTML = items.map((item, index) => {
+    // 2列グリッド表示に統一(2026-08-15): 他4ページ(価格帯別showProducts)はproduct-band-gridで
+    // 2列コンパクト表示なのに対し、このページだけproduct-grid直下に並べていたため全幅縦積みになっていた
+    // (デザインレビューで発覚した不整合)。同じCSSクラスを再利用して2列グリッドに揃える。
+    grid.innerHTML = '<div class="product-band-grid">' + items.map((item, index) => {
       const imgRaw = item.mediumImageUrls && item.mediumImageUrls[0];
       const img = typeof imgRaw === 'string' ? imgRaw : (imgRaw && imgRaw.imageUrl) || '';
       const price = Number(item.itemPrice).toLocaleString('ja-JP');
@@ -93,7 +96,7 @@ async function showProducts(keyword, labelText) {
           ${reviewHtml}
           <p class="product-price">¥${price}</p>
         </a>`;
-    }).join('');
+    }).join('') + '</div>';
     grid.classList.add('show');
     if (label) { label.textContent = labelText; label.style.display = ''; }
   } catch (e) {

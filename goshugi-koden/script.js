@@ -160,6 +160,8 @@ const affIcon = document.getElementById('aff-icon');
 const affTitle = document.getElementById('aff-title');
 const mannerWedding = document.getElementById('manner-wedding');
 const mannerFuneral = document.getElementById('manner-funeral');
+const regionWedding = document.getElementById('region-wedding');
+const regionFuneral = document.getElementById('region-funeral');
 const rateTableWedding = document.getElementById('rate-table-wedding');
 const rateTableFuneral = document.getElementById('rate-table-funeral');
 const calcPanel = document.getElementById('calc-panel');
@@ -194,6 +196,8 @@ function setScene(scene) {
   affCard.classList.remove('show');
   mannerWedding.classList.remove('show');
   mannerFuneral.classList.remove('show');
+  regionWedding.classList.remove('show');
+  regionFuneral.classList.remove('show');
   rateTableWedding.classList.toggle('show', scene === 'wedding');
   rateTableFuneral.classList.toggle('show', scene === 'funeral');
   const grid = document.getElementById('product-grid');
@@ -258,6 +262,8 @@ function calc() {
     affCard.href = affiliateUrl('ご祝儀袋');
     mannerWedding.classList.add('show');
     mannerFuneral.classList.remove('show');
+    regionWedding.classList.add('show');
+    regionFuneral.classList.remove('show');
     productKeyword = 'ご祝儀袋';
   } else {
     affIcon.textContent = '🖤';
@@ -265,6 +271,8 @@ function calc() {
     affCard.href = affiliateUrl('不祝儀袋 香典袋');
     mannerFuneral.classList.add('show');
     mannerWedding.classList.remove('show');
+    regionFuneral.classList.add('show');
+    regionWedding.classList.remove('show');
     productKeyword = '不祝儀袋';
   }
   affCard.classList.add('show');

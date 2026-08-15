@@ -84,7 +84,7 @@ async function showProducts(keyword, labelText) {
         ? `<div class="product-badges">${badges.map((b) => `<span class="product-badge ${b.cls}">${b.text}</span>`).join('')}</div>`
         : '';
       return `
-        <a class="product-card" href="${item.itemUrl}" target="_blank" rel="noopener sponsored">
+        <a class="product-card" href="${item.itemUrl}" target="_blank" rel="noopener sponsored" data-ga-name="${name.replace(/"/g, '&quot;').slice(0, 60)}" data-ga-price="${Number(item.itemPrice) || 0}">
           <div class="product-image-wrap">
             <img src="${img}" alt="" loading="lazy">
             ${badgeHtml}
@@ -275,6 +275,23 @@ document.querySelectorAll('.scene-tab').forEach((btn) => {
   btn.addEventListener('click', () => setScene(btn.dataset.scene));
 });
 document.getElementById('btn-calc').addEventListener('click', calc);
+
+// GA4クリック計測(2026-08-15追加): 商品カード・検索CTAのクリックを計測し、
+// 導線が実際にクリックされているかを今後データで検証できるようにする(ユーザー目線レビューで判明した盲点)。
+document.getElementById('product-grid')?.addEventListener('click', (e) => {
+  const card = e.target.closest('.product-card');
+  if (!card || typeof gtag !== 'function') return;
+  gtag('event', 'product_click', {
+    item_name: card.dataset.gaName || '',
+    price: Number(card.dataset.gaPrice) || 0,
+  });
+});
+document.getElementById('aff-card')?.addEventListener('click', () => {
+  if (typeof gtag !== 'function') return;
+  gtag('event', 'affiliate_cta_click', {
+    link_label: document.querySelector('.aff-title')?.textContent || '',
+  });
+});
 
 // 結果の共有機能(2026-08-14): 現在の入力状態をURLクエリに保持し、結果ページを直接共有できるようにする。
 // 「サイトを紹介する」より「計算結果を共有する」方が拡散されやすいというPerplexity調査(集客装置化第2弾)を踏まえた実装。

@@ -55,7 +55,7 @@ function cardHtml(item, index) {
     ? `<div class="product-badges">${badges.map((b) => `<span class="product-badge ${b.cls}">${b.text}</span>`).join('')}</div>`
     : '';
   return `
-    <a class="product-card" href="${item.itemUrl}" target="_blank" rel="noopener sponsored">
+    <a class="product-card" href="${item.itemUrl}" target="_blank" rel="noopener sponsored" data-ga-name="${name.replace(/"/g, '&quot;').slice(0, 60)}" data-ga-price="${Number(item.itemPrice) || 0}">
       <div class="product-image-wrap">
         <img src="${img}" alt="" loading="lazy">
         ${badgeHtml}
@@ -120,7 +120,7 @@ async function showProducts(keyword, labelText, rangeLow, rangeHigh) {
 
   const noticeHtml = notice ? `<p class="product-band-notice">${notice}</p>` : '';
   grid.innerHTML = noticeHtml + bandBlocks.map(({ band, items }) => `
-    <div class="product-band">
+    <div class="product-band" data-band-title="${band.title || 'なし'}">
       ${band.title ? `<p class="product-band-label">${band.title}<span class="product-band-reason">${band.reason}</span></p>` : ''}
       <div class="product-band-grid">${items.map(cardHtml).join('')}</div>
     </div>`).join('');
@@ -186,6 +186,24 @@ function calc() {
 }
 
 document.getElementById('btn-calc').addEventListener('click', calc);
+
+// GA4クリック計測(2026-08-15追加): 詳細はgoshugi-koden/script.jsのコメント参照
+document.getElementById('product-grid')?.addEventListener('click', (e) => {
+  const card = e.target.closest('.product-card');
+  if (!card || typeof gtag !== 'function') return;
+  const band = card.closest('.product-band');
+  gtag('event', 'product_click', {
+    item_name: card.dataset.gaName || '',
+    price: Number(card.dataset.gaPrice) || 0,
+    band: band ? band.dataset.bandTitle || '' : '',
+  });
+});
+document.getElementById('aff-card')?.addEventListener('click', () => {
+  if (typeof gtag !== 'function') return;
+  gtag('event', 'affiliate_cta_click', {
+    link_label: document.querySelector('.aff-title')?.textContent || '',
+  });
+});
 
 // 結果の共有機能(2026-08-14): 詳細はgoshugi-koden/script.jsのコメント参照
 function paramsFromState() {

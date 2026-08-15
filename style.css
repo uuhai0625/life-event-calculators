@@ -479,6 +479,14 @@ a { color: var(--navy); }
   grid-template-columns: repeat(2, 1fr);
   gap: 12px;
 }
+.product-band-notice {
+  margin: 0;
+  font-size: 0.78rem;
+  color: var(--ink-sub);
+  background: var(--check-bg);
+  border-radius: 10px;
+  padding: 10px 12px;
+}
 .product-card {
   background: var(--bg-card);
   border: 1px solid var(--line);

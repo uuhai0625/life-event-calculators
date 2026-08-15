@@ -83,15 +83,23 @@ async function showProducts(keyword, labelText, rangeLow, rangeHigh) {
   if (requestId !== productRequestId) return; // このリクエストより後の選択操作が発生済み、結果を破棄
 
   let bandBlocks = bands.map((band, i) => ({ band, items: results[i] })).filter((b) => b.items.length);
+  // 「予算ぴったり」帯(先頭)が0件だった場合、無言で省略せず一言添える
+  // (2026-08-15、ユーザー目線レビューで「無言で上位価格帯だけ出るのは不親切」と判明)。
+  const fitBandMissing = !results[0].length;
+  let notice = '';
   if (!bandBlocks.length) {
     // 両バンドとも該当なし(価格帯とキーワードの組み合わせが特殊なケース)の保険: 価格指定なしの人気順にフォールバック
     const fallback = await fetchProductBand(keyword, 4, null, null);
     if (requestId !== productRequestId) return;
     if (!fallback.length) return; // それでも0件なら既存の検索リンクCTA(aff-card)に任せて静かに諦める
     bandBlocks = [{ band: { title: '', reason: '' }, items: fallback }];
+    notice = 'この価格帯にぴったりの商品は見つかりませんでした。人気の商品をご紹介します。';
+  } else if (fitBandMissing) {
+    notice = 'ちょうどの価格帯の商品は見つからなかったため、近い価格帯からご紹介します。';
   }
 
-  grid.innerHTML = bandBlocks.map(({ band, items }) => `
+  const noticeHtml = notice ? `<p class="product-band-notice">${notice}</p>` : '';
+  grid.innerHTML = noticeHtml + bandBlocks.map(({ band, items }) => `
     <div class="product-band">
       ${band.title ? `<p class="product-band-label">${band.title}<span class="product-band-reason">${band.reason}</span></p>` : ''}
       <div class="product-band-grid">${items.map(cardHtml).join('')}</div>

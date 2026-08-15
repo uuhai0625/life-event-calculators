@@ -498,14 +498,38 @@ a { color: var(--navy); }
   display: flex;
   flex-direction: column;
 }
+.product-image-wrap {
+  position: relative;
+  margin-bottom: 8px;
+}
 .product-card img {
   width: 100%;
   aspect-ratio: 1 / 1;
   object-fit: contain;
   border-radius: 8px;
-  margin-bottom: 8px;
   background: #fff;
+  display: block;
 }
+.product-badges {
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.product-badge {
+  display: inline-block;
+  font-size: 0.62rem;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 999px;
+  color: #fff;
+  line-height: 1.5;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+}
+.product-badge--rank { background: var(--vermilion); }
+.product-badge--shipping { background: var(--navy); }
 .product-card .product-name {
   font-size: 0.76rem;
   line-height: 1.4;

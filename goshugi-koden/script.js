@@ -60,7 +60,7 @@ async function showProducts(keyword, labelText) {
     if (requestId !== productRequestId) return;
     const items = (data.Items || []).map((entry) => entry.Item || entry);
     if (!items.length) return;
-    grid.innerHTML = items.map((item) => {
+    grid.innerHTML = items.map((item, index) => {
       const imgRaw = item.mediumImageUrls && item.mediumImageUrls[0];
       const img = typeof imgRaw === 'string' ? imgRaw : (imgRaw && imgRaw.imageUrl) || '';
       const price = Number(item.itemPrice).toLocaleString('ja-JP');
@@ -73,9 +73,22 @@ async function showProducts(keyword, labelText) {
       const reviewHtml = reviewCount > 0
         ? `<p class="product-review">★${reviewAverage.toFixed(1)}<span class="product-review-count">(${reviewCount.toLocaleString('ja-JP')}件)</span></p>`
         : '';
+      // データ根拠バッジ(2026-08-15追加): 個々の商品に「なぜこれが選ばれているか」の一言もないという
+      // ユーザー目線レビュー指摘を受け、楽天APIの実データ(順位・レビュー件数・送料フラグ)のみから
+      // 客観的に判定できる範囲でバッジ化。憶測は含めない。
+      const badges = [];
+      if (index === 0) badges.push({ text: '人気No.1', cls: 'product-badge--rank' });
+      else if (reviewCount >= 3000) badges.push({ text: 'レビュー多数', cls: 'product-badge--rank' });
+      if (Number(item.postageFlag) === 0) badges.push({ text: '送料無料', cls: 'product-badge--shipping' });
+      const badgeHtml = badges.length
+        ? `<div class="product-badges">${badges.map((b) => `<span class="product-badge ${b.cls}">${b.text}</span>`).join('')}</div>`
+        : '';
       return `
         <a class="product-card" href="${item.itemUrl}" target="_blank" rel="noopener sponsored">
-          <img src="${img}" alt="" loading="lazy">
+          <div class="product-image-wrap">
+            <img src="${img}" alt="" loading="lazy">
+            ${badgeHtml}
+          </div>
           <p class="product-name">${name}</p>
           ${reviewHtml}
           <p class="product-price">¥${price}</p>

@@ -516,6 +516,19 @@ a { color: var(--navy); }
   overflow: hidden;
   flex: 1;
 }
+.product-card .product-review {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+  font-size: 0.72rem;
+  color: var(--gold);
+  font-weight: 700;
+  margin: 0 0 4px;
+}
+.product-card .product-review-count {
+  color: var(--ink-sub);
+  font-weight: 400;
+}
 .product-card .product-price {
   font-size: 0.9rem;
   font-weight: 700;

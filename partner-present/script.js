@@ -37,10 +37,19 @@ function cardHtml(item) {
   const img = typeof imgRaw === 'string' ? imgRaw : (imgRaw && imgRaw.imageUrl) || '';
   const price = Number(item.itemPrice).toLocaleString('ja-JP');
   const name = String(item.itemName || '').replace(/</g, '&lt;');
+  // レビュー件数・評価の表示(2026-08-15、ユーザー目線レビューで追加): APIはsort=-reviewCountで
+  // 人気順取得しているのに根拠(件数・評価)を見せていなかったため、購買後押しの機会損失だった。
+  // レビュー0件の商品は星評価がないため表示しない。
+  const reviewCount = Number(item.reviewCount) || 0;
+  const reviewAverage = Number(item.reviewAverage) || 0;
+  const reviewHtml = reviewCount > 0
+    ? `<p class="product-review">★${reviewAverage.toFixed(1)}<span class="product-review-count">(${reviewCount.toLocaleString('ja-JP')}件)</span></p>`
+    : '';
   return `
     <a class="product-card" href="${item.itemUrl}" target="_blank" rel="noopener sponsored">
       <img src="${img}" alt="" loading="lazy">
       <p class="product-name">${name}</p>
+      ${reviewHtml}
       <p class="product-price">¥${price}</p>
     </a>`;
 }

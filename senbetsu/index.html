@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>餞別・送別ギフトの相場 計算機|相場ノート</title>
+<meta name="description" content="退職・転職・転勤異動する方へ贈る餞別の相場を、間柄と場面を選ぶだけで計算。複数の情報源を比較し出典を明記した、個人・職場連名どちらにも対応した無料の相場計算機です。">
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="餞別・送別ギフトの相場 計算機|相場ノート">
+<meta property="og:description" content="間柄と場面を選ぶだけで、餞別・送別ギフトの金額の目安がわかります。">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:url" content="https://uuhai0625.github.io/life-event-calculators/senbetsu/">
+<meta property="og:image" content="https://uuhai0625.github.io/life-event-calculators/images/og-image.jpg">
+<meta property="og:image:width" content="1520">
+<meta property="og:image:height" content="800">
+<link rel="canonical" href="https://uuhai0625.github.io/life-event-calculators/senbetsu/">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="餞別・送別ギフトの相場 計算機">
+<meta name="twitter:description" content="間柄と場面を選ぶだけで、餞別・送別ギフトの金額の目安がわかります。">
+<meta name="twitter:image" content="https://uuhai0625.github.io/life-event-calculators/images/og-image.jpg">
+
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🧭</text></svg>">
+<meta name="theme-color" content="#1f3a5c" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#1c1a17" media="(prefers-color-scheme: dark)">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Old+Mincho:wght@700;900&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../style.css">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    { "@type": "Question", "name": "現金と品物、どちらがいい?", "acceptedAnswer": { "@type": "Answer", "text": "上司や目上の方への現金は「失礼にあたる」とする考え方が根強く残っているため、品物や商品券が無難です。同僚・後輩であれば現金でも問題ないとされています。" } },
+    { "@type": "Question", "name": "職場でまとめて贈る場合の書き方は?", "acceptedAnswer": { "@type": "Answer", "text": "表書きは「御餞別」が一般的です(目上の方には「御礼」とすることもあります)。連名の場合は代表者名や「〇〇部一同」と書きます。" } },
+    { "@type": "Question", "name": "定年退職と一般の退職で相場が違うのはなぜ?", "acceptedAnswer": { "@type": "Answer", "text": "定年退職は長年の勤続への感謝の意味合いが強く、個人で贈る場合も一般の退職・転職より高めの金額が選ばれる傾向があります。" } },
+    { "@type": "Question", "name": "高額すぎる餞別はよくない?", "acceptedAnswer": { "@type": "Answer", "text": "相手にお返しの心配をさせてしまうことがあるため、間柄に見合わない高額な餞別は避けるのが無難とされています。" } },
+    { "@type": "Question", "name": "渡すタイミングはいつがいい?", "acceptedAnswer": { "@type": "Answer", "text": "送別会の場、または最終出社日に渡すのが一般的です。送別会がない場合は、退職日の1週間ほど前までに渡すと相手も準備しやすくなります。" } }
+  ]
+}
+</script>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <h1 class="site-logo">相場<span class="accent">ノート</span></h1>
+    <p class="site-tagline">餞別・送別ギフトの相場計算機</p>
+  </div>
+</header>
+
+<main class="wrap">
+  <a class="back-link" href="../">← ツール一覧にもどる</a>
+
+  <div class="calc-card">
+    <div class="field">
+      <label for="select-scene">場面</label>
+      <select id="select-scene">
+        <option value="teinen">定年退職</option>
+        <option value="taishoku" selected>退職・転職</option>
+        <option value="tenkin">転勤・異動</option>
+      </select>
+    </div>
+    <div class="field">
+      <label for="select-relation">相手との間柄</label>
+      <select id="select-relation">
+        <option value="boss">上司</option>
+        <option value="colleague" selected>同僚・後輩</option>
+        <option value="subordinate">部下</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>贈り方</label>
+      <div class="radio-group">
+        <label><input type="radio" name="giving" value="solo" checked> 個人で贈る</label>
+        <label><input type="radio" name="giving" value="group"> 職場でまとめて(連名)</label>
+      </div>
+    </div>
+    <button class="btn-calc" id="btn-calc" type="button">相場を計算する</button>
+  </div>
+
+  <div class="result-card" id="result-card">
+    <p class="result-label" id="result-label">餞別の目安</p>
+    <p class="result-amount"><span class="yen">¥</span><span id="result-amount">--</span></p>
+    <p class="result-note" id="result-range"></p>
+    <div class="result-advice" id="result-advice"></div>
+    <div class="share-row" id="share-row">
+      <button class="share-btn" id="btn-copy-link" type="button">🔗 結果のURLをコピー</button>
+      <button class="share-btn" id="btn-share-x" type="button">𝕏 Xで共有</button>
+    </div>
+  </div>
+
+  <div id="product-section">
+    <p class="product-grid-label" id="product-grid-label" style="display:none;">🛒 人気の送別ギフト</p>
+    <div class="product-grid" id="product-grid"></div>
+  </div>
+
+  <a class="aff-card" id="aff-card" href="#" target="_blank" rel="noopener sponsored">
+    <div class="aff-icon">👋</div>
+    <div class="aff-text">
+      <p class="aff-title" id="aff-title">送別ギフトを探す</p>
+      <p class="aff-sub">楽天市場で見てみる</p>
+    </div>
+    <span class="aff-pr">PR</span>
+  </a>
+
+  <p class="follow-x">🐦 制作の裏側や新しいツールの告知は <a href="https://x.com/uuhai0625" target="_blank" rel="noopener">@uuhai0625</a> で発信しています</p>
+
+  <div class="manner-box show">
+    <h3>💡 餞別・送別ギフトのマナーメモ</h3>
+    <ul>
+      <li>目上の方(上司など)への現金は「失礼にあたる」と考える方が今も一定数いるため、迷ったら品物や商品券が無難です。同僚・後輩へは現金でも問題ないとされています。</li>
+      <li>表書きは「御餞別」が一般的です。目上の方には「御礼」とすることもあります。</li>
+      <li>高額すぎる餞別は、相手にお返しの心配をさせてしまうことがあります。間柄に見合った金額を心がけましょう。</li>
+      <li>渡すタイミングは送別会の場、または最終出社日が一般的です。送別会がない場合は退職日の1週間ほど前までに渡すと相手も準備しやすくなります。</li>
+    </ul>
+  </div>
+
+  <div class="rate-table-box show">
+    <h3>📋 餞別 早見表(個人で贈る場合)</h3>
+    <p class="rate-table-note">場面・間柄によってフォーム上部の計算結果は変わります。まず相場感をつかみたい方はこちらをご覧ください。</p>
+    <table class="rate-table">
+      <tr><th>場面・間柄</th><th>金額</th></tr>
+      <tr><td>定年退職・上司</td><td>20,000円</td></tr>
+      <tr><td>定年退職・同僚後輩/部下</td><td>10,000円</td></tr>
+      <tr><td>退職・転職・上司</td><td>8,000円</td></tr>
+      <tr><td>退職・転職・同僚後輩/部下</td><td>4,000円</td></tr>
+      <tr><td>転勤・異動・上司</td><td>8,000円</td></tr>
+      <tr><td>転勤・異動・同僚後輩/部下</td><td>4,000円</td></tr>
+    </table>
+    <p class="rate-table-note">職場でまとめて贈る場合は1人あたり定年退職3,000円・退職転職2,000円・転勤異動2,000円が目安です(間柄によらず一律)。</p>
+    <p class="rate-source">参考: <a href="https://www.quocard.com/individual/column/article/retirement-gift-manner/" target="_blank" rel="noopener">QUOカード「餞別とは?金額相場・贈り方のマナー」</a>、<a href="https://www.best-manner.com/manner/kihon/senbetsu-soubetsu.html" target="_blank" rel="noopener">大人のためのビジネスマナー「お餞別・金額相場」</a>ほか(2026年8月確認)</p>
+  </div>
+
+  <div class="faq-section">
+    <h3>よくある質問</h3>
+    <details class="faq-item">
+      <summary>現金と品物、どちらがいい?</summary>
+      <p>上司や目上の方への現金は「失礼にあたる」とする考え方が根強く残っているため、品物や商品券が無難です。同僚・後輩であれば現金でも問題ないとされています。</p>
+    </details>
+    <details class="faq-item">
+      <summary>職場でまとめて贈る場合の書き方は?</summary>
+      <p>表書きは「御餞別」が一般的です(目上の方には「御礼」とすることもあります)。連名の場合は代表者名や「〇〇部一同」と書きます。</p>
+    </details>
+    <details class="faq-item">
+      <summary>定年退職と一般の退職で相場が違うのはなぜ?</summary>
+      <p>定年退職は長年の勤続への感謝の意味合いが強く、個人で贈る場合も一般の退職・転職より高めの金額が選ばれる傾向があります。</p>
+    </details>
+    <details class="faq-item">
+      <summary>高額すぎる餞別はよくない?</summary>
+      <p>相手にお返しの心配をさせてしまうことがあるため、間柄に見合わない高額な餞別は避けるのが無難とされています。</p>
+    </details>
+    <details class="faq-item">
+      <summary>渡すタイミングはいつがいい?</summary>
+      <p>送別会の場、または最終出社日に渡すのが一般的です。送別会がない場合は、退職日の1週間ほど前までに渡すと相手も準備しやすくなります。</p>
+    </details>
+  </div>
+
+  <div class="detail-section">
+    <h3>場面・間柄別にみる餞別の考え方</h3>
+
+    <h4>定年退職への餞別</h4>
+    <p>定年退職は長年の勤続への感謝を込める場面のため、個人で贈る場合は他の退職シーンより高めの金額(上司2万円・同僚後輩や部下へは1万円程度)が目安です。職場でまとめて贈る場合は1人あたり1,000〜5,000円程度を集め、まとまった金額の記念品にするケースが多く見られます。</p>
+
+    <h4>退職・転職への餞別</h4>
+    <p>円満退職であれば、気持ちのこもった品を贈るのが一般的です。個人で贈る場合は上司へ8,000円程度、同僚・後輩や部下へは4,000円程度が目安ですが、高額すぎるとお返しの心配をさせてしまうため、間柄に見合わない高額な餞別は避けましょう。</p>
+
+    <h4>転勤・異動への餞別</h4>
+    <p>同じ会社に残るケースが多いため、次の職場でも使いやすい実用品が好まれます。金額の目安は退職・転職の場合とほぼ同水準です(上司8,000円程度、同僚・後輩や部下は4,000円程度)。</p>
+  </div>
+
+  <div class="related-tools">
+    <h3>こんな計算機もあります</h3>
+    <div class="related-tools-list">
+      <a class="related-tool-link" href="../goshugi-koden/"><span class="icon">🎁</span>ご祝儀・香典の相場計算機</a>
+      <a class="related-tool-link" href="../shussan-iwai/"><span class="icon">🍼</span>出産祝いの相場計算機</a>
+      <a class="related-tool-link" href="../kekkon-iwai/"><span class="icon">💐</span>結婚祝いの相場計算機</a>
+      <a class="related-tool-link" href="../ochugen-oseibo/"><span class="icon">🎐</span>お中元・お歳暮の相場計算機</a>
+    </div>
+  </div>
+
+</main>
+
+<footer class="site-footer">
+  <p>掲載している金額は、複数のマナー系情報サイト・アンケート調査で広く共有されている相場観をもとに算出した目安です。地域・宗派・家庭の慣習により大きく異なる場合がありますので、実際にお包みになる際はご家族や周囲の方にもご確認ください。</p>
+  <p>🔖 商品リンクにはアフィリエイト(広告)リンクを含みます。リンク経由の購入により、当サイトが紹介料を得ることがあります。</p>
+  <p><a href="../#about">運営者情報・お問い合わせ</a></p>
+</footer>
+
+<script src="../ga.js"></script>
+<script src="script.js"></script>
+</body>
+</html>

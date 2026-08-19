@@ -23,7 +23,7 @@ async function showProducts(keyword, labelText) {
   grid.innerHTML = '';
   grid.classList.remove('show');
   if (label) label.style.display = 'none';
-  const url = new URL('https://openapi.rakuten.co.jp/ichibams/api/IchibaItem/Search/20220601');
+  const url = new URL('https://openapi.rakuten.co.jp/ichibams/api/IchibaItem/Search/20260701');
   url.searchParams.set('applicationId', RAKUTEN_APP_ID);
   url.searchParams.set('accessKey', RAKUTEN_ACCESS_KEY);
   url.searchParams.set('affiliateId', RAKUTEN_API_AFFILIATE_ID);

@@ -18,8 +18,10 @@ function affiliateUrl(keyword) {
 // アプリID・アクセスキー・APIリクエスト用アフィリエイトIDは楽天ウェブサービスのアプリ登録画面で発行されたもの。
 // リンク作成ツールで手動生成した RAKUTEN_AFFILIATE_ID とは異なる値だが、楽天の仕様上「APIやサービスに
 // 応じて別のアフィリエイトIDが割り当てられる」設計であり、成果は同じ楽天会員IDに正しく集約される。
-// エンドポイントは旧app.rakuten.co.jp/services/api/版(2026-08-17に完全廃止予定)ではなく、
-// 新openapi.rakuten.co.jp/ichibams/api/版(20220601)を使用。新版はaccessKeyも必須パラメータ。
+// エンドポイントは旧app.rakuten.co.jp/services/api/版ではなく、新openapi.rakuten.co.jp/ichibams/api/版を使用。
+// 新版はaccessKeyも必須パラメータ。**バージョン番号は固定せず要注意**: 2026-08-17、旧`20220601`が
+// 「API Configuration not found」エラーで応答不能になっているのを発見(現行バージョンは`20260701`。
+// 次に商品カードが出なくなったら https://webservice.rakuten.co.jp/explorer/api で現行バージョンを確認)。
 const RAKUTEN_APP_ID = 'f9f8dd97-c7a4-4ae1-a2c1-38b4572a702e';
 const RAKUTEN_ACCESS_KEY = 'pk_gJd3Q0JkttKeBF4DcfYjD8zYljezjxNxEFiUssXZhFs';
 const RAKUTEN_API_AFFILIATE_ID = '567fd2ff.507b4e2c.567fd300.5261c56d';
@@ -67,7 +69,7 @@ function cardHtml(item, index) {
 }
 
 async function fetchProductBand(keyword, hits, minPrice, maxPrice) {
-  const url = new URL('https://openapi.rakuten.co.jp/ichibams/api/IchibaItem/Search/20220601');
+  const url = new URL('https://openapi.rakuten.co.jp/ichibams/api/IchibaItem/Search/20260701');
   url.searchParams.set('applicationId', RAKUTEN_APP_ID);
   url.searchParams.set('accessKey', RAKUTEN_ACCESS_KEY);
   url.searchParams.set('affiliateId', RAKUTEN_API_AFFILIATE_ID);

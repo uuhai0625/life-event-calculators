@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>長寿祝い(還暦・古希など)年計算|相場ノート</title>
+<meta name="description" content="生まれ年を入れるだけで、還暦・古希・喜寿など次の長寿祝いの年齢と時期がわかります。複数の情報源を比較し出典を明記した、間柄別の贈り物予算つきの無料計算機です。">
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="長寿祝い(還暦・古希など)年計算|相場ノート">
+<meta property="og:description" content="生まれ年を選ぶだけで、次に迎える長寿祝いの年齢・時期・贈り物予算の目安がわかります。">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:url" content="https://uuhai0625.github.io/life-event-calculators/chouju-iwai/">
+<meta property="og:image" content="https://uuhai0625.github.io/life-event-calculators/images/og-image.jpg">
+<meta property="og:image:width" content="1520">
+<meta property="og:image:height" content="800">
+<link rel="canonical" href="https://uuhai0625.github.io/life-event-calculators/chouju-iwai/">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="長寿祝い(還暦・古希など)年計算">
+<meta name="twitter:description" content="生まれ年を選ぶだけで、次に迎える長寿祝いの年齢・時期がわかります。">
+<meta name="twitter:image" content="https://uuhai0625.github.io/life-event-calculators/images/og-image.jpg">
+
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🧭</text></svg>">
+<meta name="theme-color" content="#1f3a5c" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#1c1a17" media="(prefers-color-scheme: dark)">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Old+Mincho:wght@700;900&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../style.css">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    { "@type": "Question", "name": "数え年と満年齢、どちらで祝えばいい?", "acceptedAnswer": { "@type": "Answer", "text": "還暦は数え年61歳・満年齢60歳がちょうど一致するため、どちらで数えても同じ年にお祝いできます。それ以外の古希・喜寿以降は本来は数え年で祝う風習でしたが、現在は満年齢で祝うご家庭が多くなっています。このツールは満年齢を基準に計算しています。" } },
+    { "@type": "Question", "name": "生まれた年だけで正確にわかる?", "acceptedAnswer": { "@type": "Answer", "text": "この計算機は生まれ年から簡易的に満年齢を算出しているため、誕生日を迎える前後で実際の年齢と1歳前後する場合があります。お祝いの計画を立てる目安としてご利用ください。" } },
+    { "@type": "Question", "name": "長寿祝いにのしは必要?", "acceptedAnswer": { "@type": "Answer", "text": "一般的には紅白または金銀の蝶結び(花結び)の水引に「祝御長寿」「祝古希」などの表書きを添えます。名入れの記念品を贈る場合は、のしを省略することもあります。" } },
+    { "@type": "Question", "name": "現金と品物、どちらがいい?", "acceptedAnswer": { "@type": "Answer", "text": "親御さんや祖父母には、旅行や食事会などの「体験」や名入れ記念品が人気です。親戚・友人・職場の関係では、現金よりも品物やギフトカードが選ばれる傾向があります。" } },
+    { "@type": "Question", "name": "節目ごとに毎回お祝いする必要がある?", "acceptedAnswer": { "@type": "Answer", "text": "還暦・古希・喜寿・米寿など、家庭によってお祝いする節目は異なります。すべての節目で贈らなければいけないわけではなく、家族の慣習やご本人の希望に合わせるのが一般的です。" } }
+  ]
+}
+</script>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <h1 class="site-logo">相場<span class="accent">ノート</span></h1>
+    <p class="site-tagline">長寿祝いの年計算機</p>
+  </div>
+</header>
+
+<main class="wrap">
+  <a class="back-link" href="../">← ツール一覧にもどる</a>
+
+  <div class="calc-card">
+    <div class="field">
+      <label for="input-birthyear">生まれた年(西暦)</label>
+      <input type="number" id="input-birthyear" inputmode="numeric" placeholder="例:1960" min="1900" max="2026">
+      <p class="field-error" id="birthyear-error">1900年〜今年までの西暦で入力してください。</p>
+    </div>
+    <div class="field">
+      <label for="select-relation">贈る方から見た間柄</label>
+      <select id="select-relation">
+        <option value="child">実の子として(親御さんへ)</option>
+        <option value="grandchild" selected>孫として(祖父母へ)</option>
+        <option value="relative">親戚として</option>
+        <option value="friend_colleague">友人・職場の方として</option>
+      </select>
+    </div>
+    <button class="btn-calc" id="btn-calc" type="button">長寿祝いを計算する</button>
+  </div>
+
+  <div class="result-card" id="result-card">
+    <p class="result-label" id="result-label">次の長寿祝い</p>
+    <p class="result-amount" id="result-celeb">--</p>
+    <p class="result-note" id="result-timing"></p>
+    <div class="result-advice" id="result-advice"></div>
+    <div class="share-row" id="share-row">
+      <button class="share-btn" id="btn-copy-link" type="button">🔗 結果のURLをコピー</button>
+      <button class="share-btn" id="btn-share-x" type="button">𝕏 Xで共有</button>
+    </div>
+  </div>
+
+  <div id="product-section">
+    <p class="product-grid-label" id="product-grid-label" style="display:none;">🛒 人気の長寿祝いギフト</p>
+    <div class="product-grid" id="product-grid"></div>
+  </div>
+
+  <a class="aff-card" id="aff-card" href="#" target="_blank" rel="noopener sponsored">
+    <div class="aff-icon">🎂</div>
+    <div class="aff-text">
+      <p class="aff-title">長寿祝いのギフトを探す</p>
+      <p class="aff-sub">楽天市場で見てみる</p>
+    </div>
+    <span class="aff-pr">PR</span>
+  </a>
+
+  <p class="follow-x">🐦 制作の裏側や新しいツールの告知は <a href="https://x.com/uuhai0625" target="_blank" rel="noopener">@uuhai0625</a> で発信しています</p>
+
+  <div class="manner-box show">
+    <h3>💡 長寿祝いのマナーメモ</h3>
+    <ul>
+      <li>水引は紅白または金銀の「蝶結び(花結び)」を選び、表書きは「祝御長寿」「祝古希」など祝いの名称を添えます。</li>
+      <li>還暦は赤・古希と喜寿は紫など、それぞれの祝いに由来するテーマカラーがあり、その色にちなんだ品物も喜ばれます。</li>
+      <li>現金だけでなく、家族での食事会や旅行など「一緒に過ごす時間」を贈る形も人気です。</li>
+      <li>高額すぎる贈り物はかえって相手の負担になることがあるため、間柄に応じた無理のない金額を心がけましょう。</li>
+    </ul>
+  </div>
+
+  <div class="rate-table-box show">
+    <h3>📋 長寿祝い 早見表</h3>
+    <p class="rate-table-note">本来は数え年での祝いですが、還暦以外は満年齢で祝うご家庭も増えています。</p>
+    <table class="rate-table">
+      <tr><th>名称</th><th>年齢</th><th>お祝いカラー</th><th>由来</th></tr>
+      <tr><td>還暦(かんれき)</td><td>満60歳</td><td>赤・朱色</td><td>干支が60年で一巡し、生まれた年の干支に還ることから</td></tr>
+      <tr><td>古希(こき)</td><td>70歳</td><td>紫</td><td>杜甫の詩の一節「人生七十古来稀なり」に由来</td></tr>
+      <tr><td>喜寿(きじゅ)</td><td>77歳</td><td>紫</td><td>「喜」の草書体が「七十七」と読めることから</td></tr>
+      <tr><td>傘寿(さんじゅ)</td><td>80歳</td><td>金茶・黄</td><td>「傘」の略字「仐」が「八十」に見えることから</td></tr>
+      <tr><td>米寿(べいじゅ)</td><td>88歳</td><td>金・黄</td><td>「米」の字を分解すると「八十八」になることから</td></tr>
+      <tr><td>卒寿(そつじゅ)</td><td>90歳</td><td>白・紫</td><td>「卒」の略字「卆」が「九十」に見えることから</td></tr>
+      <tr><td>白寿(はくじゅ)</td><td>99歳</td><td>白</td><td>「百」から「一」を引くと「白」になることから</td></tr>
+      <tr><td>百寿(ひゃくじゅ・紀寿)</td><td>100歳</td><td>ピンク・白・黄</td><td>100年が一世紀であることから</td></tr>
+    </table>
+    <p class="rate-source">参考: <a href="https://www.vmg.co.jp/restaurants/magazine/toshiiwai/" target="_blank" rel="noopener">VMG「長寿のお祝い│還暦・古希・喜寿など各名称と意味」</a>、<a href="https://www.ozmall.co.jp/anniversary/longevity/" target="_blank" rel="noopener">OZmall「長寿祝い 年齢・由来」</a> ほか(2026年8月確認)</p>
+  </div>
+
+  <div class="faq-section">
+    <h3>よくある質問</h3>
+    <details class="faq-item">
+      <summary>数え年と満年齢、どちらで祝えばいい?</summary>
+      <p>還暦は数え年61歳・満年齢60歳がちょうど一致するため、どちらで数えても同じ年にお祝いできます。それ以外の古希・喜寿以降は本来は数え年で祝う風習でしたが、現在は満年齢で祝うご家庭が多くなっています。このツールは満年齢を基準に計算しています。</p>
+    </details>
+    <details class="faq-item">
+      <summary>生まれた年だけで正確にわかる?</summary>
+      <p>この計算機は生まれ年から簡易的に満年齢を算出しているため、誕生日を迎える前後で実際の年齢と1歳前後する場合があります。お祝いの計画を立てる目安としてご利用ください。</p>
+    </details>
+    <details class="faq-item">
+      <summary>長寿祝いにのしは必要?</summary>
+      <p>一般的には紅白または金銀の蝶結び(花結び)の水引に「祝御長寿」「祝古希」などの表書きを添えます。名入れの記念品を贈る場合は、のしを省略することもあります。</p>
+    </details>
+    <details class="faq-item">
+      <summary>現金と品物、どちらがいい?</summary>
+      <p>親御さんや祖父母には、旅行や食事会などの「体験」や名入れ記念品が人気です。親戚・友人・職場の関係では、現金よりも品物やギフトカードが選ばれる傾向があります。</p>
+    </details>
+    <details class="faq-item">
+      <summary>節目ごとに毎回お祝いする必要がある?</summary>
+      <p>還暦・古希・喜寿・米寿など、家庭によってお祝いする節目は異なります。すべての節目で贈らなければいけないわけではなく、家族の慣習やご本人の希望に合わせるのが一般的です。</p>
+    </details>
+  </div>
+
+  <div class="detail-section">
+    <h3>間柄別にみる長寿祝いの考え方</h3>
+
+    <h4>実の子として、親御さんに贈る場合</h4>
+    <p>還暦では1万〜5万円程度(1〜2万円が最も多い層です)、古希以降は1万〜10万円程度と、還暦より幅広いレンジになります。喜寿では2万〜3万円程度という調査もあり、旅行や食事会など体験型の贈り物と組み合わせるご家庭も多いです。</p>
+
+    <h4>孫として、祖父母に贈る場合</h4>
+    <p>還暦は「孫」単独の相場データが少なく、親戚・友人と同程度の5,000〜2万円が目安です。古希以降は1万〜3万円程度が目安ですが、喜寿では成人した孫から祖父母へは5,000〜1万円程度とやや控えめになる場合もあります。孫からの金額が自分の親(祖父母から見て子)より高くならないよう配慮するのが一般的なマナーとされています。</p>
+
+    <h4>親戚・友人・職場の方として贈る場合</h4>
+    <p>還暦では5,000〜2万円程度、古希以降は5,000〜1万円程度が目安です。米寿以降は友人・職場向けの相場データは確認できなかったため、古希〜傘寿と同水準を参考として掲載しています。職場の場合は連名でまとめて贈るケースも多く見られます。</p>
+  </div>
+
+  <div class="related-tools">
+    <h3>こんな計算機もあります</h3>
+    <div class="related-tools-list">
+      <a class="related-tool-link" href="../goshugi-koden/"><span class="icon">🎁</span>ご祝儀・香典の相場計算機</a>
+      <a class="related-tool-link" href="../shussan-iwai/"><span class="icon">🍼</span>出産祝いの相場計算機</a>
+      <a class="related-tool-link" href="../kekkon-iwai/"><span class="icon">💐</span>結婚祝いの相場計算機</a>
+      <a class="related-tool-link" href="../ochugen-oseibo/"><span class="icon">🎐</span>お中元・お歳暮の相場計算機</a>
+      <a class="related-tool-link" href="../senbetsu/"><span class="icon">👋</span>餞別・送別ギフトの相場計算機</a>
+    </div>
+  </div>
+
+</main>
+
+<footer class="site-footer">
+  <p>掲載している金額は、複数のマナー系情報サイト・アンケート調査で広く共有されている相場観をもとに算出した目安です。地域・宗派・家庭の慣習により大きく異なる場合がありますので、実際にお包みになる際はご家族や周囲の方にもご確認ください。</p>
+  <p>🔖 商品リンクにはアフィリエイト(広告)リンクを含みます。リンク経由の購入により、当サイトが紹介料を得ることがあります。</p>
+  <p><a href="../#about">運営者情報・お問い合わせ</a></p>
+</footer>
+
+<script src="../ga.js"></script>
+<script src="script.js"></script>
+</body>
+</html>

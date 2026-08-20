@@ -140,7 +140,8 @@ summary:focus-visible {
   transform: translateY(-2px);
   box-shadow: var(--shadow);
 }
-.tool-card-icon { font-size: 1.6rem; margin-bottom: 6px; }
+.tool-card-icon { margin-bottom: 8px; color: var(--navy); }
+.tool-card-icon svg { width: 28px; height: 28px; display: block; }
 .tool-card h2 {
   margin: 0 0 6px;
   font-size: 1.15rem;

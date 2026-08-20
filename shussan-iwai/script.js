@@ -60,7 +60,7 @@ function cardHtml(item, index) {
   return `
     <a class="product-card" href="${item.itemUrl}" target="_blank" rel="noopener sponsored" data-ga-name="${name.replace(/"/g, '&quot;').slice(0, 60)}" data-ga-price="${Number(item.itemPrice) || 0}">
       <div class="product-image-wrap">
-        <img src="${img}" alt="" loading="lazy">
+        <img src="${img}" alt="${name.replace(/"/g, '&quot;')}" loading="lazy">
         ${badgeHtml}
       </div>
       <p class="product-name">${name}</p>

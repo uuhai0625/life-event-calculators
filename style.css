@@ -110,16 +110,23 @@ summary:focus-visible {
   letter-spacing: normal;
 }
 
-/* ---- パンくず/戻る ---- */
-.back-link {
-  display: inline-block;
+/* ---- パンくず ---- */
+.breadcrumb {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
   margin: 18px 0 0;
   font-size: 0.85rem;
+}
+.breadcrumb a {
   color: var(--navy);
   text-decoration: none;
   opacity: 0.75;
 }
-.back-link:hover { opacity: 1; }
+.breadcrumb a:hover { opacity: 1; }
+.breadcrumb-sep { opacity: 0.4; }
+.breadcrumb [aria-current="page"] { color: var(--navy); opacity: 0.6; }
 
 /* ---- ツール一覧(ポータル) ---- */
 .tool-list {

@@ -42,6 +42,16 @@
   ]
 }
 </script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "相場ノート", "item": "https://uuhai0625.github.io/life-event-calculators/" },
+    { "@type": "ListItem", "position": 2, "name": "ご祝儀・香典の相場計算機", "item": "https://uuhai0625.github.io/life-event-calculators/goshugi-koden/" }
+  ]
+}
+</script>
 </head>
 <body>
 
@@ -53,7 +63,9 @@
 </header>
 
 <main class="wrap">
-  <a class="back-link" href="../">← ツール一覧にもどる</a>
+  <nav class="breadcrumb" aria-label="パンくずリスト">
+    <a href="../">相場ノート</a><span class="breadcrumb-sep" aria-hidden="true">›</span><span aria-current="page">ご祝儀・香典の相場計算機</span>
+  </nav>
 
   <div class="scene-tabs" role="tablist">
     <button class="scene-tab active" data-scene="wedding" type="button" role="tab" aria-selected="true" aria-controls="calc-panel" id="tab-wedding">🎉 結婚式(ご祝儀)</button>

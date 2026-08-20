@@ -16,6 +16,7 @@
   --shadow-soft: 0 4px 14px rgba(31, 58, 92, 0.08);
   --radius: 16px;
   --check-bg: #eef3f8;
+  --gold-text: #7a5c0e;
   --select-arrow: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='9'%3E%3Cpath d='M1 1l6 6 6-6' stroke='%23756b60' stroke-width='2' fill='none' fill-rule='evenodd'/%3E%3C/svg%3E");
 }
 
@@ -37,6 +38,7 @@
     --shadow: 0 10px 28px rgba(0, 0, 0, 0.45);
     --shadow-soft: 0 4px 14px rgba(0, 0, 0, 0.35);
     --check-bg: #23384a;
+    --gold-text: #d9b64f;
     --select-arrow: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='9'%3E%3Cpath d='M1 1l6 6 6-6' stroke='%23b3a898' stroke-width='2' fill='none' fill-rule='evenodd'/%3E%3C/svg%3E");
   }
 }
@@ -62,6 +64,22 @@ h1, h2, h3, .heading-font {
 }
 
 a { color: var(--navy); }
+
+/* ---- フォーカス表示(キーボード操作時にどの要素にいるか明示する) ---- */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+summary:focus-visible {
+  outline: 3px solid var(--gold);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+.radio-group label:has(input:focus-visible),
+.tool-card:has(:focus-visible) {
+  outline: 3px solid var(--gold);
+  outline-offset: 2px;
+}
 
 .wrap {
   max-width: 720px;
@@ -394,6 +412,7 @@ a { color: var(--navy); }
   display: none;
 }
 .rate-table-box.show { display: block; }
+.rate-table-box { overflow-x: auto; }
 .rate-table-box h3 {
   margin: 0 0 4px;
   font-size: 1rem;
@@ -424,6 +443,13 @@ a { color: var(--navy); }
   font-weight: 700;
   color: var(--navy);
   white-space: nowrap;
+}
+/* 最終列が金額でなく説明文のテーブル用(長寿祝いの早見表など): 右寄せ・太字を解除 */
+.rate-table--text-last td:last-child, .rate-table--text-last th:last-child {
+  text-align: left;
+  font-weight: 400;
+  color: var(--ink-sub);
+  white-space: normal;
 }
 .rate-source {
   margin: 10px 0 0;
@@ -459,7 +485,7 @@ a { color: var(--navy); }
 .faq-item summary::-webkit-details-marker { display: none; }
 .faq-item summary::before {
   content: "Q. ";
-  color: var(--gold);
+  color: var(--gold-text);
 }
 .faq-item p {
   margin: 0 0 14px;
@@ -559,7 +585,7 @@ a { color: var(--navy); }
   align-items: baseline;
   gap: 4px;
   font-size: 0.72rem;
-  color: var(--gold);
+  color: var(--gold-text);
   font-weight: 700;
   margin: 0 0 4px;
 }
@@ -692,4 +718,7 @@ a { color: var(--navy); }
 @media (max-width: 480px) {
   .result-amount { font-size: 1.7rem; }
   .site-logo { font-size: 1.6rem; }
+}
+@media (max-width: 380px) {
+  .product-band-grid { grid-template-columns: 1fr; }
 }

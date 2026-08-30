@@ -27,16 +27,16 @@ function cardHtml(item, index) {
     ? `<p class="product-review">★${reviewAverage.toFixed(1)}<span class="product-review-count">(${reviewCount.toLocaleString('ja-JP')}件)</span></p>`
     : '';
   const badges = [];
-  if (index === 0) badges.push({ text: '人気No.1', cls: 'product-badge--rank' });
+  if (index === 0) badges.push({ text: 'レビュー数1位', cls: 'product-badge--rank', title: '表示された商品の中でレビュー件数が最も多い商品です(市場全体の1位という意味ではありません)' });
   else if (reviewCount >= 3000) badges.push({ text: 'レビュー多数', cls: 'product-badge--rank' });
   if (Number(item.postageFlag) === 0) badges.push({ text: '送料無料', cls: 'product-badge--shipping' });
   const badgeHtml = badges.length
-    ? `<div class="product-badges">${badges.map((b) => `<span class="product-badge ${b.cls}">${b.text}</span>`).join('')}</div>`
+    ? `<div class="product-badges">${badges.map((b) => `<span class="product-badge ${b.cls}" title="${b.title || ''}">${b.text}</span>`).join('')}</div>`
     : '';
   return `
     <a class="product-card" href="${item.itemUrl}" target="_blank" rel="noopener sponsored" data-ga-name="${name.replace(/"/g, '&quot;').slice(0, 60)}" data-ga-price="${Number(item.itemPrice) || 0}">
       <div class="product-image-wrap">
-        <img src="${img}" alt="${name.replace(/"/g, '&quot;')}" loading="lazy">
+        <img src="${img}" alt="${name.replace(/"/g, '&quot;')}" loading="lazy"><span class="product-pr">PR</span>
         ${badgeHtml}
       </div>
       <p class="product-name">${name}</p>
@@ -183,10 +183,12 @@ function calc() {
 
   if (!Number.isInteger(birthYear) || birthYear < 1900 || birthYear > currentYear) {
     birthYearError.classList.add('show');
+    birthYearInput.setAttribute('aria-invalid', 'true');
     resultCard.classList.remove('show');
     return;
   }
   birthYearError.classList.remove('show');
+  birthYearInput.setAttribute('aria-invalid', 'false');
 
   const age = currentYear - birthYear;
 

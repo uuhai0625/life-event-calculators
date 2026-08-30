@@ -69,8 +69,8 @@
   <div class="calc-card">
     <div class="field">
       <label for="input-birthyear">生まれた年(西暦)</label>
-      <input type="number" id="input-birthyear" inputmode="numeric" placeholder="例:1960" min="1900" max="2026">
-      <p class="field-error" id="birthyear-error">1900年〜今年までの西暦で入力してください。</p>
+      <input type="number" id="input-birthyear" inputmode="numeric" placeholder="例:1960" min="1900" max="2026" aria-describedby="birthyear-error" aria-invalid="false">
+      <p class="field-error" id="birthyear-error" role="alert">1900年〜今年までの西暦で入力してください。</p>
     </div>
     <div class="field">
       <label for="select-relation">贈る方から見た間柄</label>
@@ -84,7 +84,7 @@
     <button class="btn-calc" id="btn-calc" type="button">長寿祝いを計算する</button>
   </div>
 
-  <div class="result-card" id="result-card">
+  <div class="result-card" id="result-card" aria-live="polite">
     <p class="result-label" id="result-label">次の長寿祝い</p>
     <p class="result-amount" id="result-celeb">--</p>
     <p class="result-note" id="result-timing"></p>
@@ -183,6 +183,8 @@
       <a class="related-tool-link" href="../kekkon-iwai/"><span class="icon">💐</span>結婚祝いの相場計算機</a>
       <a class="related-tool-link" href="../ochugen-oseibo/"><span class="icon">🎐</span>お中元・お歳暮の相場計算機</a>
       <a class="related-tool-link" href="../senbetsu/"><span class="icon">👋</span>餞別・送別ギフトの相場計算機</a>
+      <a class="related-tool-link" href="../koden-sofubo/"><span class="icon">🕯️</span>祖父母への香典の相場計算機</a>
+      <a class="related-tool-link" href="../koden-yujin-oya/"><span class="icon">🖤</span>友人の親への香典の相場計算機</a>
     </div>
   </div>
 

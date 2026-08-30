@@ -54,15 +54,16 @@
 </script>
 </head>
 <body>
+<a class="skip-link" href="#main-content">本文へスキップ</a>
 
 <header class="site-header">
   <div class="wrap">
-    <p class="site-logo heading-font">相場<span class="accent">ノート</span></p>
+    <a class="site-logo heading-font" href="../">相場<span class="accent">ノート</span></a>
     <h1 class="site-tagline">ご祝儀・香典の相場計算機</h1>
   </div>
 </header>
 
-<main class="wrap">
+<main class="wrap" id="main-content">
   <nav class="breadcrumb" aria-label="パンくずリスト">
     <a href="../">相場ノート</a><span class="breadcrumb-sep" aria-hidden="true">›</span><span aria-current="page">ご祝儀・香典の相場計算機</span>
   </nav>
@@ -94,7 +95,7 @@
       </div>
     </div>
     <div class="field" id="field-funeral-meal" style="display:none;">
-      <label>通夜振る舞い・お斎(会食)に参加しますか?</label>
+      <label>通夜振る舞い・お斎(おとき/会食)に参加しますか?</label>
       <div class="radio-group">
         <label><input type="radio" name="meal" value="no" checked> 参加しない</label>
         <label><input type="radio" name="meal" value="yes"> 参加する</label>
@@ -137,6 +138,7 @@
       <li>金額は偶数(割り切れる数)や「4」「9」のつく数字を避けるのが基本です。ただし2万円は近年例外的に広く使われています。</li>
       <li>ご祝儀袋の水引は「結び切り」または「あわじ結び」を選びましょう(一度きりであってほしいお祝いのため)。</li>
       <li>欠席する場合も、式の前日までにお祝いの気持ちを贈ると丁寧です。</li>
+      <li>渡すタイミングは、受付到着後(開式10〜15分前まで)に記帳を済ませてからが基本です。</li>
     </ul>
   </div>
 
@@ -147,6 +149,7 @@
       <li>表書きは宗教により異なります(仏式:御霊前・御香典/神式:御玉串料/キリスト教式:お花料)。迷う場合は「御霊前」が広く使われます(浄土真宗を除く)。</li>
       <li>金額は「4」「9」のつく数字を避けます。新札同様、偶数もできれば避けるのが望ましいとされます。</li>
       <li>会食(通夜振る舞い・お斎)に招かれた場合は、辞退しないのが基本的なマナーとされています。</li>
+      <li>通夜・葬儀どちらで渡しても構いませんが、両方に参列する場合は通夜で渡すのが一般的です(告別式で重ねて渡す必要はありません)。受付で一礼し「このたびはご愁傷様です」と一言添えて渡します。</li>
     </ul>
   </div>
 
@@ -168,12 +171,12 @@
       <li>北海道の一部地域・町内会では、香典の金額が規約で一律に定められている場合があり、相場より規約が優先されます。</li>
       <li>地域や宗派によって、香典に領収書を発行するなど受付方法が異なることもあります。</li>
     </ul>
-    <p class="rate-source">参考: <a href="https://shuka2.com/sougi/koden/hokkaido/" target="_blank" rel="noopener">ニコニコ終活グループ「北海道の香典相場」</a>ほか(2026年8月確認)</p>
+    <p class="rate-source">参考: <a href="https://shuka2.com/sougi/koden/hokkaido/" target="_blank" rel="noopener">ニコニコ終活グループ「北海道の香典相場」</a>・<a href="https://hp011-555-6195.com/blog/column/detail/20260127172115/" target="_blank" rel="noopener">市民火葬協会「北海道の香典相場」</a>ほか(2026年8月確認)</p>
   </div>
 
   <div class="rate-table-box" id="rate-table-wedding">
     <h3>📋 ご祝儀 早見表(30代・出席の場合)</h3>
-    <p class="rate-table-note">年代・出欠によってフォーム上部の計算結果は変わります。まず相場感をつかみたい方はこちらをご覧ください。</p>
+    <p class="rate-table-note">年代・出欠によってフォーム上部の計算結果は変わります。まず相場感をつかみたい方はこちらをご覧ください。間柄ごとの背景や事情は<a href="#detail-section">下記の解説</a>で詳しく説明しています。</p>
     <table class="rate-table">
       <tr><th>間柄</th><th>金額</th></tr>
       <tr><td>友人・知人</td><td>30,000円</td></tr>
@@ -189,7 +192,7 @@
 
   <div class="rate-table-box" id="rate-table-funeral">
     <h3>📋 香典 早見表(30代・通夜振る舞いなし)</h3>
-    <p class="rate-table-note">年代・会食の有無によってフォーム上部の計算結果は変わります。まず相場感をつかみたい方はこちらをご覧ください。</p>
+    <p class="rate-table-note">年代・会食の有無によってフォーム上部の計算結果は変わります。まず相場感をつかみたい方はこちらをご覧ください。間柄ごとの背景や事情は<a href="#detail-section">下記の解説</a>で詳しく説明しています。</p>
     <table class="rate-table">
       <tr><th>間柄</th><th>金額</th></tr>
       <tr><td>ご近所</td><td>3,000円</td></tr>
@@ -232,8 +235,9 @@
     </details>
   </div>
 
-  <div class="detail-section">
+  <div class="detail-section" id="detail-section">
     <h3>間柄別にみるご祝儀・香典の考え方</h3>
+    <p class="detail-section-intro">上記の早見表が「金額の目安」だとすれば、ここでは各間柄で相場が変わる背景や、迷ったときの考え方をまとめています。</p>
 
     <h4>友人・同僚へのご祝儀・香典</h4>
     <p>友人や同僚への結婚式のご祝儀は、年代や地域によらず3万円が長年の相場として定着しています。これは「割り切れない・縁起の良い奇数」であることに加え、料理・引出物・お祝いの気持ち分を含めた金額として広く定着しているためです。香典は5,000円が目安ですが、特に親しい間柄であれば1万円を包むケースもあります。職場全体で連名にする場合は、個人負担を抑えつつ気持ちを伝えられるため、部署内で相談してみるのもよいでしょう。なお<a href="../koden-yujin-oya/">友人の親への香典</a>は、友人本人への香典とは別の相場になります。</p>

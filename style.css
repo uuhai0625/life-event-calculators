@@ -2,7 +2,7 @@
   --bg: #faf6ef;
   --bg-card: #ffffff;
   --ink: #2f2a26;
-  --ink-sub: #756b60;
+  --ink-sub: #635a4f;
   --navy: #1f3a5c;
   --navy-dark: #16293f;
   --gold: #c9a227;
@@ -95,11 +95,29 @@ summary:focus-visible {
   text-align: center;
 }
 .site-header .wrap { max-width: 720px; }
+.skip-link {
+  position: absolute;
+  top: -100px;
+  left: 8px;
+  z-index: 1000;
+  background: var(--navy);
+  color: #fff;
+  padding: 10px 16px;
+  border-radius: 6px;
+  font-size: 0.86rem;
+  text-decoration: none;
+}
+.skip-link:focus {
+  top: 8px;
+}
 .site-logo {
+  display: block;
   font-size: 1.9rem;
   margin: 0 0 8px;
   color: #fff;
+  text-decoration: none;
 }
+a.site-logo:hover { opacity: 0.85; }
 .site-logo .accent { color: var(--gold); }
 .site-tagline {
   margin: 0;
@@ -350,7 +368,8 @@ summary:focus-visible {
 .share-row.show { display: flex; }
 .share-btn {
   flex: 1;
-  padding: 10px 10px;
+  min-height: 44px;
+  padding: 12px 10px;
   border-radius: 10px;
   border: 1.5px solid var(--line);
   background: var(--bg-card);
@@ -381,7 +400,7 @@ summary:focus-visible {
 .manner-box ul {
   margin: 0;
   padding-left: 1.2em;
-  font-size: 0.86rem;
+  font-size: 0.92rem;
   color: var(--ink-sub);
 }
 .manner-box li { margin-bottom: 6px; }
@@ -405,7 +424,8 @@ summary:focus-visible {
 .aff-card .aff-title { font-weight: 700; font-size: 0.92rem; margin: 0 0 2px; }
 .aff-card .aff-sub { font-size: 0.78rem; color: var(--ink-sub); margin: 0; }
 .aff-card .aff-pr {
-  font-size: 0.68rem;
+  font-size: 0.76rem;
+  font-weight: 700;
   color: #2a2419;
   background: var(--gold);
   padding: 2px 7px;
@@ -437,7 +457,7 @@ summary:focus-visible {
 .rate-table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 0.86rem;
+  font-size: 0.92rem;
 }
 .rate-table th, .rate-table td {
   text-align: left;
@@ -500,7 +520,7 @@ summary:focus-visible {
 }
 .faq-item p {
   margin: 0 0 14px;
-  font-size: 0.86rem;
+  font-size: 0.92rem;
   color: var(--ink-sub);
   line-height: 1.7;
 }
@@ -663,9 +683,13 @@ summary:focus-visible {
   margin: 18px 0 6px;
 }
 .detail-section h4:first-of-type { margin-top: 0; }
+.detail-section-intro {
+  margin-bottom: 16px !important;
+  font-style: italic;
+}
 .detail-section p {
   margin: 0;
-  font-size: 0.86rem;
+  font-size: 0.92rem;
   color: var(--ink-sub);
   line-height: 1.8;
 }
@@ -683,13 +707,13 @@ summary:focus-visible {
 }
 .about-list {
   margin: 0;
-  font-size: 0.86rem;
+  font-size: 0.92rem;
   color: var(--ink);
 }
 .about-list dt {
   font-weight: 700;
   color: var(--ink-sub);
-  font-size: 0.76rem;
+  font-size: 0.82rem;
   margin: 14px 0 4px;
 }
 .about-list dt:first-child { margin-top: 0; }
@@ -733,7 +757,7 @@ summary:focus-visible {
   max-width: 720px;
   margin: 40px auto 0;
   padding: 24px 20px 40px;
-  font-size: 0.76rem;
+  font-size: 0.82rem;
   color: var(--ink-sub);
   line-height: 1.8;
 }

@@ -89,7 +89,6 @@ const resultAdvice = document.getElementById('result-advice');
 const affCard = document.getElementById('aff-card');
 const shareRow = document.getElementById('share-row');
 const btnCopyLink = document.getElementById('btn-copy-link');
-const btnShareX = document.getElementById('btn-share-x');
 let lastAmount = 0;
 
 function calc() {
@@ -147,10 +146,6 @@ function updateShareUrl() {
   history.replaceState(null, '', `${location.pathname}?${params.toString()}`);
 }
 
-function shareText(amount) {
-  return `祖父母への香典の相場を計算しました。\n目安:¥${amount.toLocaleString('ja-JP')}\n`;
-}
-
 function legacyCopyFallback(text) {
   try {
     const input = document.createElement('textarea');
@@ -181,12 +176,6 @@ btnCopyLink.addEventListener('click', async () => {
     if (legacyCopyFallback(location.href)) showCopied();
   }
 });
-btnShareX.addEventListener('click', () => {
-  const text = shareText(lastAmount);
-  const intentUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(location.href)}`;
-  window.open(intentUrl, '_blank', 'noopener');
-});
-
 function initFromQuery() {
   const params = new URLSearchParams(location.search);
   const age = params.get('age');

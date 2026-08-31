@@ -358,6 +358,23 @@ a.site-logo:hover { opacity: 0.85; }
   font-size: 0.88rem;
   color: var(--ink);
 }
+.result-disclaimer {
+  text-align: left;
+  margin: 10px 0 0;
+  font-size: 0.72rem;
+  color: var(--ink-sub);
+}
+
+/* ---- 独自アンケートへの導線 ---- */
+.survey-banner {
+  text-align: left;
+  margin: 12px 0 0;
+  padding-top: 12px;
+  border-top: 1px dashed var(--line);
+  font-size: 0.76rem;
+  color: var(--ink-sub);
+}
+.survey-banner a { color: var(--navy); font-weight: 700; }
 
 /* ---- 結果の共有 ---- */
 .share-row {
@@ -591,9 +608,9 @@ a.site-logo:hover { opacity: 0.85; }
 }
 .product-badge {
   display: inline-block;
-  font-size: 0.62rem;
+  font-size: 0.78rem;
   font-weight: 700;
-  padding: 2px 7px;
+  padding: 3px 8px;
   border-radius: 999px;
   color: #fff;
   line-height: 1.5;
@@ -605,15 +622,22 @@ a.site-logo:hover { opacity: 0.85; }
   position: absolute;
   top: 6px;
   right: 6px;
-  font-size: 0.62rem;
+  font-size: 0.78rem;
   font-weight: 700;
   color: #2a2419;
   background: var(--gold);
-  padding: 2px 7px;
+  padding: 3px 8px;
   border-radius: 999px;
   line-height: 1.5;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
 }
+.product-note {
+  display: none;
+  margin: -8px 0 16px;
+  font-size: 0.78rem;
+  color: var(--ink-sub);
+}
+.product-grid.show + .product-note { display: block; }
 .product-card .product-name {
   font-size: 0.76rem;
   line-height: 1.4;

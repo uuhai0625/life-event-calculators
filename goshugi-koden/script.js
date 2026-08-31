@@ -171,6 +171,7 @@ const calcPanel = document.getElementById('calc-panel');
 const shareRow = document.getElementById('share-row');
 const btnCopyLink = document.getElementById('btn-copy-link');
 const btnShareX = document.getElementById('btn-share-x');
+const followX = document.getElementById('follow-x');
 let lastAmount = 0;
 
 function populateRelations() {
@@ -196,6 +197,7 @@ function setScene(scene) {
   populateRelations();
   resultCard.classList.remove('show');
   shareRow.classList.remove('show');
+  if (followX) followX.style.display = scene === 'wedding' ? '' : 'none';
   affCard.classList.remove('show');
   mannerWedding.classList.remove('show');
   mannerFuneral.classList.remove('show');
@@ -256,7 +258,12 @@ function calc() {
   resultCard.classList.add('show');
   lastAmount = amount;
   updateShareUrl();
+  // グリーフケアレビュー(2026-08-31)対応: 香典シーンではXシェアボタン・運営フォロー誘導文のような
+  // 慶事向けの軽いトーンの導線を表示しない(遺族当事者・急かされない設計の複数レビュアーが指摘)。
+  // URLコピーボタンは家族間で結果を共有する実用的な用途があるため香典シーンでも残す。
   shareRow.classList.add('show');
+  btnShareX.style.display = currentScene === 'wedding' ? '' : 'none';
+  if (followX) followX.style.display = currentScene === 'wedding' ? '' : 'none';
 
   let productKeyword;
   if (currentScene === 'wedding') {

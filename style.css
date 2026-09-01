@@ -474,7 +474,7 @@ a.site-logo:hover { opacity: 0.85; }
   font-size: 1rem;
   color: var(--navy);
 }
-.rate-table-box .rate-table-note {
+.rate-table-note {
   margin: 0 0 12px;
   font-size: 0.78rem;
   color: var(--ink-sub);

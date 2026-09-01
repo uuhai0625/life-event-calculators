@@ -549,7 +549,16 @@ a.site-logo:hover { opacity: 0.85; }
   gap: 16px;
   margin-bottom: 20px;
 }
-.product-grid.show { display: flex; }
+.product-grid.show {
+  display: flex;
+  /* CLS対策(2026-09-01、CWVレビュー指摘): 商品カードAPIの応答を待つ間も高さを確保し、
+     高さゼロから一気に広がって下の要素が押し下げられる体感を緩和する。実測値(desktop、カード幅334px)を
+     基準に1行分(カード高さ約430px)を確保、2列→1列に切り替わる380px以下では倍程度を確保する。 */
+  min-height: 440px;
+}
+@media (max-width: 380px) {
+  .product-grid.show { min-height: 860px; }
+}
 .product-band-label {
   margin: 0 0 8px;
   font-size: 0.8rem;
@@ -617,6 +626,8 @@ a.site-logo:hover { opacity: 0.85; }
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
 }
 .product-badge--rank { background: var(--vermilion); }
+/* 弔事(香典)ページでは通常ECサイトの煽り文句を控えめにする(グリーフケアレビュー2026-08-31指摘) */
+.theme-solemn .product-badge--rank { background: var(--ink-sub); }
 .product-badge--shipping { background: var(--navy); }
 .product-pr {
   position: absolute;

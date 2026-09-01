@@ -1,33 +1,6 @@
-// RAKUTEN_AFFILIATE_ID: uuhai0625ブランド用の楽天アフィリエイトID(2026-08-11登録・取得済み)。
-// Amazonアソシエイトは複数アカウント保有の規約リスクを避けるためDesk Animals/TinyWonders
-// ブランド専用(tinywonders-22)のままとし、uuhai0625ブランドはこちらの楽天アフィリエイトを使う方針
-// (2026-08-10決定)。楽天アフィリエイトの公式「リンク作成」ツールで実際に生成したリンクの形式
-// (https://hb.afl.rakuten.co.jp/hgc/{ID}/?pc={url}&link_type=text&ut={固定メタデータ}) に合わせている。
-const RAKUTEN_AFFILIATE_ID = '567f9cc6.631b3687.567f9cc7.3d3a8a85';
-
-// 楽天市場の検索結果には「売れ筋順」という直接の並び替えはないため、実際の検索画面のソート
-// ドロップダウンで確認した「レビュー件数順」(?s=5、購入者が多いほどレビューが集まる=人気の代用指標)
-// を使い、人気の高い商品が上位に出るようにしている(2026-08-11)。
-function affiliateUrl(keyword) {
-  const searchUrl = `https://search.rakuten.co.jp/search/mall/${encodeURIComponent(keyword)}/?s=5`;
-  if (!RAKUTEN_AFFILIATE_ID) return searchUrl;
-  const encoded = encodeURIComponent(searchUrl);
-  return `https://hb.afl.rakuten.co.jp/hgc/${RAKUTEN_AFFILIATE_ID}/?pc=${encoded}&link_type=text&ut=eyJwYWdlIjoidXJsIiwidHlwZSI6InRleHQiLCJjb2wiOjF9`;
-}
-
-// 楽天商品検索API(2026-08-11導入): 計算結果に応じたおすすめ商品をカードで複数表示する。
-// アプリID・アクセスキー・APIリクエスト用アフィリエイトIDは楽天ウェブサービスのアプリ登録画面で発行されたもの。
-// リンク作成ツールで手動生成した RAKUTEN_AFFILIATE_ID とは異なる値だが、楽天の仕様上「APIやサービスに
-// 応じて別のアフィリエイトIDが割り当てられる」設計であり、成果は同じ楽天会員IDに正しく集約される
-// (楽天ウェブサービスFAQで確認済み)。
-// エンドポイントは旧app.rakuten.co.jp/services/api/版ではなく、新openapi.rakuten.co.jp/ichibams/api/版を使用。
-// 新版はaccessKeyも必須パラメータ。**バージョン番号は固定せず要注意**: 2026-08-17、旧`20220601`が
-// 「API Configuration not found」エラーで応答不能になっているのを発見(APIテストフォームで動作確認したところ
-// 現行バージョンは`20260701`。理由は不明だが楽天側でバージョンが定期的に切り替わるため、次に商品カードが
-// 出なくなったら真っ先に https://webservice.rakuten.co.jp/explorer/api で現行バージョンを確認すること)。
-const RAKUTEN_APP_ID = 'f9f8dd97-c7a4-4ae1-a2c1-38b4572a702e';
-const RAKUTEN_ACCESS_KEY = 'pk_gJd3Q0JkttKeBF4DcfYjD8zYljezjxNxEFiUssXZhFs';
-const RAKUTEN_API_AFFILIATE_ID = '567fd2ff.507b4e2c.567fd300.5261c56d';
+// 楽天関連の設定・共通処理(RAKUTEN_AFFILIATE_ID・affiliateUrl()・RAKUTEN_APP_ID等・
+// fetchRakutenProducts())は../rakuten-shared.jsに集約(2026-09-01、9ファイル個別ハードコード
+// だったものを1箇所化)。このファイルより先にHTMLで読み込まれる。
 
 // 連打・素早い選択変更で複数のAPIリクエストが同時に飛んだ場合、後から返ってきたはずの古いレスポンスが
 // 新しい選択結果を上書きしてしまうレース状態を防ぐためのリクエストID(2026-08-11)。
@@ -45,24 +18,14 @@ async function showProducts(keyword, labelText) {
   if (!grid) return;
   const requestId = ++productRequestId;
   grid.innerHTML = '';
-  grid.classList.remove('show');
+  // CLS対策(2026-09-01): 商品カード取得中も枠を表示状態にしてmin-heightで高さを確保し、
+  // 結果が届いた瞬間に高さがゼロから一気に広がって下の要素が押し下げられる体感を緩和する。
+  grid.classList.add('show');
   if (label) label.style.display = 'none';
-  const url = new URL('https://openapi.rakuten.co.jp/ichibams/api/IchibaItem/Search/20260701');
-  url.searchParams.set('applicationId', RAKUTEN_APP_ID);
-  url.searchParams.set('accessKey', RAKUTEN_ACCESS_KEY);
-  url.searchParams.set('affiliateId', RAKUTEN_API_AFFILIATE_ID);
-  url.searchParams.set('keyword', keyword);
-  url.searchParams.set('sort', '-reviewCount');
-  url.searchParams.set('hits', '4');
-  url.searchParams.set('format', 'json');
   try {
-    const res = await fetch(url.toString());
+    const items = await fetchRakutenProducts(keyword, 4, null, null);
     if (requestId !== productRequestId) return;
-    if (!res.ok) return;
-    const data = await res.json();
-    if (requestId !== productRequestId) return;
-    const items = (data.Items || []).map((entry) => entry.Item || entry);
-    if (!items.length) return;
+    if (!items.length) { grid.classList.remove('show'); return; }
     // 2列グリッド表示に統一(2026-08-15): 他4ページ(価格帯別showProducts)はproduct-band-gridで
     // 2列コンパクト表示なのに対し、このページだけproduct-grid直下に並べていたため全幅縦積みになっていた
     // (デザインレビューで発覚した不整合)。同じCSSクラスを再利用して2列グリッドに揃える。
@@ -90,9 +53,9 @@ async function showProducts(keyword, labelText) {
         ? `<div class="product-badges">${badges.map((b) => `<span class="product-badge ${b.cls}" title="${b.title || ''}">${b.text}</span>`).join('')}</div>`
         : '';
       return `
-        <a class="product-card" href="${item.itemUrl}" target="_blank" rel="noopener sponsored" data-ga-name="${name.replace(/"/g, '&quot;').slice(0, 60)}" data-ga-price="${Number(item.itemPrice) || 0}">
+        <a class="product-card" href="${String(item.itemUrl || '').replace(/"/g, '&quot;')}" target="_blank" rel="noopener sponsored" data-ga-name="${name.replace(/"/g, '&quot;').slice(0, 60)}" data-ga-price="${Number(item.itemPrice) || 0}">
           <div class="product-image-wrap">
-            <img src="${img}" alt="${name.replace(/"/g, '&quot;')}" loading="lazy"><span class="product-pr">PR</span>
+            <img src="${img.replace(/"/g, '&quot;')}" alt="${name.replace(/"/g, '&quot;')}" loading="lazy"><span class="product-pr">PR</span>
             ${badgeHtml}
           </div>
           <p class="product-name">${name}</p>
@@ -105,6 +68,7 @@ async function showProducts(keyword, labelText) {
   } catch (e) {
     // API呼び出しに失敗しても既存の検索リンクCTA(aff-card)がフォールバックとして機能するため、
     // ここでは静かに諦める(エラー表示はしない)。
+    grid.classList.remove('show');
   }
 }
 
@@ -194,6 +158,7 @@ function setScene(scene) {
   });
   fieldWeddingAttend.style.display = scene === 'wedding' ? '' : 'none';
   fieldFuneralMeal.style.display = scene === 'funeral' ? '' : 'none';
+  document.body.classList.toggle('theme-solemn', scene === 'funeral');
   populateRelations();
   resultCard.classList.remove('show');
   shareRow.classList.remove('show');
@@ -286,7 +251,9 @@ function calc() {
     productKeyword = '不祝儀袋';
   }
   affCard.classList.add('show');
-  const productLabel = currentScene === 'wedding' ? '🛒 人気のご祝儀袋' : '🛒 人気の不祝儀袋(香典袋)';
+  // グリーフケアレビュー(2026-08-31)対応: 弔事では「人気の」「🛒」等ECサイトの煽り文句を控えめにする
+  // (body.theme-solemnの切り替え自体はsetScene()側で行う)。
+  const productLabel = currentScene === 'wedding' ? '🛒 人気のご祝儀袋' : '不祝儀袋(香典袋)';
   showProducts(productKeyword, productLabel);
 
   resultCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });

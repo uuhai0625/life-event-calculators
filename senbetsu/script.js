@@ -1,16 +1,5 @@
-// RAKUTEN_AFFILIATE_ID: uuhai0625ブランド用の楽天アフィリエイトID(他ページと共通)。
-const RAKUTEN_AFFILIATE_ID = '567f9cc6.631b3687.567f9cc7.3d3a8a85';
-
-function affiliateUrl(keyword) {
-  const searchUrl = `https://search.rakuten.co.jp/search/mall/${encodeURIComponent(keyword)}/?s=5`;
-  if (!RAKUTEN_AFFILIATE_ID) return searchUrl;
-  const encoded = encodeURIComponent(searchUrl);
-  return `https://hb.afl.rakuten.co.jp/hgc/${RAKUTEN_AFFILIATE_ID}/?pc=${encoded}&link_type=text&ut=eyJwYWdlIjoidXJsIiwidHlwZSI6InRleHQiLCJjb2wiOjF9`;
-}
-
-const RAKUTEN_APP_ID = 'f9f8dd97-c7a4-4ae1-a2c1-38b4572a702e';
-const RAKUTEN_ACCESS_KEY = 'pk_gJd3Q0JkttKeBF4DcfYjD8zYljezjxNxEFiUssXZhFs';
-const RAKUTEN_API_AFFILIATE_ID = '567fd2ff.507b4e2c.567fd300.5261c56d';
+// 楽天関連の設定・共通処理(RAKUTEN_AFFILIATE_ID・affiliateUrl()・RAKUTEN_APP_ID等・
+// fetchRakutenProducts())は../rakuten-shared.jsに集約(2026-09-01)。このファイルより先にHTMLで読み込まれる。
 
 let productRequestId = 0;
 
@@ -32,9 +21,9 @@ function cardHtml(item, index) {
     ? `<div class="product-badges">${badges.map((b) => `<span class="product-badge ${b.cls}" title="${b.title || ''}">${b.text}</span>`).join('')}</div>`
     : '';
   return `
-    <a class="product-card" href="${item.itemUrl}" target="_blank" rel="noopener sponsored" data-ga-name="${name.replace(/"/g, '&quot;').slice(0, 60)}" data-ga-price="${Number(item.itemPrice) || 0}">
+    <a class="product-card" href="${String(item.itemUrl || '').replace(/"/g, '&quot;')}" target="_blank" rel="noopener sponsored" data-ga-name="${name.replace(/"/g, '&quot;').slice(0, 60)}" data-ga-price="${Number(item.itemPrice) || 0}">
       <div class="product-image-wrap">
-        <img src="${img}" alt="${name.replace(/"/g, '&quot;')}" loading="lazy"><span class="product-pr">PR</span>
+        <img src="${img.replace(/"/g, '&quot;')}" alt="${name.replace(/"/g, '&quot;')}" loading="lazy"><span class="product-pr">PR</span>
         ${badgeHtml}
       </div>
       <p class="product-name">${name}</p>
@@ -43,50 +32,30 @@ function cardHtml(item, index) {
     </a>`;
 }
 
-async function fetchProductBand(keyword, hits, minPrice, maxPrice) {
-  const url = new URL('https://openapi.rakuten.co.jp/ichibams/api/IchibaItem/Search/20260701');
-  url.searchParams.set('applicationId', RAKUTEN_APP_ID);
-  url.searchParams.set('accessKey', RAKUTEN_ACCESS_KEY);
-  url.searchParams.set('affiliateId', RAKUTEN_API_AFFILIATE_ID);
-  url.searchParams.set('keyword', keyword);
-  url.searchParams.set('sort', '-reviewCount');
-  url.searchParams.set('hits', String(hits));
-  if (minPrice != null) url.searchParams.set('minPrice', String(Math.max(1, Math.round(minPrice))));
-  if (maxPrice != null) url.searchParams.set('maxPrice', String(Math.round(maxPrice)));
-  url.searchParams.set('format', 'json');
-  try {
-    const res = await fetch(url.toString());
-    if (!res.ok) return [];
-    const data = await res.json();
-    return (data.Items || []).map((entry) => entry.Item || entry);
-  } catch (e) {
-    return [];
-  }
-}
-
 async function showProducts(keyword, labelText, rangeLow, rangeHigh) {
   const grid = document.getElementById('product-grid');
   const label = document.getElementById('product-grid-label');
   if (!grid) return;
   const requestId = ++productRequestId;
   grid.innerHTML = '';
-  grid.classList.remove('show');
+  // CLS対策(2026-09-01): 商品カード取得中も枠を表示状態にしてmin-heightで高さを確保する。
+  grid.classList.add('show');
   if (label) label.style.display = 'none';
 
   const bands = [
     { title: '予算ぴったり', reason: 'ちょうど目安の金額帯の商品です', minPrice: rangeLow, maxPrice: rangeHigh },
     { title: '少し奮発するなら', reason: '予算を少し上げると選べる商品です', minPrice: rangeHigh, maxPrice: Math.round(rangeHigh * 1.6) },
   ];
-  const results = await Promise.all(bands.map((b) => fetchProductBand(keyword, 2, b.minPrice, b.maxPrice)));
+  const results = await Promise.all(bands.map((b) => fetchRakutenProducts(keyword, 2, b.minPrice, b.maxPrice)));
   if (requestId !== productRequestId) return;
 
   let bandBlocks = bands.map((band, i) => ({ band, items: results[i] })).filter((b) => b.items.length);
   const fitBandMissing = !results[0].length;
   let notice = '';
   if (!bandBlocks.length) {
-    const fallback = await fetchProductBand(keyword, 4, null, null);
+    const fallback = await fetchRakutenProducts(keyword, 4, null, null);
     if (requestId !== productRequestId) return;
-    if (!fallback.length) return;
+    if (!fallback.length) { grid.classList.remove('show'); return; }
     bandBlocks = [{ band: { title: '', reason: '' }, items: fallback }];
     notice = 'この価格帯にぴったりの商品は見つかりませんでした。人気の商品をご紹介します。';
   } else if (fitBandMissing) {

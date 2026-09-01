@@ -1,16 +1,4 @@
-// RAKUTEN_AFFILIATE_ID: uuhai0625ブランド用の楽天アフィリエイトID(他ページと共通)。
-const RAKUTEN_AFFILIATE_ID = '567f9cc6.631b3687.567f9cc7.3d3a8a85';
-
-function affiliateUrl(keyword) {
-  const searchUrl = `https://search.rakuten.co.jp/search/mall/${encodeURIComponent(keyword)}/?s=5`;
-  if (!RAKUTEN_AFFILIATE_ID) return searchUrl;
-  const encoded = encodeURIComponent(searchUrl);
-  return `https://hb.afl.rakuten.co.jp/hgc/${RAKUTEN_AFFILIATE_ID}/?pc=${encoded}&link_type=text&ut=eyJwYWdlIjoidXJsIiwidHlwZSI6InRleHQiLCJjb2wiOjF9`;
-}
-
-const RAKUTEN_APP_ID = 'f9f8dd97-c7a4-4ae1-a2c1-38b4572a702e';
-const RAKUTEN_ACCESS_KEY = 'pk_gJd3Q0JkttKeBF4DcfYjD8zYljezjxNxEFiUssXZhFs';
-const RAKUTEN_API_AFFILIATE_ID = '567fd2ff.507b4e2c.567fd300.5261c56d';
+// 楽天関連の設定・共通処理は../rakuten-shared.jsに集約(2026-09-01)。このファイルより先にHTMLで読み込まれる。
 
 let productRequestId = 0;
 
@@ -21,24 +9,13 @@ async function showProducts(keyword, labelText) {
   if (!grid) return;
   const requestId = ++productRequestId;
   grid.innerHTML = '';
-  grid.classList.remove('show');
+  // CLS対策(2026-09-01): 商品カード取得中も枠を表示状態にしてmin-heightで高さを確保する。
+  grid.classList.add('show');
   if (label) label.style.display = 'none';
-  const url = new URL('https://openapi.rakuten.co.jp/ichibams/api/IchibaItem/Search/20260701');
-  url.searchParams.set('applicationId', RAKUTEN_APP_ID);
-  url.searchParams.set('accessKey', RAKUTEN_ACCESS_KEY);
-  url.searchParams.set('affiliateId', RAKUTEN_API_AFFILIATE_ID);
-  url.searchParams.set('keyword', keyword);
-  url.searchParams.set('sort', '-reviewCount');
-  url.searchParams.set('hits', '4');
-  url.searchParams.set('format', 'json');
   try {
-    const res = await fetch(url.toString());
+    const items = await fetchRakutenProducts(keyword, 4, null, null);
     if (requestId !== productRequestId) return;
-    if (!res.ok) return;
-    const data = await res.json();
-    if (requestId !== productRequestId) return;
-    const items = (data.Items || []).map((entry) => entry.Item || entry);
-    if (!items.length) return;
+    if (!items.length) { grid.classList.remove('show'); return; }
     grid.innerHTML = '<div class="product-band-grid">' + items.map((item, index) => {
       const imgRaw = item.mediumImageUrls && item.mediumImageUrls[0];
       const img = typeof imgRaw === 'string' ? imgRaw : (imgRaw && imgRaw.imageUrl) || '';
@@ -57,9 +34,9 @@ async function showProducts(keyword, labelText) {
         ? `<div class="product-badges">${badges.map((b) => `<span class="product-badge ${b.cls}" title="${b.title || ''}">${b.text}</span>`).join('')}</div>`
         : '';
       return `
-        <a class="product-card" href="${item.itemUrl}" target="_blank" rel="noopener sponsored" data-ga-name="${name.replace(/"/g, '&quot;').slice(0, 60)}" data-ga-price="${Number(item.itemPrice) || 0}">
+        <a class="product-card" href="${String(item.itemUrl || '').replace(/"/g, '&quot;')}" target="_blank" rel="noopener sponsored" data-ga-name="${name.replace(/"/g, '&quot;').slice(0, 60)}" data-ga-price="${Number(item.itemPrice) || 0}">
           <div class="product-image-wrap">
-            <img src="${img}" alt="${name.replace(/"/g, '&quot;')}" loading="lazy"><span class="product-pr">PR</span>
+            <img src="${img.replace(/"/g, '&quot;')}" alt="${name.replace(/"/g, '&quot;')}" loading="lazy"><span class="product-pr">PR</span>
             ${badgeHtml}
           </div>
           <p class="product-name">${name}</p>
@@ -71,6 +48,7 @@ async function showProducts(keyword, labelText) {
     if (label) { label.textContent = labelText; label.style.display = ''; }
   } catch (e) {
     // API失敗時はaff-card(検索リンクCTA)がフォールバックとして機能するため静かに諦める
+    grid.classList.remove('show');
   }
 }
 
@@ -115,7 +93,7 @@ function calc() {
   shareRow.classList.add('show');
 
   affCard.href = affiliateUrl('不祝儀袋 香典袋');
-  showProducts('不祝儀袋', '🛒 人気の不祝儀袋(香典袋)');
+  showProducts('不祝儀袋', '不祝儀袋(香典袋)');
 
   resultCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }

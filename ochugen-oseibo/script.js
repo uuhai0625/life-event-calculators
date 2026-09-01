@@ -1,26 +1,5 @@
-// RAKUTEN_AFFILIATE_ID: uuhai0625ブランド用の楽天アフィリエイトID(2026-08-11登録・取得済み)。
-// (Desk Animals/TinyWonders側のAmazonアソシエイト'tinywonders-22'はこのプロジェクトでは使わない
-// — 複数アカウント規約リスクを避けるため、uuhai0625ブランドは楽天アフィリエイトに一本化する方針、2026-08-10決定)
-// 楽天アフィリエイトの公式「リンク作成」ツールで実際に生成したリンクの形式に合わせている。
-const RAKUTEN_AFFILIATE_ID = '567f9cc6.631b3687.567f9cc7.3d3a8a85';
-
-// 楽天市場の検索結果には「売れ筋順」という直接の並び替えはないため、実際の検索画面のソート
-// ドロップダウンで確認した「レビュー件数順」(?s=5、購入者が多いほどレビューが集まる=人気の代用指標)
-// を使い、人気の高い商品が上位に出るようにしている。
-function affiliateUrl(keyword) {
-  const searchUrl = `https://search.rakuten.co.jp/search/mall/${encodeURIComponent(keyword)}/?s=5`;
-  if (!RAKUTEN_AFFILIATE_ID) return searchUrl;
-  const encoded = encodeURIComponent(searchUrl);
-  return `https://hb.afl.rakuten.co.jp/hgc/${RAKUTEN_AFFILIATE_ID}/?pc=${encoded}&link_type=text&ut=eyJwYWdlIjoidXJsIiwidHlwZSI6InRleHQiLCJjb2wiOjF9`;
-}
-
-// 楽天商品検索API: 計算結果に応じたおすすめ商品をカードで複数表示する。
-// アプリID・アクセスキー・APIリクエスト用アフィリエイトIDは楽天ウェブサービスのアプリ登録画面で発行されたもの。
-// リンク作成ツールで手動生成した RAKUTEN_AFFILIATE_ID とは異なる値だが、楽天の仕様上「APIやサービスに
-// 応じて別のアフィリエイトIDが割り当てられる」設計であり、成果は同じ楽天会員IDに正しく集約される。
-const RAKUTEN_APP_ID = 'f9f8dd97-c7a4-4ae1-a2c1-38b4572a702e';
-const RAKUTEN_ACCESS_KEY = 'pk_gJd3Q0JkttKeBF4DcfYjD8zYljezjxNxEFiUssXZhFs';
-const RAKUTEN_API_AFFILIATE_ID = '567fd2ff.507b4e2c.567fd300.5261c56d';
+// 楽天関連の設定・共通処理(RAKUTEN_AFFILIATE_ID・affiliateUrl()・RAKUTEN_APP_ID等・
+// fetchRakutenProducts())は../rakuten-shared.jsに集約(2026-09-01)。このファイルより先にHTMLで読み込まれる。
 
 // 連打・素早い選択変更で複数のAPIリクエストが同時に飛んだ場合、後から返ってきたはずの古いレスポンスが
 // 新しい選択結果を上書きしてしまうレース状態を防ぐためのリクエストID。
@@ -53,9 +32,9 @@ function cardHtml(item, index) {
     ? `<div class="product-badges">${badges.map((b) => `<span class="product-badge ${b.cls}" title="${b.title || ''}">${b.text}</span>`).join('')}</div>`
     : '';
   return `
-    <a class="product-card" href="${item.itemUrl}" target="_blank" rel="noopener sponsored" data-ga-name="${name.replace(/"/g, '&quot;').slice(0, 60)}" data-ga-price="${Number(item.itemPrice) || 0}">
+    <a class="product-card" href="${String(item.itemUrl || '').replace(/"/g, '&quot;')}" target="_blank" rel="noopener sponsored" data-ga-name="${name.replace(/"/g, '&quot;').slice(0, 60)}" data-ga-price="${Number(item.itemPrice) || 0}">
       <div class="product-image-wrap">
-        <img src="${img}" alt="${name.replace(/"/g, '&quot;')}" loading="lazy"><span class="product-pr">PR</span>
+        <img src="${img.replace(/"/g, '&quot;')}" alt="${name.replace(/"/g, '&quot;')}" loading="lazy"><span class="product-pr">PR</span>
         ${badgeHtml}
       </div>
       <p class="product-name">${name}</p>
@@ -64,41 +43,21 @@ function cardHtml(item, index) {
     </a>`;
 }
 
-async function fetchProductBand(keyword, hits, minPrice, maxPrice) {
-  const url = new URL('https://openapi.rakuten.co.jp/ichibams/api/IchibaItem/Search/20260701');
-  url.searchParams.set('applicationId', RAKUTEN_APP_ID);
-  url.searchParams.set('accessKey', RAKUTEN_ACCESS_KEY);
-  url.searchParams.set('affiliateId', RAKUTEN_API_AFFILIATE_ID);
-  url.searchParams.set('keyword', keyword);
-  url.searchParams.set('sort', '-reviewCount');
-  url.searchParams.set('hits', String(hits));
-  if (minPrice != null) url.searchParams.set('minPrice', String(Math.max(1, Math.round(minPrice))));
-  if (maxPrice != null) url.searchParams.set('maxPrice', String(Math.round(maxPrice)));
-  url.searchParams.set('format', 'json');
-  try {
-    const res = await fetch(url.toString());
-    if (!res.ok) return [];
-    const data = await res.json();
-    return (data.Items || []).map((entry) => entry.Item || entry);
-  } catch (e) {
-    return [];
-  }
-}
-
 async function showProducts(keyword, labelText, rangeLow, rangeHigh) {
   const grid = document.getElementById('product-grid');
   const label = document.getElementById('product-grid-label');
   if (!grid) return;
   const requestId = ++productRequestId;
   grid.innerHTML = '';
-  grid.classList.remove('show');
+  // CLS対策(2026-09-01): 商品カード取得中も枠を表示状態にしてmin-heightで高さを確保する。
+  grid.classList.add('show');
   if (label) label.style.display = 'none';
 
   const bands = [
     { title: '予算ぴったり', reason: 'ちょうど目安の金額帯の商品です', minPrice: rangeLow, maxPrice: rangeHigh },
     { title: '少し奮発するなら', reason: '予算を少し上げると選べる商品です', minPrice: rangeHigh, maxPrice: Math.round(rangeHigh * 1.6) },
   ];
-  const results = await Promise.all(bands.map((b) => fetchProductBand(keyword, 2, b.minPrice, b.maxPrice)));
+  const results = await Promise.all(bands.map((b) => fetchRakutenProducts(keyword, 2, b.minPrice, b.maxPrice)));
   if (requestId !== productRequestId) return;
 
   let bandBlocks = bands.map((band, i) => ({ band, items: results[i] })).filter((b) => b.items.length);
@@ -107,9 +66,9 @@ async function showProducts(keyword, labelText, rangeLow, rangeHigh) {
   const fitBandMissing = !results[0].length;
   let notice = '';
   if (!bandBlocks.length) {
-    const fallback = await fetchProductBand(keyword, 4, null, null);
+    const fallback = await fetchRakutenProducts(keyword, 4, null, null);
     if (requestId !== productRequestId) return;
-    if (!fallback.length) return;
+    if (!fallback.length) { grid.classList.remove('show'); return; }
     bandBlocks = [{ band: { title: '', reason: '' }, items: fallback }];
     notice = 'この価格帯にぴったりの商品は見つかりませんでした。人気の商品をご紹介します。';
   } else if (fitBandMissing) {
@@ -132,7 +91,7 @@ async function showProducts(keyword, labelText, rangeLow, rangeHigh) {
 const RELATIONS = {
   friend:   { label: '友人・知人',           normal: 3000, special: 5000 },
   neighbor: { label: 'ご近所・職場の同僚',   normal: 3000, special: 5000 },
-  parent:   { label: '両親・実家',           normal: 3000, special: 5000 },
+  parent:   { label: '親',           normal: 3000, special: 5000 },
   relative: { label: '親戚',                 normal: 3000, special: 5000 },
   boss:     { label: '職場の上司',           normal: 5000, special: 10000 },
   business: { label: '取引先',               normal: 5000, special: 10000 },

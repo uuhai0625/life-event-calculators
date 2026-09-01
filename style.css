@@ -513,7 +513,7 @@ a.site-logo:hover { opacity: 0.85; }
   color: var(--ink-sub);
 }
 .rate-source a { color: var(--ink-sub); }
-.rate-source-stale { color: #a15b1f; font-weight: 500; }
+.rate-source-stale { color: var(--vermilion); font-weight: 500; }
 
 /* ---- FAQ ---- */
 .faq-section {

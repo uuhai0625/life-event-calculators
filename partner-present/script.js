@@ -135,6 +135,7 @@ function calc() {
   const relation = RELATIONS[document.getElementById('select-relation').value];
   const event = EVENTS[document.getElementById('select-event').value];
   const yearsMultiplier = YEARS_MULTIPLIER[document.getElementById('select-years').value];
+  if (!relation || !event || yearsMultiplier == null) return;
 
   const amount = roundTo(relation.base * event.multiplier * yearsMultiplier, 1000);
   const rangeLow = Math.max(1000, roundTo(amount * 0.8, 1000));

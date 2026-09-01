@@ -117,6 +117,7 @@ function calc() {
   const closeness = document.querySelector('input[name="closeness"]:checked').value;
   const giving = document.querySelector('input[name="giving"]:checked').value;
   const config = RELATIONS[relationValue];
+  if (!config) return;
 
   const amount = roundTo(config.base * CLOSENESS_MULTIPLIER[closeness], 1000);
   const rangeLow = Math.max(1000, roundTo(amount * 0.8, 1000));

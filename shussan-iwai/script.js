@@ -120,6 +120,7 @@ function calc() {
   const birthOrder = document.querySelector('input[name="birthorder"]:checked').value;
   const giving = document.querySelector('input[name="giving"]:checked').value;
   const config = RELATIONS[relationValue];
+  if (!config) return;
 
   let amount;
   if (relationValue === 'sibling') {

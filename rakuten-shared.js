@@ -33,6 +33,26 @@ const RAKUTEN_API_VERSION = '20260701';
 // ページ遷移・再読み込みでは消える(意図的): 表示のたびに実際の人気順を反映する設計は維持する。
 const rakutenProductCache = new Map();
 
+// 出典の鮮度チェック(運営持続可能性レビュー対応、2026-09-02)。各ページの.rate-sourceに
+// data-confirmed="YYYY-MM"を付与しておき、確認から一定期間(365日)経過したら注意書きを自動表示する。
+// 相場データを都度手で洗い替えなくても、古くなった箇所だけ気づけるようにする狙い。
+function markStaleSources() {
+  const THRESHOLD_DAYS = 365;
+  const now = new Date();
+  document.querySelectorAll('.rate-source[data-confirmed]').forEach((el) => {
+    const confirmed = new Date(`${el.dataset.confirmed}-01`);
+    if (isNaN(confirmed)) return;
+    const days = (now - confirmed) / (1000 * 60 * 60 * 24);
+    if (days >= THRESHOLD_DAYS && !el.querySelector('.rate-source-stale')) {
+      const warn = document.createElement('span');
+      warn.className = 'rate-source-stale';
+      warn.textContent = ' ※確認から1年以上経過しています。最新の金額は各リンク先でご確認ください。';
+      el.appendChild(warn);
+    }
+  });
+}
+document.addEventListener('DOMContentLoaded', markStaleSources);
+
 async function fetchRakutenProducts(keyword, hits, minPrice, maxPrice) {
   const cacheKey = `${keyword}|${hits}|${minPrice ?? ''}|${maxPrice ?? ''}`;
   if (rakutenProductCache.has(cacheKey)) return rakutenProductCache.get(cacheKey);

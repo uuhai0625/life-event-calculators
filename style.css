@@ -146,6 +146,14 @@ a.site-logo:hover { opacity: 0.85; }
 .breadcrumb-sep { opacity: 0.4; }
 .breadcrumb [aria-current="page"] { color: var(--navy); opacity: 0.6; }
 
+/* ---- ページ冒頭の一言注記(多様な家族形態・世代トレンドレビュー対応) ---- */
+.page-intro-note {
+  margin: 10px 0 0;
+  font-size: 0.82rem;
+  color: var(--ink-sub);
+  line-height: 1.6;
+}
+
 /* ---- ツール一覧(ポータル) ---- */
 .tool-list {
   display: flex;
@@ -505,6 +513,7 @@ a.site-logo:hover { opacity: 0.85; }
   color: var(--ink-sub);
 }
 .rate-source a { color: var(--ink-sub); }
+.rate-source-stale { color: #a15b1f; font-weight: 500; }
 
 /* ---- FAQ ---- */
 .faq-section {

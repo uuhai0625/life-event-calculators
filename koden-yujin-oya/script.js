@@ -76,6 +76,7 @@ function calc() {
   const ageTier = document.getElementById('select-age').value;
   const closeness = document.querySelector('input[name="closeness"]:checked').value;
 
+  if (!AMOUNTS[closeness] || AMOUNTS[closeness][ageTier] == null) return;
   const amount = AMOUNTS[closeness][ageTier];
   const adviceText = closeness === 'close'
     ? '家族ぐるみの付き合いなど特に親しい関係の目安です。年代を問わず1万円程度まで包むケースも珍しくありません。'

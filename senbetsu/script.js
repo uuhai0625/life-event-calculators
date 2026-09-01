@@ -119,6 +119,7 @@ let lastAmount = 0;
 function calc() {
   const scene = SCENES[sceneSelect.value];
   const relation = RELATIONS[relationSelect.value];
+  if (!scene || !relation) return;
   const giving = document.querySelector('input[name="giving"]:checked').value;
 
   let amount, rangeLow, rangeHigh;

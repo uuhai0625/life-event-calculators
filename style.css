@@ -384,6 +384,13 @@ a.site-logo:hover { opacity: 0.85; }
   font-size: 0.88rem;
   color: var(--ink);
 }
+
+.result-breakdown {
+  text-align: left;
+  margin: 8px 0 0;
+  font-size: 0.76rem;
+  color: var(--ink-sub);
+}
 .result-disclaimer {
   text-align: left;
   margin: 10px 0 0;
@@ -580,11 +587,13 @@ a.site-logo:hover { opacity: 0.85; }
   display: flex;
   /* CLS対策(2026-09-01、CWVレビュー指摘): 商品カードAPIの応答を待つ間も高さを確保し、
      高さゼロから一気に広がって下の要素が押し下げられる体感を緩和する。実測値(desktop、カード幅334px)を
-     基準に1行分(カード高さ約430px)を確保、2列→1列に切り替わる380px以下では倍程度を確保する。 */
-  min-height: 440px;
+     基準に1行分(カード高さ約430px)を確保、2列→1列に切り替わる380px以下では倍程度を確保する。
+     2026-09-05、価格帯比較に「手堅く選ぶなら」バンドを追加(行動経済学レビュー)し最大3バンドになったため、
+     単純な人気順4件表示(1バンド)のページとの兼ね合いで完全一致はしないが、シフト量を抑える方向に引き上げ。 */
+  min-height: 520px;
 }
 @media (max-width: 380px) {
-  .product-grid.show { min-height: 860px; }
+  .product-grid.show { min-height: 1000px; }
 }
 .product-band-label {
   margin: 0 0 8px;
@@ -621,6 +630,16 @@ a.site-logo:hover { opacity: 0.85; }
   box-shadow: var(--shadow-soft);
   display: flex;
   flex-direction: column;
+}
+/* レビュー数1位カードの軽い視覚強調(行動経済学レビュー、2026-09-05)。
+   香典等の弔事シーンではtheme-solemnで控えめな色に切り替える(グリーフケアレビュー対応の既存方針を踏襲)。 */
+.product-card:has(.product-badge--rank) {
+  border-color: var(--gold);
+  box-shadow: 0 0 0 2px var(--gold-soft);
+}
+.theme-solemn .product-card:has(.product-badge--rank) {
+  border-color: var(--ink-sub);
+  box-shadow: none;
 }
 .product-image-wrap {
   position: relative;

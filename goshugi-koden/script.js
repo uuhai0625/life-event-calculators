@@ -122,6 +122,7 @@ const resultLabel = document.getElementById('result-label');
 const resultAmount = document.getElementById('result-amount');
 const resultRange = document.getElementById('result-range');
 const resultAdvice = document.getElementById('result-advice');
+const resultBreakdown = document.getElementById('result-breakdown');
 const affCard = document.getElementById('aff-card');
 const affIcon = document.getElementById('aff-icon');
 const affTitle = document.getElementById('aff-title');
@@ -220,6 +221,10 @@ function calc() {
   resultAmount.textContent = amount.toLocaleString('ja-JP');
   resultRange.textContent = `目安レンジ:¥${rangeLow.toLocaleString('ja-JP')} 〜 ¥${rangeHigh.toLocaleString('ja-JP')}`;
   resultAdvice.textContent = adviceText;
+  // 計算根拠の可視化(行動経済学レビュー、2026-09-05): 基準額がどこから来ているかを一言添え、金額への納得感を補う。
+  resultBreakdown.textContent = config.scalable
+    ? `内訳の目安: ${config.label}の基準額¥${config.base.toLocaleString('ja-JP')} × 年代係数${AGE_MULTIPLIER[ageTier]}`
+    : `内訳の目安: ${config.label}の基準額¥${config.base.toLocaleString('ja-JP')}`;
   resultCard.classList.add('show');
   lastAmount = amount;
   updateShareUrl();

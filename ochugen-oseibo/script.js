@@ -54,6 +54,7 @@ async function showProducts(keyword, labelText, rangeLow, rangeHigh) {
   if (label) label.style.display = 'none';
 
   const bands = [
+    { title: '手堅く選ぶなら', reason: '目安より抑えめの金額帯の商品です', minPrice: Math.max(500, Math.round(rangeLow * 0.5)), maxPrice: rangeLow },
     { title: '予算ぴったり', reason: 'ちょうど目安の金額帯の商品です', minPrice: rangeLow, maxPrice: rangeHigh },
     { title: '少し奮発するなら', reason: '予算を少し上げると選べる商品です', minPrice: rangeHigh, maxPrice: Math.round(rangeHigh * 1.6) },
   ];
@@ -63,7 +64,7 @@ async function showProducts(keyword, labelText, rangeLow, rangeHigh) {
   let bandBlocks = bands.map((band, i) => ({ band, items: results[i] })).filter((b) => b.items.length);
   // 「予算ぴったり」帯(先頭)が0件だった場合、無言で省略せず一言添える
   // (2026-08-15、ユーザー目線レビューで「無言で上位価格帯だけ出るのは不親切」と判明)。
-  const fitBandMissing = !results[0].length;
+  const fitBandMissing = !results[1].length;
   let notice = '';
   if (!bandBlocks.length) {
     const fallback = await fetchRakutenProducts(keyword, 4, null, null);
@@ -115,6 +116,7 @@ const resultLabel = document.getElementById('result-label');
 const resultAmount = document.getElementById('result-amount');
 const resultRange = document.getElementById('result-range');
 const resultAdvice = document.getElementById('result-advice');
+const resultBreakdown = document.getElementById('result-breakdown');
 const affCard = document.getElementById('aff-card');
 const affIcon = document.getElementById('aff-icon');
 const affTitle = document.getElementById('aff-title');
@@ -169,6 +171,7 @@ function calc() {
   resultAmount.textContent = amount.toLocaleString('ja-JP');
   resultRange.textContent = `目安レンジ:¥${rangeLow.toLocaleString('ja-JP')} 〜 ¥${rangeHigh.toLocaleString('ja-JP')}`;
   resultAdvice.textContent = advice;
+  resultBreakdown.textContent = `内訳の目安: ${config.label}(${closeness === 'special' ? '特にお世話になっている' : '一般的な間柄'})の価格帯¥${amount.toLocaleString('ja-JP')}`;
   resultCard.classList.add('show');
   lastAmount = amount;
   updateShareUrl();

@@ -64,6 +64,7 @@ const resultCard = document.getElementById('result-card');
 const resultAmount = document.getElementById('result-amount');
 const resultRange = document.getElementById('result-range');
 const resultAdvice = document.getElementById('result-advice');
+const resultBreakdown = document.getElementById('result-breakdown');
 const affCard = document.getElementById('aff-card');
 const shareRow = document.getElementById('share-row');
 const btnCopyLink = document.getElementById('btn-copy-link');
@@ -86,6 +87,7 @@ function calc() {
   resultAmount.textContent = amount.toLocaleString('ja-JP');
   resultRange.textContent = `目安レンジ:¥${rangeLow.toLocaleString('ja-JP')} 〜 ¥${rangeHigh.toLocaleString('ja-JP')}`;
   resultAdvice.textContent = adviceText;
+  resultBreakdown.textContent = `内訳の目安: 基準額¥${BASE_AMOUNT.toLocaleString('ja-JP')} × 年代係数${AGE_MULTIPLIER[ageTier]}${meal === 'yes' ? '(+会食分¥5,000)' : ''}`;
   resultCard.classList.add('show');
   lastAmount = amount;
   updateShareUrl();

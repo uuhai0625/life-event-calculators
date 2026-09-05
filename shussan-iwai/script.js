@@ -54,6 +54,7 @@ async function showProducts(keyword, labelText, rangeLow, rangeHigh) {
   if (label) label.style.display = 'none';
 
   const bands = [
+    { title: '手堅く選ぶなら', reason: '目安より抑えめの金額帯の商品です', minPrice: Math.max(500, Math.round(rangeLow * 0.5)), maxPrice: rangeLow },
     { title: '予算ぴったり', reason: 'ちょうど目安の金額帯の商品です', minPrice: rangeLow, maxPrice: rangeHigh },
     { title: '少し奮発するなら', reason: '予算を少し上げると選べる商品です', minPrice: rangeHigh, maxPrice: Math.round(rangeHigh * 1.6) },
   ];
@@ -61,9 +62,9 @@ async function showProducts(keyword, labelText, rangeLow, rangeHigh) {
   if (requestId !== productRequestId) return; // このリクエストより後の選択操作が発生済み、結果を破棄
 
   let bandBlocks = bands.map((band, i) => ({ band, items: results[i] })).filter((b) => b.items.length);
-  // 「予算ぴったり」帯(先頭)が0件だった場合、無言で省略せず一言添える
-  // (2026-08-15、ユーザー目線レビューで「無言で上位価格帯だけ出るのは不親切」と判明)。
-  const fitBandMissing = !results[0].length;
+  // 「予算ぴったり」帯(3バンド中の2番目、index 1)が0件だった場合、無言で省略せず一言添える
+  // (2026-08-15、ユーザー目線レビューで「無言で上位価格帯だけ出るのは不親切」と判明。2026-09-05、下限バンド追加でindexを1に修正)。
+  const fitBandMissing = !results[1].length;
   let notice = '';
   if (!bandBlocks.length) {
     // 両バンドとも該当なし(価格帯とキーワードの組み合わせが特殊なケース)の保険: 価格指定なしの人気順にフォールバック
@@ -109,6 +110,7 @@ const resultCard = document.getElementById('result-card');
 const resultAmount = document.getElementById('result-amount');
 const resultRange = document.getElementById('result-range');
 const resultAdvice = document.getElementById('result-advice');
+const resultBreakdown = document.getElementById('result-breakdown');
 const affCard = document.getElementById('aff-card');
 const shareRow = document.getElementById('share-row');
 const btnCopyLink = document.getElementById('btn-copy-link');
@@ -123,12 +125,16 @@ function calc() {
   if (!config) return;
 
   let amount;
+  let baseLabel = config.label;
+  let baseAmount;
   if (relationValue === 'sibling') {
     const siblingOrder = document.querySelector('input[name="siblingorder"]:checked').value;
-    amount = SIBLING_BASE[siblingOrder];
+    baseAmount = SIBLING_BASE[siblingOrder];
+    baseLabel = siblingOrder === 'older' ? '兄姉(年上のきょうだい)' : '弟妹(年下のきょうだい)';
   } else {
-    amount = config.base;
+    baseAmount = config.base;
   }
+  amount = baseAmount;
   if (birthOrder === 'second') {
     amount = roundTo(amount * 0.85, 1000);
   }
@@ -146,6 +152,9 @@ function calc() {
   resultAmount.textContent = amount.toLocaleString('ja-JP');
   resultRange.textContent = `目安レンジ:¥${rangeLow.toLocaleString('ja-JP')} 〜 ¥${rangeHigh.toLocaleString('ja-JP')}`;
   resultAdvice.textContent = advice;
+  resultBreakdown.textContent = birthOrder === 'second'
+    ? `内訳の目安: ${baseLabel}の基準額¥${baseAmount.toLocaleString('ja-JP')} × 第2子以降0.85`
+    : `内訳の目安: ${baseLabel}の基準額¥${baseAmount.toLocaleString('ja-JP')}`;
   resultCard.classList.add('show');
   lastAmount = amount;
   updateShareUrl();

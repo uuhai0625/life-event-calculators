@@ -161,6 +161,17 @@ a.site-logo:hover { opacity: 0.85; }
   opacity: 0.85;
 }
 
+.page-tldr {
+  margin: 14px 0 0;
+  padding: 12px 16px;
+  background: var(--check-bg);
+  border-radius: 10px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--ink);
+  line-height: 1.6;
+}
+
 /* ---- ツール一覧(ポータル) ---- */
 .tool-list {
   display: flex;

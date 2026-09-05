@@ -154,6 +154,13 @@ a.site-logo:hover { opacity: 0.85; }
   line-height: 1.6;
 }
 
+.page-updated-note {
+  margin: 4px 0 0;
+  font-size: 0.74rem;
+  color: var(--ink-sub);
+  opacity: 0.85;
+}
+
 /* ---- ツール一覧(ポータル) ---- */
 .tool-list {
   display: flex;

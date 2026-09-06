@@ -475,6 +475,8 @@ section:first-of-type .tool-section-heading { margin-top: 28px; }
   display: none;
 }
 .result-card.show { display: block; }
+/* 香典等の弔事シーンでは控えめな色に切り替える(2026-09-07、慶事の金枠がそのまま残っていたバグを修正)。 */
+.theme-solemn .result-card { border-color: var(--ink-sub); }
 .result-label {
   font-size: 0.82rem;
   color: var(--ink-sub);

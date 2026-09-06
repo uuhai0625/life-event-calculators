@@ -191,4 +191,8 @@ function initFromQuery() {
   calc();
 }
 
+// 祝儀袋ジャンルの人気ランキング(2026-09-06追加)。計算結果とは独立した固定コンテンツのため、
+// 計算ボタンの押下を待たずページ読み込み時に表示する。
+showRanking(210194, 'ranking-grid');
+
 initFromQuery();

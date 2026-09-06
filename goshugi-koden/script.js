@@ -175,6 +175,12 @@ function setScene(scene) {
   const gridLabel = document.getElementById('product-grid-label');
   if (grid) { grid.innerHTML = ''; grid.classList.remove('show'); }
   if (gridLabel) gridLabel.style.display = 'none';
+
+  // 祝儀袋/香典袋ジャンルの人気ランキング(2026-09-06追加)。計算結果とは独立した固定コンテンツのため
+  // シーン切替時に即座に切り替える(計算ボタンの押下を待たない)。
+  const rankingLabel = document.getElementById('ranking-grid-label');
+  if (rankingLabel) rankingLabel.textContent = scene === 'wedding' ? '🏆 楽天市場「祝儀袋」ジャンルの人気ランキング' : '🏆 楽天市場「香典袋」ジャンルの人気ランキング';
+  showRanking(scene === 'wedding' ? 210194 : 567467, 'ranking-grid');
 }
 
 function roundTo(amount, step) {

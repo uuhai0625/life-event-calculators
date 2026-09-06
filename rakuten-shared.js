@@ -53,6 +53,77 @@ function markStaleSources() {
 }
 document.addEventListener('DOMContentLoaded', markStaleSources);
 
+// 楽天ランキングAPI(2026-09-06追加、コンテンツ拡充レビュー#4)。商品検索APIとは別の、楽天公式の
+// ジャンル別売れ筋ランキングを表示する。アンケート回答等のデータ蓄積を待たずに導入できる施策。
+// ジャンルIDは楽天市場のカテゴリ絞り込みURL(例: search.rakuten.co.jp/search/mall/{keyword}/{genreId}/)
+// から実機確認して取得(2026-09-06時点、祝儀袋=210194、香典袋=567467)。
+const RAKUTEN_RANKING_VERSION = '20220601';
+
+async function fetchRakutenRanking(genreId, hits) {
+  const cacheKey = `ranking|${genreId}`;
+  if (rakutenProductCache.has(cacheKey)) return rakutenProductCache.get(cacheKey);
+  const url = new URL(`https://openapi.rakuten.co.jp/ichibaranking/api/IchibaItem/Ranking/${RAKUTEN_RANKING_VERSION}`);
+  url.searchParams.set('applicationId', RAKUTEN_APP_ID);
+  url.searchParams.set('accessKey', RAKUTEN_ACCESS_KEY);
+  url.searchParams.set('affiliateId', RAKUTEN_API_AFFILIATE_ID);
+  url.searchParams.set('genreId', String(genreId));
+  url.searchParams.set('format', 'json');
+  url.searchParams.set('formatVersion', '2');
+  try {
+    const res = await fetch(url.toString());
+    if (!res.ok) return [];
+    const data = await res.json();
+    // formatVersion=2はitems(小文字)直下に商品情報が並ぶが、念のため商品検索APIと同じItems/Item
+    // 構造が返ってきた場合にも対応できるようにしておく。
+    const raw = data.items || data.Items || [];
+    const items = raw.map((entry) => entry.Item || entry).slice(0, hits || 4);
+    rakutenProductCache.set(cacheKey, items);
+    return items;
+  } catch (e) {
+    return [];
+  }
+}
+
+function rankingCardHtml(item, rank) {
+  const imgRaw = item.mediumImageUrls && item.mediumImageUrls[0];
+  const img = typeof imgRaw === 'string' ? imgRaw : (imgRaw && imgRaw.imageUrl) || '';
+  const price = Number(item.itemPrice).toLocaleString('ja-JP');
+  const name = String(item.itemName || '').replace(/</g, '&lt;');
+  return `
+    <a class="product-card" href="${String(item.itemUrl || '').replace(/"/g, '&quot;')}" target="_blank" rel="noopener sponsored" data-ga-name="${name.replace(/"/g, '&quot;').slice(0, 60)}" data-ga-price="${Number(item.itemPrice) || 0}">
+      <div class="product-image-wrap">
+        <img src="${img.replace(/"/g, '&quot;')}" alt="${name.replace(/"/g, '&quot;')}" loading="lazy"><span class="product-pr">PR</span>
+        <div class="product-badges"><span class="product-badge product-badge--rank">${rank}位</span></div>
+      </div>
+      <p class="product-name">${name}</p>
+      <p class="product-price">¥${price}</p>
+    </a>`;
+}
+
+async function showRanking(genreId, containerId) {
+  const grid = document.getElementById(containerId);
+  if (!grid) return;
+  try {
+    const items = await fetchRakutenRanking(genreId, 4);
+    if (!items.length) { grid.classList.remove('show'); return; }
+    grid.innerHTML = '<div class="product-band-grid">' + items.map((item, i) => rankingCardHtml(item, i + 1)).join('') + '</div>';
+    grid.classList.add('show');
+  } catch (e) {
+    grid.classList.remove('show');
+  }
+}
+
+// ランキングカードのクリック計測(全ページ共通、containerIdをranking-gridに統一しているため
+// ページごとの個別リスナー登録は不要)。
+document.addEventListener('click', (e) => {
+  const card = e.target.closest('#ranking-grid .product-card');
+  if (!card || typeof gtag !== 'function') return;
+  gtag('event', 'ranking_click', {
+    item_name: card.dataset.gaName || '',
+    price: Number(card.dataset.gaPrice) || 0,
+  });
+});
+
 async function fetchRakutenProducts(keyword, hits, minPrice, maxPrice) {
   const cacheKey = `${keyword}|${hits}|${minPrice ?? ''}|${maxPrice ?? ''}`;
   if (rakutenProductCache.has(cacheKey)) return rakutenProductCache.get(cacheKey);

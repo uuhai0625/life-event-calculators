@@ -30,8 +30,7 @@ async function showProducts(keyword, labelText) {
     // 2列コンパクト表示なのに対し、このページだけproduct-grid直下に並べていたため全幅縦積みになっていた
     // (デザインレビューで発覚した不整合)。同じCSSクラスを再利用して2列グリッドに揃える。
     grid.innerHTML = '<div class="product-band-grid">' + items.map((item, index) => {
-      const imgRaw = item.mediumImageUrls && item.mediumImageUrls[0];
-      const img = typeof imgRaw === 'string' ? imgRaw : (imgRaw && imgRaw.imageUrl) || '';
+      const img = rakutenImage(item);
       const price = Number(item.itemPrice).toLocaleString('ja-JP');
       const name = String(item.itemName || '').replace(/</g, '&lt;');
       // レビュー件数・評価の表示(2026-08-15、ユーザー目線レビューで追加): APIはsort=-reviewCountで

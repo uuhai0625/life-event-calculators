@@ -7,6 +7,17 @@
 // 楽天アフィリエイトの公式「リンク作成」ツールで実際に生成したリンクの形式に合わせている。
 const RAKUTEN_AFFILIATE_ID = '567f9cc6.631b3687.567f9cc7.3d3a8a85';
 
+// 楽天APIのmediumImageUrlsはデフォルトで`_ex=128x128`という小さいサムネイルを返すため、
+// カード幅(300px超)に引き伸ばすと粗く見える不具合が発覚(2026-09-06)。楽天のサムネイルサーバーは
+// URL末尾の`_ex`パラメータで任意サイズへのリサイズ配信に対応しているため、600x600に差し替えて
+// レティナ表示でも粗くならないようにする(実機で128/300/600/800いずれも正常配信されることを確認済み)。
+function rakutenImage(item) {
+  const imgRaw = item.mediumImageUrls && item.mediumImageUrls[0];
+  const raw = typeof imgRaw === 'string' ? imgRaw : (imgRaw && imgRaw.imageUrl) || '';
+  if (!raw) return '';
+  return /_ex=\d+x\d+/.test(raw) ? raw.replace(/_ex=\d+x\d+/, '_ex=600x600') : raw + (raw.includes('?') ? '&' : '?') + '_ex=600x600';
+}
+
 // 楽天市場の検索結果には「売れ筋順」という直接の並び替えはないため、実際の検索画面のソート
 // ドロップダウンで確認した「レビュー件数順」(?s=5、購入者が多いほどレビューが集まる=人気の代用指標)
 // を使い、人気の高い商品が上位に出るようにしている(2026-08-11)。
@@ -85,8 +96,7 @@ async function fetchRakutenRanking(genreId, hits) {
 }
 
 function rankingCardHtml(item, rank) {
-  const imgRaw = item.mediumImageUrls && item.mediumImageUrls[0];
-  const img = typeof imgRaw === 'string' ? imgRaw : (imgRaw && imgRaw.imageUrl) || '';
+  const img = rakutenImage(item);
   const price = Number(item.itemPrice).toLocaleString('ja-JP');
   const name = String(item.itemName || '').replace(/</g, '&lt;');
   return `

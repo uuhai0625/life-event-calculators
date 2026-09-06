@@ -9,8 +9,7 @@ let productRequestId = 0;
 // 予算と連動するカテゴリのため適用する(ご祝儀袋・香典袋のような安価な付随品とは異なり、
 // 2026-08-15のデバッグで判明した「価格帯とカテゴリのミスマッチ」問題には該当しないことをcurlで事前確認済み)。
 function cardHtml(item, index) {
-  const imgRaw = item.mediumImageUrls && item.mediumImageUrls[0];
-  const img = typeof imgRaw === 'string' ? imgRaw : (imgRaw && imgRaw.imageUrl) || '';
+  const img = rakutenImage(item);
   const price = Number(item.itemPrice).toLocaleString('ja-JP');
   const name = String(item.itemName || '').replace(/</g, '&lt;');
   // レビュー件数・評価の表示(2026-08-15、ユーザー目線レビューで追加): APIはsort=-reviewCountで

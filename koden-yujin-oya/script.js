@@ -17,8 +17,7 @@ async function showProducts(keyword, labelText) {
     if (requestId !== productRequestId) return;
     if (!items.length) { grid.classList.remove('show'); return; }
     grid.innerHTML = '<div class="product-band-grid">' + items.map((item, index) => {
-      const imgRaw = item.mediumImageUrls && item.mediumImageUrls[0];
-      const img = typeof imgRaw === 'string' ? imgRaw : (imgRaw && imgRaw.imageUrl) || '';
+      const img = rakutenImage(item);
       const price = Number(item.itemPrice).toLocaleString('ja-JP');
       const name = String(item.itemName || '').replace(/</g, '&lt;');
       const reviewCount = Number(item.reviewCount) || 0;

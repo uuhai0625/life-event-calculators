@@ -9,8 +9,7 @@ let productRequestId = 0;
 // 競合分析・Perplexity提案を反映し、「予算ぴったり(計算結果のレンジ内)」「少し奮発するなら(レンジ上限〜1.6倍)」
 // の2グループに分けて2件ずつ比較できるようにする。
 function cardHtml(item, index) {
-  const imgRaw = item.mediumImageUrls && item.mediumImageUrls[0];
-  const img = typeof imgRaw === 'string' ? imgRaw : (imgRaw && imgRaw.imageUrl) || '';
+  const img = rakutenImage(item);
   const price = Number(item.itemPrice).toLocaleString('ja-JP');
   const name = String(item.itemName || '').replace(/</g, '&lt;');
   // レビュー件数・評価の表示(2026-08-15、ユーザー目線レビューで追加): APIはsort=-reviewCountで

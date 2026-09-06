@@ -4,8 +4,7 @@
 let productRequestId = 0;
 
 function cardHtml(item, index) {
-  const imgRaw = item.mediumImageUrls && item.mediumImageUrls[0];
-  const img = typeof imgRaw === 'string' ? imgRaw : (imgRaw && imgRaw.imageUrl) || '';
+  const img = rakutenImage(item);
   const price = Number(item.itemPrice).toLocaleString('ja-JP');
   const name = String(item.itemName || '').replace(/</g, '&lt;');
   const reviewCount = Number(item.reviewCount) || 0;

@@ -904,6 +904,24 @@ section:first-of-type .tool-section-heading { margin-top: 28px; }
   color: var(--ink-sub);
   line-height: 1.8;
 }
+/* 間柄別解説の折りたたみ(2026-09-07、ページ全体の長さ削減対応)。コンテンツはDOMに残したまま
+   デフォルト非表示にするだけなので、SEO/情報量は一切減らさずスクロール量だけを減らせる。 */
+.detail-toggle summary {
+  cursor: pointer;
+  color: var(--navy);
+  font-weight: 700;
+  font-size: 0.9rem;
+  padding: 11px 16px;
+  background: var(--bg-card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  list-style: none;
+  margin-bottom: 4px;
+}
+.detail-toggle summary::-webkit-details-marker { display: none; }
+.detail-toggle summary::after { content: " ▸"; color: var(--gold-text); }
+.detail-toggle[open] summary::after { content: " ▾"; }
+.detail-toggle[open] summary { margin-bottom: 16px; }
 
 /* ---- サイトについて(運営者情報) ---- */
 .about-box {

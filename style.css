@@ -96,8 +96,18 @@ summary:focus-visible {
   position: sticky;
   top: 0;
   z-index: 50;
+  transition: padding 0.15s ease;
 }
 .site-header .wrap { max-width: 720px; }
+/* スクロール中は画面の18%超を占有しコンテンツを隠す実測結果への対応(2026-09-07、header-scroll.js側でクラス切替)。
+   ページ最上部ではロゴ+タイトルをフル表示、少しスクロールしたらタイトルを隠しロゴだけの薄いバーにする。 */
+.site-header.header-compact { padding: 12px 0; }
+.site-header.header-compact .site-logo {
+  font-size: 1.2rem;
+  margin: 0;
+  transition: font-size 0.15s ease;
+}
+.site-header.header-compact .site-tagline { display: none; }
 .skip-link {
   position: absolute;
   top: -100px;

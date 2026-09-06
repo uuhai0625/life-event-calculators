@@ -237,7 +237,9 @@ a.site-logo:hover { opacity: 0.85; }
   background: var(--bg-card);
   border: 1px solid var(--line);
   border-radius: var(--radius);
+  display: none;
 }
+.next-tools.show { display: block; }
 .next-tools-lead {
   margin: 0 0 10px;
   font-size: 0.85rem;

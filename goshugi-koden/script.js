@@ -138,6 +138,7 @@ const rateTableWedding = document.getElementById('rate-table-wedding');
 const rateTableFuneral = document.getElementById('rate-table-funeral');
 const calcPanel = document.getElementById('calc-panel');
 const shareRow = document.getElementById('share-row');
+const nextTools = document.querySelector('.next-tools');
 const btnCopyLink = document.getElementById('btn-copy-link');
 const btnShareX = document.getElementById('btn-share-x');
 const followX = document.getElementById('follow-x');
@@ -166,6 +167,7 @@ function setScene(scene) {
   document.body.classList.toggle('theme-solemn', scene === 'funeral');
   populateRelations();
   resultCard.classList.remove('show');
+  if (nextTools) nextTools.classList.remove('show');
   shareRow.classList.remove('show');
   if (followX) followX.style.display = scene === 'wedding' ? '' : 'none';
   affCard.classList.remove('show');
@@ -236,6 +238,7 @@ function calc() {
     ? `内訳の目安: ${config.label}の基準額¥${config.base.toLocaleString('ja-JP')} × 年代係数${AGE_MULTIPLIER[ageTier]}`
     : `内訳の目安: ${config.label}の基準額¥${config.base.toLocaleString('ja-JP')}`;
   resultCard.classList.add('show');
+  if (nextTools) nextTools.classList.add('show');
   lastAmount = amount;
   updateShareUrl();
   // グリーフケアレビュー(2026-08-31)対応: 香典シーンではXシェアボタン・運営フォロー誘導文のような

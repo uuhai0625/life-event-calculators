@@ -120,6 +120,7 @@ function roundTo(amount, step) {
 }
 
 const resultCard = document.getElementById('result-card');
+const nextTools = document.querySelector('.next-tools');
 const resultAmount = document.getElementById('result-amount');
 const resultRange = document.getElementById('result-range');
 const resultAdvice = document.getElementById('result-advice');
@@ -144,6 +145,7 @@ function calc() {
   resultRange.textContent = `目安レンジ:¥${rangeLow.toLocaleString('ja-JP')} 〜 ¥${rangeHigh.toLocaleString('ja-JP')}`;
   resultAdvice.textContent = event.advice;
   resultCard.classList.add('show');
+  if (nextTools) nextTools.classList.add('show');
   lastAmount = amount;
   updateShareUrl();
   shareRow.classList.add('show');

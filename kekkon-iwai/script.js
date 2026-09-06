@@ -103,6 +103,7 @@ function roundTo(amount, step) {
 }
 
 const resultCard = document.getElementById('result-card');
+const nextTools = document.querySelector('.next-tools');
 const resultAmount = document.getElementById('result-amount');
 const resultRange = document.getElementById('result-range');
 const resultAdvice = document.getElementById('result-advice');
@@ -134,6 +135,7 @@ function calc() {
   resultAdvice.textContent = advice;
   resultBreakdown.textContent = `内訳の目安: ${config.label}の基準額¥${config.base.toLocaleString('ja-JP')} × 親密度係数${CLOSENESS_MULTIPLIER[closeness]}`;
   resultCard.classList.add('show');
+  if (nextTools) nextTools.classList.add('show');
   lastAmount = amount;
   updateShareUrl();
   shareRow.classList.add('show');

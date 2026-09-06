@@ -129,6 +129,7 @@ function roundTo(amount, step) {
 }
 
 const resultCard = document.getElementById('result-card');
+const nextTools = document.querySelector('.next-tools');
 const resultLabel = document.getElementById('result-label');
 const resultCeleb = document.getElementById('result-celeb');
 const resultTiming = document.getElementById('result-timing');
@@ -200,6 +201,7 @@ function calc() {
   resultAdvice.textContent = advice;
 
   resultCard.classList.add('show');
+  if (nextTools) nextTools.classList.add('show');
   lastShareText = `${targetCeleb.name}(${targetCeleb.age}歳)まで${resultTiming.textContent}\n贈り物の目安:¥${rangeLow.toLocaleString('ja-JP')}〜¥${rangeHigh.toLocaleString('ja-JP')}\n`;
   updateShareUrl();
   shareRow.classList.add('show');

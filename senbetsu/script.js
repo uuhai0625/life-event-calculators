@@ -104,6 +104,7 @@ function roundTo(amount, step) {
 }
 
 const resultCard = document.getElementById('result-card');
+const nextTools = document.querySelector('.next-tools');
 const resultAmount = document.getElementById('result-amount');
 const resultRange = document.getElementById('result-range');
 const resultAdvice = document.getElementById('result-advice');
@@ -146,6 +147,7 @@ function calc() {
     ? `内訳の目安: ${relation.label}の基準額¥${relation.base.toLocaleString('ja-JP')} × ${scene.label}係数${scene.soloMultiplier}`
     : `内訳の目安: ${scene.label}の連名1人あたり相場(間柄によらず一律)`;
   resultCard.classList.add('show');
+  if (nextTools) nextTools.classList.add('show');
   lastAmount = amount;
   updateShareUrl();
   shareRow.classList.add('show');

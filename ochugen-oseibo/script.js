@@ -127,6 +127,7 @@ const rateTableChugen = document.getElementById('rate-table-chugen');
 const rateTableSeibo = document.getElementById('rate-table-seibo');
 const calcPanel = document.getElementById('calc-panel');
 const shareRow = document.getElementById('share-row');
+const nextTools = document.querySelector('.next-tools');
 const btnCopyLink = document.getElementById('btn-copy-link');
 const btnShareX = document.getElementById('btn-share-x');
 let lastAmount = 0;
@@ -140,6 +141,7 @@ function setScene(scene) {
     if (isActive) calcPanel.setAttribute('aria-labelledby', btn.id);
   });
   resultCard.classList.remove('show');
+  if (nextTools) nextTools.classList.remove('show');
   shareRow.classList.remove('show');
   affCard.classList.remove('show');
   mannerChugen.classList.toggle('show', scene === 'chugen');
@@ -176,6 +178,7 @@ function calc() {
   resultAdvice.textContent = advice;
   resultBreakdown.textContent = `内訳の目安: ${config.label}(${closeness === 'special' ? '特にお世話になっている' : '一般的な間柄'})の価格帯¥${amount.toLocaleString('ja-JP')}`;
   resultCard.classList.add('show');
+  if (nextTools) nextTools.classList.add('show');
   lastAmount = amount;
   updateShareUrl();
   shareRow.classList.add('show');

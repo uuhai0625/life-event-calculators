@@ -67,6 +67,7 @@ function roundTo(amount, step) {
 }
 
 const resultCard = document.getElementById('result-card');
+const nextTools = document.querySelector('.next-tools');
 const resultAmount = document.getElementById('result-amount');
 const resultRange = document.getElementById('result-range');
 const resultAdvice = document.getElementById('result-advice');
@@ -102,6 +103,7 @@ function calc() {
     ? `内訳の目安: 全互協調査における${ageLabel}の${baseLabel}¥${base.toLocaleString('ja-JP')}`
     : `内訳の目安: 出席時の目安¥${base.toLocaleString('ja-JP')} × 欠席係数0.35`;
   resultCard.classList.add('show');
+  if (nextTools) nextTools.classList.add('show');
   lastAmount = amount;
   updateShareUrl();
   shareRow.classList.add('show');

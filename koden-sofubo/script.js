@@ -60,6 +60,7 @@ function roundTo(amount, step) {
 }
 
 const resultCard = document.getElementById('result-card');
+const nextTools = document.querySelector('.next-tools');
 const resultAmount = document.getElementById('result-amount');
 const resultRange = document.getElementById('result-range');
 const resultAdvice = document.getElementById('result-advice');
@@ -88,6 +89,7 @@ function calc() {
   resultAdvice.textContent = adviceText;
   resultBreakdown.textContent = `内訳の目安: 基準額¥${BASE_AMOUNT.toLocaleString('ja-JP')} × 年代係数${AGE_MULTIPLIER[ageTier]}${meal === 'yes' ? '(+会食分¥5,000)' : ''}`;
   resultCard.classList.add('show');
+  if (nextTools) nextTools.classList.add('show');
   lastAmount = amount;
   updateShareUrl();
   shareRow.classList.add('show');

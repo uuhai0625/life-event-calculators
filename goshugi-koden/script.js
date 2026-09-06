@@ -83,7 +83,12 @@ const RELATIONS = {
     { value: 'friend',   label: '友人・知人',              base: 30000, scalable: false },
     { value: 'colleague', label: '職場の同僚・部下',        base: 30000, scalable: false },
     { value: 'boss',      label: '職場の上司',              base: 30000, scalable: false },
-    { value: 'relative',  label: 'いとこ・叔父叔母などの親族', base: 30000, scalable: true },
+    // 2026-09-06、全互協「婚礼に関するアンケート調査報告書」(n=3,137)でいとこ(従兄弟姉妹・最多3万円)と
+    // 叔父叔母(最多5万円・平均81,629円)が別区分と判明したため、従来1つだったバケットを分離(コンテンツ拡充
+    // レビュー#13)。いとこは年代による変動が小さいためscalable:false(goshugi-itokoの実データと整合)、
+    // 叔父叔母は年代差が大きいためscalable:trueを維持。
+    { value: 'cousin',    label: 'いとこなどの親族',          base: 30000, scalable: false },
+    { value: 'uncle_aunt', label: '叔父叔母',                base: 50000, scalable: true },
     { value: 'sibling',   label: '兄弟姉妹',                base: 50000, scalable: true },
     { value: 'grandchild', label: '祖父母(孫の立場から)',    base: 70000, scalable: true },
     { value: 'child',     label: '自分の子ども(親の立場から)', base: 100000, scalable: true },

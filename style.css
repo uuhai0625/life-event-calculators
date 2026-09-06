@@ -195,6 +195,7 @@ a.site-logo:hover { opacity: 0.85; }
   background: var(--bg-card);
   color: var(--ink);
   font-size: 1rem;
+  text-overflow: ellipsis;
   font-family: inherit;
 }
 .tool-search input:focus-visible {

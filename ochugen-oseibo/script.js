@@ -122,6 +122,8 @@ const affIcon = document.getElementById('aff-icon');
 const affTitle = document.getElementById('aff-title');
 const mannerChugen = document.getElementById('manner-chugen');
 const mannerSeibo = document.getElementById('manner-seibo');
+const regionChugen = document.getElementById('region-chugen');
+const regionSeibo = document.getElementById('region-seibo');
 const rateTableChugen = document.getElementById('rate-table-chugen');
 const rateTableSeibo = document.getElementById('rate-table-seibo');
 const calcPanel = document.getElementById('calc-panel');
@@ -143,6 +145,8 @@ function setScene(scene) {
   affCard.classList.remove('show');
   mannerChugen.classList.toggle('show', scene === 'chugen');
   mannerSeibo.classList.toggle('show', scene === 'seibo');
+  regionChugen.classList.toggle('show', scene === 'chugen');
+  regionSeibo.classList.toggle('show', scene === 'seibo');
   rateTableChugen.classList.toggle('show', scene === 'chugen');
   rateTableSeibo.classList.toggle('show', scene === 'seibo');
   const grid = document.getElementById('product-grid');

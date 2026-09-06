@@ -173,11 +173,35 @@ a.site-logo:hover { opacity: 0.85; }
 }
 
 /* ---- ツール一覧(ポータル) ---- */
+.tool-jump {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  margin: 20px 0 0;
+  padding: 12px 16px;
+  background: var(--bg-card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  font-size: 0.85rem;
+}
+.tool-jump a { color: var(--navy); text-decoration: none; font-weight: 600; }
+.tool-jump a:hover { text-decoration: underline; }
+.tool-section-heading {
+  margin: 36px 0 4px;
+  font-size: 1.2rem;
+  color: var(--navy);
+}
+section:first-of-type .tool-section-heading { margin-top: 28px; }
+.tool-section-note {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--ink-sub);
+}
 .tool-list {
   display: flex;
   flex-direction: column;
   gap: 16px;
-  margin: 28px 0;
+  margin: 16px 0 0;
 }
 .tool-card {
   display: block;
@@ -196,7 +220,7 @@ a.site-logo:hover { opacity: 0.85; }
 }
 .tool-card-icon { margin-bottom: 8px; color: var(--navy); }
 .tool-card-icon svg { width: 28px; height: 28px; display: block; }
-.tool-card h2 {
+.tool-card h3 {
   margin: 0 0 6px;
   font-size: 1.15rem;
   color: var(--navy);

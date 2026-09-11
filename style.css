@@ -5,6 +5,7 @@
   --ink-sub: #635a4f;
   --navy: #1f3a5c;
   --navy-dark: #16293f;
+  --navy-text: #1f3a5c;
   --gold: #c9a227;
   --gold-soft: #f3e6bf;
   --line: #e8e0d2;
@@ -26,13 +27,18 @@
     --bg-card: #262320;
     --ink: #ede7de;
     --ink-sub: #b3a898;
-    --navy: #4a7aab;
+    /* --navyは2026-09-12レビューで実測: ヘッダーのタグライン文字(#d9e2ec)との組み合わせが3.44:1でWCAG AA(4.5:1)未達だったため、背景用途を保ったまま少し暗く調整(白文字/タグラインとのコントラストが上がる方向、btn-calc等の見た目への影響は軽微)。 */
+    --navy: #3a5c82;
     --navy-dark: #223c54;
+    /* --navyをそのまま文字色に使うとカード背景とのコントラスト比が3.5:1程度でAA未達になるため、文字色専用に別途明るい値を用意する。 */
+    --navy-text: #8fb4dd;
     --gold: #d9b64f;
-    --gold-soft: #4a3f1f;
+    /* --gold-softは.scene-tab(お中元・お歳暮タブ)の選択中背景としても使われ、文字色--navy-textとの組み合わせが4.16:1でAA未達だったため少し暗く調整 */
+    --gold-soft: #3d341a;
     --line: #3d372e;
     --vermilion: #d9754a;
-    --vermilion-soft: #4a2a1c;
+    /* --vermilion-softは.scene-tab(慶事タブ)の選択中背景として使われ、文字色--vermilionとの組み合わせが4.02:1でAA未達だったため少し暗く調整 */
+    --vermilion-soft: #331d13;
     --slate: #b0b0b0;
     --slate-soft: #3a3a3a;
     --shadow: 0 10px 28px rgba(0, 0, 0, 0.45);
@@ -63,7 +69,7 @@ h1, h2, h3, .heading-font {
   letter-spacing: 0.02em;
 }
 
-a { color: var(--navy); }
+a { color: var(--navy-text); }
 
 /* ---- フォーカス表示(キーボード操作時にどの要素にいるか明示する) ---- */
 a:focus-visible,
@@ -135,7 +141,8 @@ a.site-logo:hover { opacity: 0.85; }
 .site-tagline {
   margin: 0;
   color: #d9e2ec;
-  font-size: 0.95rem;
+  /* h1として本文(1rem)・h3(最大1.15rem)より確実に大きくする(2026-09-12レビューで見出し階層の逆転を実測発覚、以前は0.95remで本文より小さかった) */
+  font-size: 1.3rem;
   font-family: "Noto Sans JP", "Hiragino Sans", "Yu Gothic", sans-serif;
   font-weight: 400;
   letter-spacing: normal;
@@ -151,13 +158,13 @@ a.site-logo:hover { opacity: 0.85; }
   font-size: 0.85rem;
 }
 .breadcrumb a {
-  color: var(--navy);
+  color: var(--navy-text);
   text-decoration: none;
   opacity: 0.75;
 }
 .breadcrumb a:hover { opacity: 1; }
 .breadcrumb-sep { opacity: 0.4; }
-.breadcrumb [aria-current="page"] { color: var(--navy); opacity: 0.6; }
+.breadcrumb [aria-current="page"] { color: var(--navy-text); opacity: 0.6; }
 
 /* ---- ページ冒頭の一言注記(多様な家族形態・世代トレンドレビュー対応) ---- */
 .page-intro-note {
@@ -230,7 +237,7 @@ a.site-logo:hover { opacity: 0.85; }
   background: var(--bg-card);
   border: 1px solid var(--line);
   border-radius: 999px;
-  color: var(--navy);
+  color: var(--navy-text);
   text-decoration: none;
   font-weight: 600;
   transition: background 0.15s ease, color 0.15s ease;
@@ -266,7 +273,7 @@ a.site-logo:hover { opacity: 0.85; }
   background: var(--bg);
   border: 1px solid var(--line);
   border-radius: 999px;
-  color: var(--navy);
+  color: var(--navy-text);
   text-decoration: none;
   font-size: 0.85rem;
   font-weight: 600;
@@ -293,7 +300,7 @@ body.page-portal main.wrap {
 .tool-section-heading {
   margin: 36px 0 4px;
   font-size: 1.2rem;
-  color: var(--navy);
+  color: var(--navy-text);
 }
 section:first-of-type .tool-section-heading { margin-top: 28px; }
 .tool-section-note {
@@ -322,12 +329,12 @@ section:first-of-type .tool-section-heading { margin-top: 28px; }
   transform: translateY(-2px);
   box-shadow: var(--shadow);
 }
-.tool-card-icon { margin-bottom: 8px; color: var(--navy); }
+.tool-card-icon { margin-bottom: 8px; color: var(--navy-text); }
 .tool-card-icon svg { width: 28px; height: 28px; display: block; }
 .tool-card h3 {
   margin: 0 0 6px;
   font-size: 1.15rem;
-  color: var(--navy);
+  color: var(--navy-text);
 }
 .tool-card p {
   margin: 0;
@@ -377,12 +384,12 @@ section:first-of-type .tool-section-heading { margin-top: 28px; }
 .scene-tab.active[data-scene="chugen"] {
   border-color: var(--gold);
   background: var(--gold-soft);
-  color: var(--navy);
+  color: var(--navy-text);
 }
 .scene-tab.active[data-scene="seibo"] {
   border-color: var(--navy);
   background: var(--check-bg);
-  color: var(--navy);
+  color: var(--navy-text);
 }
 
 /* ---- フォーム ---- */
@@ -495,7 +502,7 @@ section:first-of-type .tool-section-heading { margin-top: 28px; }
 .result-amount {
   font-size: 2.1rem;
   font-weight: 700;
-  color: var(--navy);
+  color: var(--navy-text);
   margin: 0 0 6px;
   font-family: "Zen Old Mincho", serif;
 }
@@ -537,7 +544,7 @@ section:first-of-type .tool-section-heading { margin-top: 28px; }
   font-size: 0.76rem;
   color: var(--ink-sub);
 }
-.survey-banner a { color: var(--navy); font-weight: 700; }
+.survey-banner a { color: var(--navy-text); font-weight: 700; }
 
 /* ---- 結果の共有 ---- */
 .share-row {
@@ -560,7 +567,7 @@ section:first-of-type .tool-section-heading { margin-top: 28px; }
   font-family: inherit;
   transition: border-color 0.15s ease, color 0.15s ease;
 }
-.share-btn:hover { border-color: var(--navy); color: var(--navy); }
+.share-btn:hover { border-color: var(--navy); color: var(--navy-text); }
 
 /* ---- マナーメモ ---- */
 .manner-box {
@@ -575,7 +582,7 @@ section:first-of-type .tool-section-heading { margin-top: 28px; }
 .manner-box h3 {
   margin: 0 0 10px;
   font-size: 1rem;
-  color: var(--navy);
+  color: var(--navy-text);
 }
 .manner-box ul {
   margin: 0;
@@ -612,6 +619,12 @@ section:first-of-type .tool-section-heading { margin-top: 28px; }
   border-radius: 999px;
   align-self: flex-start;
 }
+/* 弔事ページでは金色の枠・PRバッジも控えめな色に切り替える(product-card/result-cardと同じ既存方針、これまで未対応だった漏れの修正) */
+.theme-solemn .aff-card { border-color: var(--ink-sub); }
+.theme-solemn .aff-card .aff-pr {
+  color: #fff;
+  background: var(--ink-sub);
+}
 
 /* ---- 早見表 ---- */
 .rate-table-box {
@@ -627,7 +640,7 @@ section:first-of-type .tool-section-heading { margin-top: 28px; }
 .rate-table-box h3 {
   margin: 0 0 4px;
   font-size: 1rem;
-  color: var(--navy);
+  color: var(--navy-text);
 }
 .rate-table-note {
   margin: 0 0 12px;
@@ -652,7 +665,7 @@ section:first-of-type .tool-section-heading { margin-top: 28px; }
 .rate-table td:last-child, .rate-table th:last-child {
   text-align: right;
   font-weight: 700;
-  color: var(--navy);
+  color: var(--navy-text);
   white-space: nowrap;
 }
 /* 最終列が金額でなく説明文のテーブル用(長寿祝いの早見表など): 右寄せ・太字を解除 */
@@ -677,7 +690,7 @@ section:first-of-type .tool-section-heading { margin-top: 28px; }
 .faq-section h3 {
   margin: 0 0 12px;
   font-size: 1.05rem;
-  color: var(--navy);
+  color: var(--navy-text);
 }
 .faq-item {
   background: var(--bg-card);
@@ -729,7 +742,7 @@ section:first-of-type .tool-section-heading { margin-top: 28px; }
   margin: 0 0 8px;
   font-size: 0.8rem;
   font-weight: 700;
-  color: var(--navy);
+  color: var(--navy-text);
 }
 .product-band-reason {
   margin-left: 6px;
@@ -818,6 +831,10 @@ section:first-of-type .tool-section-heading { margin-top: 28px; }
   line-height: 1.5;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
 }
+.theme-solemn .product-pr {
+  color: #fff;
+  background: var(--ink-sub);
+}
 .product-note {
   display: none;
   margin: -8px 0 16px;
@@ -851,7 +868,7 @@ section:first-of-type .tool-section-heading { margin-top: 28px; }
 .product-card .product-price {
   font-size: 0.9rem;
   font-weight: 700;
-  color: var(--navy);
+  color: var(--navy-text);
   margin: 0;
 }
 .product-grid-label {
@@ -873,7 +890,7 @@ section:first-of-type .tool-section-heading { margin-top: 28px; }
   color: var(--ink-sub);
 }
 .follow-x a {
-  color: var(--navy);
+  color: var(--navy-text);
   font-weight: 700;
   text-decoration: none;
   border-bottom: 1px solid var(--navy);
@@ -885,7 +902,7 @@ section:first-of-type .tool-section-heading { margin-top: 28px; }
 }
 .detail-section h3 {
   font-size: 1.05rem;
-  color: var(--navy);
+  color: var(--navy-text);
   margin: 0 0 14px;
 }
 .detail-section h4 {
@@ -908,7 +925,7 @@ section:first-of-type .tool-section-heading { margin-top: 28px; }
    デフォルト非表示にするだけなので、SEO/情報量は一切減らさずスクロール量だけを減らせる。 */
 .detail-toggle summary {
   cursor: pointer;
-  color: var(--navy);
+  color: var(--navy-text);
   font-weight: 700;
   font-size: 0.9rem;
   padding: 11px 16px;
@@ -931,7 +948,7 @@ section:first-of-type .tool-section-heading { margin-top: 28px; }
 }
 .about-box h2 {
   font-size: 1.05rem;
-  color: var(--navy);
+  color: var(--navy-text);
   margin: 0 0 14px;
 }
 .about-list {
@@ -950,7 +967,7 @@ section:first-of-type .tool-section-heading { margin-top: 28px; }
   margin: 0;
   line-height: 1.7;
 }
-.about-list a { color: var(--navy); }
+.about-list a { color: var(--navy-text); }
 
 /* ---- 関連ツール ---- */
 .related-tools {
@@ -959,7 +976,7 @@ section:first-of-type .tool-section-heading { margin-top: 28px; }
 .related-tools h3 {
   margin: 0 0 12px;
   font-size: 1rem;
-  color: var(--navy);
+  color: var(--navy-text);
 }
 .related-tools-list {
   display: flex;
@@ -995,6 +1012,7 @@ section:first-of-type .tool-section-heading { margin-top: 28px; }
 @media (max-width: 480px) {
   .result-amount { font-size: 1.7rem; }
   .site-logo { font-size: 1.6rem; }
+  .site-tagline { font-size: 1.1rem; }
 }
 @media (max-width: 380px) {
   .product-band-grid { grid-template-columns: 1fr; }

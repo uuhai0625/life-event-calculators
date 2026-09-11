@@ -35,18 +35,27 @@
   "@context": "https://schema.org",
   "@graph": [
     {
+      "@type": "Person",
+      "@id": "https://uuhai0625.github.io/life-event-calculators/#person",
+      "name": "uuhai0625",
+      "url": "https://uuhai0625.github.io/",
+      "sameAs": ["https://x.com/uuhai0625", "https://note.com/uuhai0625"]
+    },
+    {
       "@type": "Organization",
       "@id": "https://uuhai0625.github.io/life-event-calculators/#organization",
       "name": "相場ノート",
       "url": "https://uuhai0625.github.io/life-event-calculators/",
-      "sameAs": ["https://x.com/uuhai0625", "https://note.com/uuhai0625"]
+      "sameAs": ["https://x.com/uuhai0625", "https://note.com/uuhai0625"],
+      "founder": { "@id": "https://uuhai0625.github.io/life-event-calculators/#person" }
     },
     {
       "@type": "WebSite",
       "@id": "https://uuhai0625.github.io/life-event-calculators/#website",
       "name": "相場ノート",
       "url": "https://uuhai0625.github.io/life-event-calculators/",
-      "publisher": { "@id": "https://uuhai0625.github.io/life-event-calculators/#organization" }
+      "publisher": { "@id": "https://uuhai0625.github.io/life-event-calculators/#organization" },
+      "author": { "@id": "https://uuhai0625.github.io/life-event-calculators/#person" }
     }
   ]
 }

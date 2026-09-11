@@ -466,6 +466,12 @@ section:first-of-type .tool-section-heading { margin-top: 28px; }
   background: var(--check-bg);
 }
 
+.scene-switch-hint {
+  margin: -6px 0 12px;
+  font-size: 0.82rem;
+  color: var(--vermilion);
+  font-weight: 500;
+}
 .btn-calc {
   width: 100%;
   padding: 15px;

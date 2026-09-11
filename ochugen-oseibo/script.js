@@ -132,7 +132,25 @@ const btnCopyLink = document.getElementById('btn-copy-link');
 const btnShareX = document.getElementById('btn-share-x');
 let lastAmount = 0;
 
+let sceneSwitchHintEl = null;
+function toggleSceneSwitchHint(show) {
+  if (show) {
+    if (!sceneSwitchHintEl) {
+      sceneSwitchHintEl = document.createElement('p');
+      sceneSwitchHintEl.className = 'scene-switch-hint';
+      sceneSwitchHintEl.textContent = '内容が切り替わりました。もう一度「計算する」を押してください。';
+      document.getElementById('btn-calc').insertAdjacentElement('beforebegin', sceneSwitchHintEl);
+    }
+    sceneSwitchHintEl.style.display = '';
+  } else if (sceneSwitchHintEl) {
+    sceneSwitchHintEl.style.display = 'none';
+  }
+}
+
 function setScene(scene) {
+  // タブ切替で結果が無言で消え「計算できなくなった」と誤解されないよう、直前まで結果表示中だった場合だけ一言添える
+  // (2026-09-12レビュー指摘)。
+  toggleSceneSwitchHint(resultCard.classList.contains('show'));
   currentScene = scene;
   document.querySelectorAll('.scene-tab').forEach((btn) => {
     const isActive = btn.dataset.scene === scene;
@@ -157,6 +175,7 @@ function setScene(scene) {
 }
 
 function calc() {
+  toggleSceneSwitchHint(false);
   const relationValue = relationSelect.value;
   const closeness = document.querySelector('input[name="closeness"]:checked').value;
   const config = RELATIONS[relationValue];

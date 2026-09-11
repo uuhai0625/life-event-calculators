@@ -145,6 +145,9 @@ const followX = document.getElementById('follow-x');
 let lastAmount = 0;
 
 function populateRelations() {
+  // タブ切替(慶事⇔弔事)で選び直した間柄が消えないよう、同じvalueが新しいシーンにもあれば維持する
+  // (2026-09-12レビュー: 常に配列の先頭「ご近所」にリセットされ不自然、との指摘を受け対応)。
+  const previousValue = relationSelect.value;
   relationSelect.innerHTML = '';
   RELATIONS[currentScene].forEach((r) => {
     const opt = document.createElement('option');
@@ -152,9 +155,15 @@ function populateRelations() {
     opt.textContent = r.label;
     relationSelect.appendChild(opt);
   });
+  if (RELATIONS[currentScene].some((r) => r.value === previousValue)) {
+    relationSelect.value = previousValue;
+  }
 }
 
 function setScene(scene) {
+  // タブ切替で結果が無言で消え「計算できなくなった」と誤解されないよう、直前まで結果表示中だった場合だけ一言添える
+  // (2026-09-12レビュー指摘)。
+  toggleSceneSwitchHint(resultCard.classList.contains('show'));
   currentScene = scene;
   document.querySelectorAll('.scene-tab').forEach((btn) => {
     const isActive = btn.dataset.scene === scene;
@@ -193,7 +202,23 @@ function roundTo(amount, step) {
   return Math.round(amount / step) * step;
 }
 
+let sceneSwitchHintEl = null;
+function toggleSceneSwitchHint(show) {
+  if (show) {
+    if (!sceneSwitchHintEl) {
+      sceneSwitchHintEl = document.createElement('p');
+      sceneSwitchHintEl.className = 'scene-switch-hint';
+      sceneSwitchHintEl.textContent = '内容が切り替わりました。もう一度「計算する」を押してください。';
+      document.getElementById('btn-calc').insertAdjacentElement('beforebegin', sceneSwitchHintEl);
+    }
+    sceneSwitchHintEl.style.display = '';
+  } else if (sceneSwitchHintEl) {
+    sceneSwitchHintEl.style.display = 'none';
+  }
+}
+
 function calc() {
+  toggleSceneSwitchHint(false);
   const relationValue = relationSelect.value;
   const ageTier = ageSelect.value;
   const config = RELATIONS[currentScene].find((r) => r.value === relationValue);

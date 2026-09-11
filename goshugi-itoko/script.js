@@ -107,6 +107,7 @@ function calc() {
   lastAmount = amount;
   updateShareUrl();
   shareRow.classList.add('show');
+  document.querySelector('.survey-banner')?.classList.add('show');
 
   affCard.href = affiliateUrl('ご祝儀袋');
   showProducts('ご祝儀袋', '🛒 人気のご祝儀袋');

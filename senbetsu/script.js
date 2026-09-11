@@ -155,6 +155,7 @@ function calc() {
   affTitle.textContent = `${scene.label}の送別ギフトを探す`;
   affCard.href = affiliateUrl(scene.productKeyword);
   affCard.classList.add('show');
+  document.querySelector('.survey-banner')?.classList.add('show');
   showProducts(scene.productKeyword, `🛒 人気の${scene.label}ギフト`, rangeLow, rangeHigh);
 
   resultCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });

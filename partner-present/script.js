@@ -154,6 +154,7 @@ function calc() {
   affTitle.textContent = `${relation.label}への${event.label}プレゼントを探す`;
   affCard.href = affiliateUrl(eventKeyword);
   affCard.classList.add('show');
+  document.querySelector('.survey-banner')?.classList.add('show');
   showProducts(eventKeyword, `🛒 人気の${relation.label}への${event.label}プレゼント`, rangeLow, rangeHigh);
 
   resultCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });

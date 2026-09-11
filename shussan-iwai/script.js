@@ -163,6 +163,7 @@ function calc() {
 
   affCard.href = affiliateUrl('出産祝い ギフト');
   affCard.classList.add('show');
+  document.querySelector('.survey-banner')?.classList.add('show');
   showProducts('出産祝い ギフト', '🛒 人気の出産祝いギフト', rangeLow, rangeHigh);
 
   resultCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });

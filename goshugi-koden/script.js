@@ -180,6 +180,7 @@ function setScene(scene) {
   shareRow.classList.remove('show');
   if (followX) followX.style.display = scene === 'wedding' ? '' : 'none';
   affCard.classList.remove('show');
+  document.querySelector('.survey-banner')?.classList.remove('show');
   mannerWedding.classList.remove('show');
   mannerFuneral.classList.remove('show');
   regionWedding.classList.remove('show');
@@ -294,6 +295,7 @@ function calc() {
     productKeyword = '不祝儀袋';
   }
   affCard.classList.add('show');
+  document.querySelector('.survey-banner')?.classList.add('show');
   // グリーフケアレビュー(2026-08-31)対応: 弔事では「人気の」「🛒」等ECサイトの煽り文句を控えめにする
   // (body.theme-solemnの切り替え自体はsetScene()側で行う)。
   const productLabel = currentScene === 'wedding' ? '🛒 人気のご祝儀袋' : '不祝儀袋(香典袋)';

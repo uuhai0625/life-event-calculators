@@ -162,6 +162,7 @@ function setScene(scene) {
   if (nextTools) nextTools.classList.remove('show');
   shareRow.classList.remove('show');
   affCard.classList.remove('show');
+  document.querySelector('.survey-banner')?.classList.remove('show');
   mannerChugen.classList.toggle('show', scene === 'chugen');
   mannerSeibo.classList.toggle('show', scene === 'seibo');
   regionChugen.classList.toggle('show', scene === 'chugen');
@@ -206,6 +207,7 @@ function calc() {
   affTitle.textContent = `${scene.label}ギフトを探す`;
   affCard.href = affiliateUrl(scene.keyword);
   affCard.classList.add('show');
+  document.querySelector('.survey-banner')?.classList.add('show');
   showProducts(scene.keyword, `🛒 人気の${scene.label}ギフト`, rangeLow, rangeHigh);
 
   resultCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });

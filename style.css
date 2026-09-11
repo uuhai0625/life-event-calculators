@@ -541,15 +541,17 @@ section:first-of-type .tool-section-heading { margin-top: 28px; }
   color: var(--ink-sub);
 }
 
-/* ---- 独自アンケートへの導線 ---- */
+/* ---- 独自アンケートへの導線(2026-09-12、結果カード内から末尾側へ移動。計算前に表示されないよう他の結果連動要素と同じ.show方式に統一) ---- */
 .survey-banner {
+  display: none;
   text-align: left;
-  margin: 12px 0 0;
-  padding-top: 12px;
+  margin: 0 0 24px;
+  padding: 14px 16px;
   border-top: 1px dashed var(--line);
   font-size: 0.76rem;
   color: var(--ink-sub);
 }
+.survey-banner.show { display: block; }
 .survey-banner a { color: var(--navy-text); font-weight: 700; }
 
 /* ---- 結果の共有 ---- */

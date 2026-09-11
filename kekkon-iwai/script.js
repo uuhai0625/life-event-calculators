@@ -142,6 +142,7 @@ function calc() {
 
   affCard.href = affiliateUrl('結婚祝い ギフト');
   affCard.classList.add('show');
+  document.querySelector('.survey-banner')?.classList.add('show');
   showProducts('結婚祝い ギフト', '🛒 人気の結婚祝いギフト', rangeLow, rangeHigh);
 
   resultCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });

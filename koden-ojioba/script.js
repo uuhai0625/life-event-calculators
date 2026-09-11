@@ -101,6 +101,7 @@ function calc() {
   lastAmount = amount;
   updateShareUrl();
   shareRow.classList.add('show');
+  document.querySelector('.survey-banner')?.classList.add('show');
 
   affCard.href = affiliateUrl('不祝儀袋 香典袋');
   showProducts('不祝儀袋', '不祝儀袋(香典袋)');

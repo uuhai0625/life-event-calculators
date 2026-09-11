@@ -126,6 +126,10 @@ document.getElementById('aff-card')?.addEventListener('click', () => {
   if (typeof gtag !== 'function') return;
   gtag('event', 'affiliate_cta_click', { link_label: 'ご祝儀袋を探す' });
 });
+document.querySelector('.survey-banner a')?.addEventListener('click', () => {
+  if (typeof gtag !== 'function') return;
+  gtag('event', 'survey_click', {});
+});
 
 function paramsFromState() {
   const params = new URLSearchParams();

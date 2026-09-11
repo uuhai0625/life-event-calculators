@@ -18,6 +18,7 @@
   --radius: 16px;
   --check-bg: #eef3f8;
   --gold-text: #7a5c0e;
+  --highlight-bg: #f6f2ea;
   --select-arrow: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='9'%3E%3Cpath d='M1 1l6 6 6-6' stroke='%23756b60' stroke-width='2' fill='none' fill-rule='evenodd'/%3E%3C/svg%3E");
 }
 
@@ -45,6 +46,10 @@
     --shadow-soft: 0 4px 14px rgba(0, 0, 0, 0.35);
     --check-bg: #23384a;
     --gold-text: #d9b64f;
+    /* .result-adviceの背景が固定の明るいベージュ(#f6f2ea)のままで、文字色var(--ink)だけダークモードで
+       明るい色(#ede7de)に切り替わり、ほぼ同色でテキストが実質見えなくなっていた(2026-09-12発覚、
+       5名レビューでも未検出だった実バグ)。ダークモードでも読める暗めの色に上書きする。 */
+    --highlight-bg: #302c27;
     --select-arrow: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='9'%3E%3Cpath d='M1 1l6 6 6-6' stroke='%23b3a898' stroke-width='2' fill='none' fill-rule='evenodd'/%3E%3C/svg%3E");
   }
 }
@@ -474,7 +479,7 @@ section:first-of-type .tool-section-heading { margin-top: 28px; }
 }
 .btn-calc {
   width: 100%;
-  padding: 15px;
+  padding: 16px;
   border: none;
   border-radius: 12px;
   background: var(--navy);
@@ -491,7 +496,7 @@ section:first-of-type .tool-section-heading { margin-top: 28px; }
   background: var(--bg-card);
   border: 2px solid var(--gold);
   border-radius: var(--radius);
-  padding: 26px 24px;
+  padding: 24px;
   text-align: center;
   box-shadow: var(--shadow);
   margin-bottom: 18px;
@@ -520,7 +525,7 @@ section:first-of-type .tool-section-heading { margin-top: 28px; }
 }
 .result-advice {
   text-align: left;
-  background: #f6f2ea;
+  background: var(--highlight-bg);
   border-radius: 10px;
   padding: 14px 16px;
   margin-top: 16px;
@@ -662,7 +667,7 @@ section:first-of-type .tool-section-heading { margin-top: 28px; }
 }
 .rate-table th, .rate-table td {
   text-align: left;
-  padding: 9px 8px;
+  padding: 8px;
   border-bottom: 1px solid var(--line);
 }
 .rate-table th {
@@ -929,6 +934,8 @@ section:first-of-type .tool-section-heading { margin-top: 28px; }
   color: var(--ink-sub);
   line-height: 1.8;
 }
+/* 折りたたみ内の文中リンクが地の文に埋もれて見つけにくい、との指摘(2026-09-12レビュー)への軽量対応 */
+.detail-section p a { font-weight: 700; text-decoration: underline; text-underline-offset: 2px; }
 /* 間柄別解説の折りたたみ(2026-09-07、ページ全体の長さ削減対応)。コンテンツはDOMに残したまま
    デフォルト非表示にするだけなので、SEO/情報量は一切減らさずスクロール量だけを減らせる。 */
 .detail-toggle summary {
@@ -936,7 +943,7 @@ section:first-of-type .tool-section-heading { margin-top: 28px; }
   color: var(--navy-text);
   font-weight: 700;
   font-size: 0.9rem;
-  padding: 11px 16px;
+  padding: 12px 16px;
   background: var(--bg-card);
   border: 1px solid var(--line);
   border-radius: var(--radius);

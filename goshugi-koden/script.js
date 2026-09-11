@@ -325,6 +325,10 @@ document.getElementById('aff-card')?.addEventListener('click', () => {
     link_label: document.querySelector('.aff-title')?.textContent || '',
   });
 });
+document.querySelector('.survey-banner a')?.addEventListener('click', () => {
+  if (typeof gtag !== 'function') return;
+  gtag('event', 'survey_click', {});
+});
 
 // 結果の共有機能(2026-08-14): 現在の入力状態をURLクエリに保持し、結果ページを直接共有できるようにする。
 // 「サイトを紹介する」より「計算結果を共有する」方が拡散されやすいというPerplexity調査(集客装置化第2弾)を踏まえた実装。

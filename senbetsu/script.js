@@ -179,6 +179,10 @@ document.getElementById('aff-card')?.addEventListener('click', () => {
     link_label: document.querySelector('.aff-title')?.textContent || '',
   });
 });
+document.querySelector('.survey-banner a')?.addEventListener('click', () => {
+  if (typeof gtag !== 'function') return;
+  gtag('event', 'survey_click', {});
+});
 
 function paramsFromState() {
   const params = new URLSearchParams();

@@ -194,6 +194,10 @@ document.getElementById('aff-card')?.addEventListener('click', () => {
     link_label: document.querySelector('.aff-title')?.textContent || '',
   });
 });
+document.querySelector('.survey-banner a')?.addEventListener('click', () => {
+  if (typeof gtag !== 'function') return;
+  gtag('event', 'survey_click', {});
+});
 
 // 結果の共有機能(2026-08-14): 詳細はgoshugi-koden/script.jsのコメント参照
 function paramsFromState() {

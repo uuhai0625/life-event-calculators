@@ -153,6 +153,63 @@ summary:focus-visible {
   line-height: 1;
 }
 .theme-toggle-btn:hover { background: rgba(255, 255, 255, 0.18); }
+/* ヘッダーの計算機一覧メニュー(2026-09-13追加、header-menu.js側でトグル制御) */
+.header-menu-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  left: 20px;
+  width: 36px;
+  height: 36px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+  font-size: 1.1rem;
+  cursor: pointer;
+  line-height: 1;
+}
+.header-menu-btn:hover { background: rgba(255, 255, 255, 0.18); }
+.header-menu-panel {
+  display: none;
+  position: absolute;
+  z-index: 60;
+  top: calc(100% + 8px);
+  left: 20px;
+  min-width: 260px;
+  max-width: calc(100vw - 40px);
+  max-height: 70vh;
+  overflow-y: auto;
+  background: var(--bg-card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  text-align: left;
+  padding: 6px 0;
+}
+.header-menu-panel.show { display: block; }
+.header-menu-portal-link {
+  display: block;
+  padding: 10px 14px;
+  color: var(--navy-text);
+  font-weight: 700;
+  text-decoration: none;
+  border-bottom: 1px solid var(--line);
+}
+.header-menu-section-label {
+  margin: 8px 0 2px;
+  padding: 0 14px;
+  font-size: 0.78rem;
+  color: var(--ink-sub);
+}
+.header-menu-panel a:not(.header-menu-portal-link) {
+  display: block;
+  padding: 8px 14px;
+  color: var(--ink);
+  text-decoration: none;
+  font-size: 0.88rem;
+}
+.header-menu-panel a:hover { background: var(--check-bg); color: var(--navy-text); }
 .skip-link {
   position: absolute;
   top: -100px;

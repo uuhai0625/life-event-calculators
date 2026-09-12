@@ -386,6 +386,35 @@ a.site-logo:hover { opacity: 0.85; }
   font-size: 0.85rem;
   font-weight: 600;
 }
+/* ---- ページ中盤の中間ナビ(2026-09-12、next-toolsから末尾の関連ツールまでの距離が
+   モバイルで画面8枚分あった指摘への対応。next-toolsと同じリンクを軽量版として複製配置し、
+   計算前に読んでいる訪問者にも回遊導線を提供する) ---- */
+.midpage-nav {
+  margin: 20px 0;
+  padding-top: 16px;
+  border-top: 1px dashed var(--line);
+}
+.midpage-nav-lead {
+  margin: 0 0 10px;
+  font-size: 0.82rem;
+  color: var(--ink-sub);
+}
+.midpage-nav-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.midpage-nav-links a {
+  padding: 7px 12px;
+  background: var(--bg-card);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--navy-text);
+  text-decoration: none;
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+.midpage-nav-links a:hover { border-color: var(--gold); }
 .next-tools-links a:hover { border-color: var(--gold); }
 
 /* ---- ポータル専用のワイドレイアウト(2026-09-06、UI改修) ---- */

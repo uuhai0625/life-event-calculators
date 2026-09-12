@@ -123,10 +123,13 @@ summary:focus-visible {
 }
 
 /* ---- ヘッダー ---- */
+/* 2026-09-13: スクロールで伸縮する2状態(header-compact)を撤廃し、常時「小」サイズに統一(ユーザー指示)。
+   タグライン(h1)は視覚的には非表示のままだが、SEO/アクセシビリティのためDOM上は残し
+   .visually-hiddenでスクリーンリーダー・クローラーからは引き続き読める状態にする。 */
 .site-header {
   background: linear-gradient(160deg, var(--navy) 0%, var(--navy-dark) 100%);
   color: #fff;
-  padding: 40px 0 32px;
+  padding: 12px 0;
   text-align: center;
   position: sticky;
   top: 0;
@@ -136,7 +139,8 @@ summary:focus-visible {
 /* 手動ダークモード切替ボタン(2026-09-12追加) */
 .theme-toggle-btn {
   position: absolute;
-  top: 0;
+  top: 50%;
+  transform: translateY(-50%);
   right: 20px;
   width: 36px;
   height: 36px;
@@ -166,17 +170,27 @@ summary:focus-visible {
 }
 .site-logo {
   display: block;
-  font-size: 1.9rem;
-  margin: 0 0 8px;
+  font-size: 1.2rem;
+  margin: 0;
   color: #fff;
   text-decoration: none;
 }
 a.site-logo:hover { opacity: 0.85; }
 .site-logo .accent { color: var(--gold); }
 .site-tagline {
-  margin: 0;
+  /* 2026-09-13: ヘッダーを常時「小」サイズに統一したため画面上は非表示にするが、
+     このh1はページごとのSEO見出しなのでDOMからは消さず、スクリーンリーダー/クローラー向けに
+     視覚的にのみ隠す(clip法、display:noneにしない)。 */
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
   color: #d9e2ec;
-  /* h1として本文(1rem)・h3(最大1.15rem)より確実に大きくする(2026-09-12レビューで見出し階層の逆転を実測発覚、以前は0.95remで本文より小さかった) */
   font-size: 1.3rem;
   font-family: "Noto Sans JP", "Hiragino Sans", "Yu Gothic", sans-serif;
   font-weight: 400;

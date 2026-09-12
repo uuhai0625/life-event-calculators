@@ -621,6 +621,39 @@ section:first-of-type .tool-section-heading { margin-top: 28px; }
   background: var(--check-bg);
 }
 
+/* ---- 選択肢チップ(2026-09-12、took.jp型UXの試作。selectドロップダウンの代わりに
+   ボタン形式で選ばせ、選択と同時に結果を更新する) ---- */
+.chip-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.chip {
+  flex: 1 1 auto;
+  min-width: 88px;
+  padding: 11px 14px;
+  border: 1.5px solid var(--line);
+  border-radius: 10px;
+  background: var(--bg-card);
+  color: var(--ink);
+  font-size: 0.88rem;
+  font-weight: 500;
+  font-family: inherit;
+  cursor: pointer;
+  text-align: center;
+}
+.chip:hover { border-color: var(--navy); }
+.chip.active {
+  border-color: var(--navy);
+  background: var(--check-bg);
+  color: var(--navy-text);
+  font-weight: 700;
+}
+.chip:focus-visible {
+  outline: 3px solid var(--gold);
+  outline-offset: 2px;
+}
+
 .scene-switch-hint {
   margin: -6px 0 12px;
   font-size: 0.82rem;
@@ -640,6 +673,14 @@ section:first-of-type .tool-section-heading { margin-top: 28px; }
   font-family: inherit;
 }
 .btn-calc:hover { background: var(--navy-dark); }
+/* took.jp型UX(2026-09-12〜)では計算ボタンを廃止し選択と同時に結果を更新するため、
+   その旨を伝える軽い注記に置き換える */
+.calc-instant-note {
+  margin: 4px 0 0;
+  font-size: 0.78rem;
+  color: var(--ink-sub);
+  text-align: center;
+}
 
 /* ---- 結果 ---- */
 .result-card {

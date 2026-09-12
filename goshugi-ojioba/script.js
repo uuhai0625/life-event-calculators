@@ -64,6 +64,20 @@ function roundTo(amount, step) {
   return Math.round(amount / step) * step;
 }
 
+// took.jp型UX: ドロップダウン+計算ボタンをやめ、チップをクリックした瞬間に結果が更新される方式
+// (goshugi-koden/script.jsで実証済みのパターンをそのまま踏襲)。
+function getChipValue(container) {
+  return container.querySelector('.chip.active')?.dataset.value;
+}
+function setChipActive(container, value) {
+  [...container.children].forEach((btn) => btn.classList.toggle('active', btn.dataset.value === value));
+}
+function selectChip(container, value) {
+  setChipActive(container, value);
+  calc();
+}
+
+const chipAge = document.getElementById('chip-age');
 const resultCard = document.getElementById('result-card');
 const nextTools = document.querySelector('.next-tools');
 const resultAmount = document.getElementById('result-amount');
@@ -78,7 +92,7 @@ const btnShareLine = document.getElementById('btn-share-line');
 let lastAmount = 0;
 
 function calc() {
-  const ageTier = document.getElementById('select-age').value;
+  const ageTier = getChipValue(chipAge);
   const attend = document.querySelector('input[name="attend"]:checked').value;
   const base = AGE_TABLE[ageTier];
   if (!base) return;
@@ -109,11 +123,14 @@ function calc() {
 
   affCard.href = affiliateUrl('ご祝儀袋');
   showProducts('ご祝儀袋', '🛒 人気のご祝儀袋');
-
-  resultCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
 
-document.getElementById('btn-calc').addEventListener('click', calc);
+document.querySelectorAll('#chip-age .chip').forEach((btn) => {
+  btn.addEventListener('click', () => selectChip(chipAge, btn.dataset.value));
+});
+document.querySelectorAll('input[name="attend"]').forEach((input) => {
+  input.addEventListener('change', calc);
+});
 
 document.getElementById('product-grid')?.addEventListener('click', (e) => {
   const card = e.target.closest('.product-card');
@@ -134,7 +151,7 @@ document.querySelector('.survey-banner a')?.addEventListener('click', () => {
 
 function paramsFromState() {
   const params = new URLSearchParams();
-  params.set('age', document.getElementById('select-age').value);
+  params.set('age', getChipValue(chipAge));
   params.set('attend', document.querySelector('input[name="attend"]:checked').value);
   return params;
 }
@@ -193,15 +210,21 @@ btnShareLine.addEventListener('click', () => {
 // 計算ボタンの押下を待たずページ読み込み時に表示する。
 showRanking(210194, 'ranking-grid');
 
+// 共有URLからの復元: took.jp型UXではページ読み込み直後にcalc()が自動発火しupdateShareUrl()が
+// URLをデフォルト値で上書きしてしまうため、「本来のクエリ」を先に退避しておく
+// (詳細はgoshugi-koden/script.jsの同名コメント参照)。
+const initialParams = new URLSearchParams(location.search);
 function initFromQuery() {
-  const params = new URLSearchParams(location.search);
+  const params = initialParams;
   const age = params.get('age');
   const attend = params.get('attend');
   if (!age || !AGE_TABLE[age]) return;
   if (attend !== 'present' && attend !== 'absent') return;
-  document.getElementById('select-age').value = age;
+  setChipActive(chipAge, age);
   document.querySelector(`input[name="attend"][value="${attend}"]`).checked = true;
   calc();
 }
 
+// took.jp型UX: 全項目にデフォルト値があるため、ページ読み込み時から結果を表示する。
+calc();
 initFromQuery();

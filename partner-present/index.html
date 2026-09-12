@@ -108,34 +108,34 @@
   <div class="calc-layout-input">
   <div class="calc-card">
     <div class="field">
-      <label for="select-relation">プレゼントを贈る相手</label>
-      <select id="select-relation">
-        <option value="girlfriend" selected>彼女</option>
-        <option value="boyfriend">彼氏</option>
-        <option value="wife">妻</option>
-        <option value="husband">夫</option>
-        <option value="partner">パートナー</option>
-      </select>
+      <label id="label-relation">プレゼントを贈る相手</label>
+      <div class="chip-group" id="chip-relation" role="group" aria-labelledby="label-relation">
+        <button class="chip active" type="button" data-value="girlfriend">彼女</button>
+        <button class="chip" type="button" data-value="boyfriend">彼氏</button>
+        <button class="chip" type="button" data-value="wife">妻</button>
+        <button class="chip" type="button" data-value="husband">夫</button>
+        <button class="chip" type="button" data-value="partner">パートナー</button>
+      </div>
     </div>
     <div class="field">
-      <label for="select-event">イベント</label>
-      <select id="select-event">
-        <option value="birthday" selected>誕生日</option>
-        <option value="christmas">クリスマス</option>
-        <option value="valentine">バレンタインデー</option>
-        <option value="whiteday">ホワイトデー</option>
-        <option value="anniversary">交際・結婚記念日</option>
-      </select>
+      <label id="label-event">イベント</label>
+      <div class="chip-group" id="chip-event" role="group" aria-labelledby="label-event">
+        <button class="chip active" type="button" data-value="birthday">誕生日</button>
+        <button class="chip" type="button" data-value="christmas">クリスマス</button>
+        <button class="chip" type="button" data-value="valentine">バレンタインデー</button>
+        <button class="chip" type="button" data-value="whiteday">ホワイトデー</button>
+        <button class="chip" type="button" data-value="anniversary">交際・結婚記念日</button>
+      </div>
     </div>
     <div class="field">
-      <label for="select-years">交際・結婚年数</label>
-      <select id="select-years">
-        <option value="under1">1年未満</option>
-        <option value="1to3" selected>1〜3年</option>
-        <option value="over3">3年以上</option>
-      </select>
+      <label id="label-years">交際・結婚年数</label>
+      <div class="chip-group" id="chip-years" role="group" aria-labelledby="label-years">
+        <button class="chip" type="button" data-value="under1">1年未満</button>
+        <button class="chip active" type="button" data-value="1to3">1〜3年</button>
+        <button class="chip" type="button" data-value="over3">3年以上</button>
+      </div>
     </div>
-    <button class="btn-calc" id="btn-calc" type="button">予算を計算する</button>
+    <p class="calc-instant-note">選択すると同時に結果が更新されます</p>
   </div>
   </div>
 

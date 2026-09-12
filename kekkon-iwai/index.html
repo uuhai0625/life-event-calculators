@@ -108,13 +108,13 @@
   <div class="calc-layout-input">
   <div class="calc-card">
     <div class="field">
-      <label for="select-relation">相手との間柄</label>
-      <select id="select-relation">
-        <option value="neighbor">ご近所</option>
-        <option value="colleague">職場の同僚・部下</option>
-        <option value="boss">職場の上司</option>
-        <option value="friend" selected>友人・知人</option>
-      </select>
+      <label id="label-relation">相手との間柄</label>
+      <div class="chip-group" id="chip-relation" role="group" aria-labelledby="label-relation">
+        <button class="chip" type="button" data-value="neighbor">ご近所</button>
+        <button class="chip" type="button" data-value="colleague">職場の同僚・部下</button>
+        <button class="chip" type="button" data-value="boss">職場の上司</button>
+        <button class="chip active" type="button" data-value="friend">友人・知人</button>
+      </div>
     </div>
     <div class="field">
       <label>親密度</label>
@@ -130,7 +130,7 @@
         <label><input type="radio" name="giving" value="group"> 職場などでまとめて贈る</label>
       </div>
     </div>
-    <button class="btn-calc" id="btn-calc" type="button">相場を計算する</button>
+    <p class="calc-instant-note">選択すると同時に結果が更新されます</p>
   </div>
   </div>
 

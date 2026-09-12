@@ -109,13 +109,13 @@
   <div class="calc-layout-input">
   <div class="calc-card" style="margin-top:20px;">
     <div class="field">
-      <label for="select-age">あなたの年代</label>
-      <select id="select-age">
-        <option value="20s">20代以下</option>
-        <option value="30s" selected>30代</option>
-        <option value="40s">40代</option>
-        <option value="50s">50代以上</option>
-      </select>
+      <label id="label-age">あなたの年代</label>
+      <div class="chip-group" id="chip-age" role="group" aria-labelledby="label-age">
+        <button class="chip" type="button" data-value="20s">20代以下</button>
+        <button class="chip active" type="button" data-value="30s">30代</button>
+        <button class="chip" type="button" data-value="40s">40代</button>
+        <button class="chip" type="button" data-value="50s">50代以上</button>
+      </div>
     </div>
     <div class="field">
       <label>友人との間柄の深さ</label>
@@ -124,7 +124,7 @@
         <label><input type="radio" name="closeness" value="close"> 特に親しい・家族ぐるみの付き合い</label>
       </div>
     </div>
-    <button class="btn-calc" id="btn-calc" type="button">相場を計算する</button>
+    <p class="calc-instant-note">選択すると同時に結果が更新されます</p>
   </div>
   </div>
 

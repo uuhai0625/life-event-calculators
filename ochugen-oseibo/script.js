@@ -109,7 +109,7 @@ function roundTo(amount, step) {
 
 let currentScene = 'chugen';
 
-const relationSelect = document.getElementById('select-relation');
+const chipRelation = document.getElementById('chip-relation');
 const resultCard = document.getElementById('result-card');
 const resultLabel = document.getElementById('result-label');
 const resultAmount = document.getElementById('result-amount');
@@ -133,25 +133,26 @@ const btnShareX = document.getElementById('btn-share-x');
 const btnShareLine = document.getElementById('btn-share-line');
 let lastAmount = 0;
 
-let sceneSwitchHintEl = null;
-function toggleSceneSwitchHint(show) {
-  if (show) {
-    if (!sceneSwitchHintEl) {
-      sceneSwitchHintEl = document.createElement('p');
-      sceneSwitchHintEl.className = 'scene-switch-hint';
-      sceneSwitchHintEl.textContent = '内容が切り替わりました。もう一度「計算する」を押してください。';
-      document.getElementById('btn-calc').insertAdjacentElement('beforebegin', sceneSwitchHintEl);
-    }
-    sceneSwitchHintEl.style.display = '';
-  } else if (sceneSwitchHintEl) {
-    sceneSwitchHintEl.style.display = 'none';
-  }
+// ---- チップ選択(2026-09-12、took.jp型UX: ドロップダウン+計算ボタンをやめ、
+// ボタンチップをクリックした瞬間に結果が更新される方式に変更) ----
+function getChipValue(container) {
+  return container.querySelector('.chip.active')?.dataset.value;
 }
+function setChipActive(container, value) {
+  [...container.children].forEach((btn) => btn.classList.toggle('active', btn.dataset.value === value));
+}
+function selectChip(container, value) {
+  setChipActive(container, value);
+  calc();
+}
+document.querySelectorAll('#chip-relation .chip').forEach((btn) => {
+  btn.addEventListener('click', () => selectChip(chipRelation, btn.dataset.value));
+});
+document.querySelectorAll('input[name="closeness"]').forEach((input) => {
+  input.addEventListener('change', calc);
+});
 
 function setScene(scene) {
-  // タブ切替で結果が無言で消え「計算できなくなった」と誤解されないよう、直前まで結果表示中だった場合だけ一言添える
-  // (2026-09-12レビュー指摘)。
-  toggleSceneSwitchHint(resultCard.classList.contains('show'));
   currentScene = scene;
   document.querySelectorAll('.scene-tab').forEach((btn) => {
     const isActive = btn.dataset.scene === scene;
@@ -159,11 +160,6 @@ function setScene(scene) {
     btn.setAttribute('aria-selected', String(isActive));
     if (isActive) calcPanel.setAttribute('aria-labelledby', btn.id);
   });
-  resultCard.classList.remove('show');
-  if (nextTools) nextTools.classList.remove('show');
-  shareRow.classList.remove('show');
-  affCard.classList.remove('show');
-  document.querySelector('.survey-banner')?.classList.remove('show');
   mannerChugen.classList.toggle('show', scene === 'chugen');
   mannerSeibo.classList.toggle('show', scene === 'seibo');
   regionChugen.classList.toggle('show', scene === 'chugen');
@@ -174,11 +170,12 @@ function setScene(scene) {
   const gridLabel = document.getElementById('product-grid-label');
   if (grid) { grid.innerHTML = ''; grid.classList.remove('show'); }
   if (gridLabel) gridLabel.style.display = 'none';
+  // took.jp型UX: タブ切替直後にその場で再計算し、結果を即座に更新する。
+  calc();
 }
 
 function calc() {
-  toggleSceneSwitchHint(false);
-  const relationValue = relationSelect.value;
+  const relationValue = getChipValue(chipRelation);
   const closeness = document.querySelector('input[name="closeness"]:checked').value;
   const config = RELATIONS[relationValue];
   const scene = SCENES[currentScene];
@@ -217,7 +214,6 @@ function calc() {
 document.querySelectorAll('.scene-tab').forEach((btn) => {
   btn.addEventListener('click', () => setScene(btn.dataset.scene));
 });
-document.getElementById('btn-calc').addEventListener('click', calc);
 
 // GA4クリック計測(2026-08-15追加): 詳細はgoshugi-koden/script.jsのコメント参照
 document.getElementById('product-grid')?.addEventListener('click', (e) => {
@@ -245,7 +241,7 @@ document.querySelector('.survey-banner a')?.addEventListener('click', () => {
 function paramsFromState() {
   const params = new URLSearchParams();
   params.set('scene', currentScene);
-  params.set('relation', relationSelect.value);
+  params.set('relation', getChipValue(chipRelation));
   params.set('closeness', document.querySelector('input[name="closeness"]:checked').value);
   return params;
 }
@@ -256,7 +252,7 @@ function updateShareUrl() {
 }
 
 function shareText(amount) {
-  const relationLabel = (RELATIONS[relationSelect.value] || {}).label || '';
+  const relationLabel = (RELATIONS[getChipValue(chipRelation)] || {}).label || '';
   const sceneLabel = SCENES[currentScene].label;
   return `${relationLabel}への${sceneLabel}の相場を計算しました。\n目安:¥${amount.toLocaleString('ja-JP')}\n`;
 }
@@ -304,13 +300,16 @@ btnShareLine.addEventListener('click', () => {
   window.open(lineUrl, '_blank', 'noopener');
 });
 
+// 2026-09-12: ページ読み込み直後にcalc()が自動実行されhistory.replaceState()でURLが書き換わるため、
+// 「本来の」共有クエリはその前に退避しておく。
+const initialParams = new URLSearchParams(location.search);
 function initFromQuery() {
-  const params = new URLSearchParams(location.search);
+  const params = initialParams;
   const scene = params.get('scene');
   if (scene !== 'chugen' && scene !== 'seibo') return;
   setScene(scene);
   const relation = params.get('relation');
-  if (relation && RELATIONS[relation]) relationSelect.value = relation;
+  if (relation && RELATIONS[relation]) setChipActive(chipRelation, relation);
   const closeness = params.get('closeness');
   if (closeness === 'normal' || closeness === 'special') {
     document.querySelector(`input[name="closeness"][value="${closeness}"]`).checked = true;

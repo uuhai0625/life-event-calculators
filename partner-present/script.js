@@ -130,12 +130,33 @@ const shareRow = document.getElementById('share-row');
 const btnCopyLink = document.getElementById('btn-copy-link');
 const btnShareX = document.getElementById('btn-share-x');
 const btnShareLine = document.getElementById('btn-share-line');
+const chipRelation = document.getElementById('chip-relation');
+const chipEvent = document.getElementById('chip-event');
+const chipYears = document.getElementById('chip-years');
 let lastAmount = 0;
 
+// ---- チップ選択(2026-09-12、took.jp型UX: ドロップダウン+計算ボタンをやめ、
+// ボタンチップをクリックした瞬間に結果が更新される方式に変更) ----
+function getChipValue(container) {
+  return container.querySelector('.chip.active')?.dataset.value;
+}
+function setChipActive(container, value) {
+  [...container.children].forEach((btn) => btn.classList.toggle('active', btn.dataset.value === value));
+}
+function selectChip(container, value) {
+  setChipActive(container, value);
+  calc();
+}
+[chipRelation, chipEvent, chipYears].forEach((container) => {
+  container.querySelectorAll('.chip').forEach((btn) => {
+    btn.addEventListener('click', () => selectChip(container, btn.dataset.value));
+  });
+});
+
 function calc() {
-  const relation = RELATIONS[document.getElementById('select-relation').value];
-  const event = EVENTS[document.getElementById('select-event').value];
-  const yearsMultiplier = YEARS_MULTIPLIER[document.getElementById('select-years').value];
+  const relation = RELATIONS[getChipValue(chipRelation)];
+  const event = EVENTS[getChipValue(chipEvent)];
+  const yearsMultiplier = YEARS_MULTIPLIER[getChipValue(chipYears)];
   if (!relation || !event || yearsMultiplier == null) return;
 
   const amount = roundTo(relation.base * event.multiplier * yearsMultiplier, 1000);
@@ -160,8 +181,6 @@ function calc() {
 
   resultCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
-
-document.getElementById('btn-calc').addEventListener('click', calc);
 
 // GA4クリック計測(2026-08-15追加): 詳細はgoshugi-koden/script.jsのコメント参照
 document.getElementById('product-grid')?.addEventListener('click', (e) => {
@@ -188,9 +207,9 @@ document.querySelector('.survey-banner a')?.addEventListener('click', () => {
 // 結果の共有機能(2026-08-14): 詳細はgoshugi-koden/script.jsのコメント参照
 function paramsFromState() {
   const params = new URLSearchParams();
-  params.set('relation', document.getElementById('select-relation').value);
-  params.set('event', document.getElementById('select-event').value);
-  params.set('years', document.getElementById('select-years').value);
+  params.set('relation', getChipValue(chipRelation));
+  params.set('event', getChipValue(chipEvent));
+  params.set('years', getChipValue(chipYears));
   return params;
 }
 
@@ -200,8 +219,8 @@ function updateShareUrl() {
 }
 
 function shareText(amount) {
-  const relation = RELATIONS[document.getElementById('select-relation').value];
-  const event = EVENTS[document.getElementById('select-event').value];
+  const relation = RELATIONS[getChipValue(chipRelation)];
+  const event = EVENTS[getChipValue(chipEvent)];
   return `${relation.label}への${event.label}プレゼント予算を計算しました。\n目安:¥${amount.toLocaleString('ja-JP')}\n`;
 }
 
@@ -248,18 +267,22 @@ btnShareLine.addEventListener('click', () => {
   window.open(lineUrl, '_blank', 'noopener');
 });
 
+// 2026-09-12: ページ読み込み直後にcalc()が自動実行されhistory.replaceState()でURLが書き換わるため、
+// 「本来の」共有クエリはその前に退避しておく(退避しないとinitFromQueryが自分自身の上書き後の
+// デフォルト値を読んでしまうバグになる)。
+const initialParams = new URLSearchParams(location.search);
 function initFromQuery() {
-  const params = new URLSearchParams(location.search);
+  const params = initialParams;
   const relation = params.get('relation');
   const event = params.get('event');
   const years = params.get('years');
   if (!relation || !RELATIONS[relation]) return;
   if (!event || !EVENTS[event]) return;
   if (!years || !YEARS_MULTIPLIER[years]) return;
-  document.getElementById('select-relation').value = relation;
-  document.getElementById('select-event').value = event;
-  document.getElementById('select-years').value = years;
-  calc();
+  setChipActive(chipRelation, relation);
+  setChipActive(chipEvent, event);
+  setChipActive(chipYears, years);
 }
 
 initFromQuery();
+calc();

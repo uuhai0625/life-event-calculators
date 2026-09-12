@@ -113,10 +113,24 @@ const shareRow = document.getElementById('share-row');
 const btnCopyLink = document.getElementById('btn-copy-link');
 const btnShareX = document.getElementById('btn-share-x');
 const btnShareLine = document.getElementById('btn-share-line');
+const chipRelation = document.getElementById('chip-relation');
 let lastAmount = 0;
 
+// ---- チップ選択(2026-09-12、took.jp型UX: ドロップダウン+計算ボタンをやめ、
+// ボタンチップをクリックした瞬間に結果が更新される方式に変更。goshugi-kodenで実証済みのパターン) ----
+function getChipValue(container) {
+  return container.querySelector('.chip.active')?.dataset.value;
+}
+function setChipActive(container, value) {
+  [...container.children].forEach((btn) => btn.classList.toggle('active', btn.dataset.value === value));
+}
+function selectChip(container, value) {
+  setChipActive(container, value);
+  calc();
+}
+
 function calc() {
-  const relationValue = document.getElementById('select-relation').value;
+  const relationValue = getChipValue(chipRelation);
   const closeness = document.querySelector('input[name="closeness"]:checked').value;
   const giving = document.querySelector('input[name="giving"]:checked').value;
   const config = RELATIONS[relationValue];
@@ -145,11 +159,14 @@ function calc() {
   affCard.classList.add('show');
   document.querySelector('.survey-banner')?.classList.add('show');
   showProducts('結婚祝い ギフト', '🛒 人気の結婚祝いギフト', rangeLow, rangeHigh);
-
-  resultCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
 
-document.getElementById('btn-calc').addEventListener('click', calc);
+document.querySelectorAll('#chip-relation .chip').forEach((btn) => {
+  btn.addEventListener('click', () => selectChip(chipRelation, btn.dataset.value));
+});
+document.querySelectorAll('input[name="closeness"], input[name="giving"]').forEach((input) => {
+  input.addEventListener('change', calc);
+});
 
 // GA4クリック計測(2026-08-15追加): 詳細はgoshugi-koden/script.jsのコメント参照
 document.getElementById('product-grid')?.addEventListener('click', (e) => {
@@ -176,7 +193,7 @@ document.querySelector('.survey-banner a')?.addEventListener('click', () => {
 // 結果の共有機能(2026-08-14): 詳細はgoshugi-koden/script.jsのコメント参照
 function paramsFromState() {
   const params = new URLSearchParams();
-  params.set('relation', document.getElementById('select-relation').value);
+  params.set('relation', getChipValue(chipRelation));
   params.set('closeness', document.querySelector('input[name="closeness"]:checked').value);
   params.set('giving', document.querySelector('input[name="giving"]:checked').value);
   return params;
@@ -188,7 +205,7 @@ function updateShareUrl() {
 }
 
 function shareText(amount) {
-  const relation = RELATIONS[document.getElementById('select-relation').value];
+  const relation = RELATIONS[getChipValue(chipRelation)];
   return `${relation.label}への結婚祝いの相場を計算しました。\n目安:¥${amount.toLocaleString('ja-JP')}\n`;
 }
 
@@ -235,11 +252,12 @@ btnShareLine.addEventListener('click', () => {
   window.open(lineUrl, '_blank', 'noopener');
 });
 
+const initialParams = new URLSearchParams(location.search);
 function initFromQuery() {
-  const params = new URLSearchParams(location.search);
+  const params = initialParams;
   const relation = params.get('relation');
   if (!relation || !RELATIONS[relation]) return;
-  document.getElementById('select-relation').value = relation;
+  setChipActive(chipRelation, relation);
   const closeness = params.get('closeness');
   if (closeness === 'normal' || closeness === 'close') {
     document.querySelector(`input[name="closeness"][value="${closeness}"]`).checked = true;
@@ -251,4 +269,5 @@ function initFromQuery() {
   calc();
 }
 
+calc();
 initFromQuery();

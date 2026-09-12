@@ -128,6 +128,21 @@ function roundTo(amount, step) {
   return Math.round(amount / step) * step;
 }
 
+// took.jp型UX: ドロップダウン+計算ボタンをやめ、チップをクリックした瞬間に結果が更新される方式
+// (goshugi-koden/script.jsで実証済みのパターンをそのまま踏襲)。生年入力欄はチップ化せず、
+// inputイベント(キー入力ごと)でcalc()を呼ぶ形にする(下部のイベント登録を参照)。
+function getChipValue(container) {
+  return container.querySelector('.chip.active')?.dataset.value;
+}
+function setChipActive(container, value) {
+  [...container.children].forEach((btn) => btn.classList.toggle('active', btn.dataset.value === value));
+}
+function selectChip(container, value) {
+  setChipActive(container, value);
+  calc();
+}
+
+const chipRelation = document.getElementById('chip-relation');
 const resultCard = document.getElementById('result-card');
 const nextTools = document.querySelector('.next-tools');
 const resultLabel = document.getElementById('result-label');
@@ -141,13 +156,12 @@ const btnShareX = document.getElementById('btn-share-x');
 const btnShareLine = document.getElementById('btn-share-line');
 const birthYearInput = document.getElementById('input-birthyear');
 const birthYearError = document.getElementById('birthyear-error');
-const relationSelect = document.getElementById('select-relation');
 let lastShareText = '';
 
 function calc() {
   const currentYear = new Date().getFullYear();
   const birthYear = parseInt(birthYearInput.value, 10);
-  const relation = relationSelect.value;
+  const relation = getChipValue(chipRelation);
 
   if (!Number.isInteger(birthYear) || birthYear < 1900 || birthYear > currentYear) {
     birthYearError.classList.add('show');
@@ -212,11 +226,14 @@ function calc() {
   affCard.classList.add('show');
   document.querySelector('.survey-banner')?.classList.add('show');
   showProducts(keyword, `🛒 人気の${targetCeleb.name}祝いギフト`, rangeLow, rangeHigh);
-
-  resultCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
 
-document.getElementById('btn-calc').addEventListener('click', calc);
+document.querySelectorAll('#chip-relation .chip').forEach((btn) => {
+  btn.addEventListener('click', () => selectChip(chipRelation, btn.dataset.value));
+});
+// 生年入力欄はチップ化せず、キー入力ごとに(有効な西暦かどうかにかかわらず)calc()を呼ぶ。
+// calc()自体が無効値の場合のエラー表示・結果非表示のロジックを内包しているため、そのまま流用できる。
+birthYearInput.addEventListener('input', calc);
 
 // GA4クリック計測: 詳細はgoshugi-koden/script.jsのコメント参照
 document.getElementById('product-grid')?.addEventListener('click', (e) => {
@@ -244,7 +261,7 @@ document.querySelector('.survey-banner a')?.addEventListener('click', () => {
 function paramsFromState() {
   const params = new URLSearchParams();
   params.set('birthyear', birthYearInput.value);
-  params.set('relation', relationSelect.value);
+  params.set('relation', getChipValue(chipRelation));
   return params;
 }
 
@@ -292,13 +309,17 @@ btnShareLine.addEventListener('click', () => {
   window.open(lineUrl, '_blank', 'noopener');
 });
 
+// 共有URLからの復元: took.jp型UXでは(このページは生年未入力時はcalc()を自動発火しないが、
+// 念のため他3ページと同じ形で)ページ読み込み直後の「本来のクエリ」を先に退避しておく
+// (詳細はgoshugi-koden/script.jsの同名コメント参照)。
+const initialParams = new URLSearchParams(location.search);
 function initFromQuery() {
-  const params = new URLSearchParams(location.search);
+  const params = initialParams;
   const birthyear = parseInt(params.get('birthyear'), 10);
   const relation = params.get('relation');
   if (!Number.isInteger(birthyear) || !relation || !AMOUNTS[relation]) return;
   birthYearInput.value = String(birthyear);
-  relationSelect.value = relation;
+  setChipActive(chipRelation, relation);
   calc();
 }
 

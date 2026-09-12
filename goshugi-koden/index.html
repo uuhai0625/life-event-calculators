@@ -113,17 +113,17 @@
 
   <div class="calc-card" id="calc-panel" role="tabpanel" aria-labelledby="tab-wedding">
     <div class="field">
-      <label for="select-relation">相手との間柄</label>
-      <select id="select-relation"></select>
+      <label id="label-relation">相手との間柄</label>
+      <div class="chip-group" id="chip-relation" role="group" aria-labelledby="label-relation"></div>
     </div>
     <div class="field">
-      <label for="select-age">あなたの年代</label>
-      <select id="select-age">
-        <option value="20s">20代以下</option>
-        <option value="30s" selected>30代</option>
-        <option value="40s">40代</option>
-        <option value="50s">50代以上</option>
-      </select>
+      <label id="label-age">あなたの年代</label>
+      <div class="chip-group" id="chip-age" role="group" aria-labelledby="label-age">
+        <button class="chip" type="button" data-value="20s">20代以下</button>
+        <button class="chip active" type="button" data-value="30s">30代</button>
+        <button class="chip" type="button" data-value="40s">40代</button>
+        <button class="chip" type="button" data-value="50s">50代以上</button>
+      </div>
     </div>
     <div class="field" id="field-wedding-attend">
       <label>結婚式に出席しますか?</label>
@@ -139,7 +139,7 @@
         <label><input type="radio" name="meal" value="yes"> 参加する</label>
       </div>
     </div>
-    <button class="btn-calc" id="btn-calc" type="button">相場を計算する</button>
+    <p class="calc-instant-note">選択すると同時に結果が更新されます</p>
   </div>
   </div>
 

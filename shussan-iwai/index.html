@@ -108,15 +108,15 @@
   <div class="calc-layout-input">
   <div class="calc-card">
     <div class="field">
-      <label for="select-relation">相手との間柄</label>
-      <select id="select-relation">
-        <option value="colleague">職場の同僚・部下</option>
-        <option value="friend" selected>友人・知人</option>
-        <option value="relative">いとこ・叔父叔母などの親族</option>
-        <option value="niece_nephew">甥・姪(兄弟姉妹の子など)</option>
-        <option value="sibling">兄弟姉妹</option>
-        <option value="grandchild">自分の孫</option>
-      </select>
+      <label id="label-relation">相手との間柄</label>
+      <div class="chip-group" id="chip-relation" role="group" aria-labelledby="label-relation">
+        <button class="chip" type="button" data-value="colleague">職場の同僚・部下</button>
+        <button class="chip active" type="button" data-value="friend">友人・知人</button>
+        <button class="chip" type="button" data-value="relative">いとこ・叔父叔母などの親族</button>
+        <button class="chip" type="button" data-value="niece_nephew">甥・姪(兄弟姉妹の子など)</button>
+        <button class="chip" type="button" data-value="sibling">兄弟姉妹</button>
+        <button class="chip" type="button" data-value="grandchild">自分の孫</button>
+      </div>
     </div>
     <div class="field" id="field-sibling-order" style="display:none;">
       <label>あなたは相手より年上ですか?年下ですか?</label>
@@ -139,7 +139,7 @@
         <label><input type="radio" name="giving" value="group"> 職場などで連名</label>
       </div>
     </div>
-    <button class="btn-calc" id="btn-calc" type="button">相場を計算する</button>
+    <p class="calc-instant-note">選択すると同時に結果が更新されます</p>
   </div>
   </div>
 

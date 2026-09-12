@@ -70,14 +70,28 @@ const shareRow = document.getElementById('share-row');
 const btnCopyLink = document.getElementById('btn-copy-link');
 const btnShareX = document.getElementById('btn-share-x');
 const btnShareLine = document.getElementById('btn-share-line');
+const chipAge = document.getElementById('chip-age');
 let lastAmount = 0;
+
+// ---- チップ選択(2026-09-12、took.jp型UX: ドロップダウン+計算ボタンをやめ、
+// ボタンチップをクリックした瞬間に結果が更新される方式に変更。goshugi-kodenで実証済みのパターン) ----
+function getChipValue(container) {
+  return container.querySelector('.chip.active')?.dataset.value;
+}
+function setChipActive(container, value) {
+  [...container.children].forEach((btn) => btn.classList.toggle('active', btn.dataset.value === value));
+}
+function selectChip(container, value) {
+  setChipActive(container, value);
+  calc();
+}
 
 function shareText(amount) {
   return `祖父母への香典の相場を計算しました。\n目安:¥${amount.toLocaleString('ja-JP')}\n`;
 }
 
 function calc() {
-  const ageTier = document.getElementById('select-age').value;
+  const ageTier = getChipValue(chipAge);
   const meal = document.querySelector('input[name="meal"]:checked').value;
 
   let amount = roundTo(BASE_AMOUNT * AGE_MULTIPLIER[ageTier], 1000);
@@ -103,11 +117,14 @@ function calc() {
 
   affCard.href = affiliateUrl('不祝儀袋 香典袋');
   showProducts('不祝儀袋', '不祝儀袋(香典袋)');
-
-  resultCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
 
-document.getElementById('btn-calc').addEventListener('click', calc);
+document.querySelectorAll('#chip-age .chip').forEach((btn) => {
+  btn.addEventListener('click', () => selectChip(chipAge, btn.dataset.value));
+});
+document.querySelectorAll('input[name="meal"]').forEach((input) => {
+  input.addEventListener('change', calc);
+});
 
 document.getElementById('product-grid')?.addEventListener('click', (e) => {
   const card = e.target.closest('.product-card');
@@ -128,7 +145,7 @@ document.querySelector('.survey-banner a')?.addEventListener('click', () => {
 
 function paramsFromState() {
   const params = new URLSearchParams();
-  params.set('age', document.getElementById('select-age').value);
+  params.set('age', getChipValue(chipAge));
   params.set('meal', document.querySelector('input[name="meal"]:checked').value);
   return params;
 }
@@ -178,13 +195,14 @@ btnShareLine.addEventListener('click', () => {
   const lineUrl = `https://social-plugins.line.me/lineit/share?url=${encodeURIComponent(location.href)}&text=${encodeURIComponent(text)}`;
   window.open(lineUrl, '_blank', 'noopener');
 });
+const initialParams = new URLSearchParams(location.search);
 function initFromQuery() {
-  const params = new URLSearchParams(location.search);
+  const params = initialParams;
   const age = params.get('age');
   const meal = params.get('meal');
   if (!age || !AGE_MULTIPLIER[age]) return;
   if (meal !== 'yes' && meal !== 'no') return;
-  document.getElementById('select-age').value = age;
+  setChipActive(chipAge, age);
   document.querySelector(`input[name="meal"][value="${meal}"]`).checked = true;
   calc();
 }
@@ -193,4 +211,5 @@ function initFromQuery() {
 // 計算ボタンの押下を待たずページ読み込み時に表示する。
 showRanking(567467, 'ranking-grid');
 
+calc();
 initFromQuery();

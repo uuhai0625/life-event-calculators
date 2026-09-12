@@ -112,16 +112,16 @@
 
   <div class="calc-card" id="calc-panel" role="tabpanel" aria-labelledby="tab-chugen">
     <div class="field">
-      <label for="select-relation">相手との間柄</label>
-      <select id="select-relation">
-        <option value="friend" selected>友人・知人</option>
-        <option value="neighbor">ご近所・職場の同僚</option>
-        <option value="parent">親</option>
-        <option value="relative">親戚</option>
-        <option value="boss">職場の上司</option>
-        <option value="business">取引先</option>
-        <option value="mentor">恩師・仲人など</option>
-      </select>
+      <label id="label-relation">相手との間柄</label>
+      <div class="chip-group" id="chip-relation" role="group" aria-labelledby="label-relation">
+        <button class="chip active" type="button" data-value="friend">友人・知人</button>
+        <button class="chip" type="button" data-value="neighbor">ご近所・職場の同僚</button>
+        <button class="chip" type="button" data-value="parent">親</button>
+        <button class="chip" type="button" data-value="relative">親戚</button>
+        <button class="chip" type="button" data-value="boss">職場の上司</button>
+        <button class="chip" type="button" data-value="business">取引先</button>
+        <button class="chip" type="button" data-value="mentor">恩師・仲人など</button>
+      </div>
     </div>
     <div class="field">
       <label>間柄の特別度</label>
@@ -130,7 +130,7 @@
         <label><input type="radio" name="closeness" value="special"> 特にお世話になっている</label>
       </div>
     </div>
-    <button class="btn-calc" id="btn-calc" type="button">相場を計算する</button>
+    <p class="calc-instant-note">選択すると同時に結果が更新されます</p>
   </div>
   </div>
 

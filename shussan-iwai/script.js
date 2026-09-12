@@ -116,10 +116,25 @@ const shareRow = document.getElementById('share-row');
 const btnCopyLink = document.getElementById('btn-copy-link');
 const btnShareX = document.getElementById('btn-share-x');
 const btnShareLine = document.getElementById('btn-share-line');
+const chipRelation = document.getElementById('chip-relation');
+const fieldSiblingOrder = document.getElementById('field-sibling-order');
 let lastAmount = 0;
 
+// ---- チップ選択(2026-09-12、took.jp型UX: ドロップダウン+計算ボタンをやめ、
+// ボタンチップをクリックした瞬間に結果が更新される方式に変更。goshugi-kodenで実証済みのパターン) ----
+function getChipValue(container) {
+  return container.querySelector('.chip.active')?.dataset.value;
+}
+function setChipActive(container, value) {
+  [...container.children].forEach((btn) => btn.classList.toggle('active', btn.dataset.value === value));
+}
+function selectChip(container, value) {
+  setChipActive(container, value);
+  calc();
+}
+
 function calc() {
-  const relationValue = document.getElementById('select-relation').value;
+  const relationValue = getChipValue(chipRelation);
   const birthOrder = document.querySelector('input[name="birthorder"]:checked').value;
   const giving = document.querySelector('input[name="giving"]:checked').value;
   const config = RELATIONS[relationValue];
@@ -166,17 +181,18 @@ function calc() {
   affCard.classList.add('show');
   document.querySelector('.survey-banner')?.classList.add('show');
   showProducts('出産祝い ギフト', '🛒 人気の出産祝いギフト', rangeLow, rangeHigh);
-
-  resultCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
 
-const relationSelect = document.getElementById('select-relation');
-const fieldSiblingOrder = document.getElementById('field-sibling-order');
-relationSelect.addEventListener('change', () => {
-  fieldSiblingOrder.style.display = relationSelect.value === 'sibling' ? '' : 'none';
+document.querySelectorAll('#chip-relation .chip').forEach((btn) => {
+  btn.addEventListener('click', () => {
+    setChipActive(chipRelation, btn.dataset.value);
+    fieldSiblingOrder.style.display = btn.dataset.value === 'sibling' ? '' : 'none';
+    calc();
+  });
 });
-
-document.getElementById('btn-calc').addEventListener('click', calc);
+document.querySelectorAll('input[name="siblingorder"], input[name="birthorder"], input[name="giving"]').forEach((input) => {
+  input.addEventListener('change', calc);
+});
 
 // GA4クリック計測(2026-08-15追加): 詳細はgoshugi-koden/script.jsのコメント参照
 document.getElementById('product-grid')?.addEventListener('click', (e) => {
@@ -203,7 +219,7 @@ document.querySelector('.survey-banner a')?.addEventListener('click', () => {
 // 結果の共有機能(2026-08-14): 詳細はgoshugi-koden/script.jsのコメント参照
 function paramsFromState() {
   const params = new URLSearchParams();
-  const relationValue = relationSelect.value;
+  const relationValue = getChipValue(chipRelation);
   params.set('relation', relationValue);
   if (relationValue === 'sibling') {
     params.set('siblingorder', document.querySelector('input[name="siblingorder"]:checked').value);
@@ -219,7 +235,7 @@ function updateShareUrl() {
 }
 
 function shareText(amount) {
-  const label = RELATIONS[relationSelect.value].label;
+  const label = RELATIONS[getChipValue(chipRelation)].label;
   return `${label}への出産祝いの相場を計算しました。\n目安:¥${amount.toLocaleString('ja-JP')}\n`;
 }
 
@@ -266,11 +282,12 @@ btnShareLine.addEventListener('click', () => {
   window.open(lineUrl, '_blank', 'noopener');
 });
 
+const initialParams = new URLSearchParams(location.search);
 function initFromQuery() {
-  const params = new URLSearchParams(location.search);
+  const params = initialParams;
   const relation = params.get('relation');
   if (!relation || !RELATIONS[relation]) return;
-  relationSelect.value = relation;
+  setChipActive(chipRelation, relation);
   fieldSiblingOrder.style.display = relation === 'sibling' ? '' : 'none';
   if (relation === 'sibling') {
     const so = params.get('siblingorder');
@@ -289,4 +306,5 @@ function initFromQuery() {
   calc();
 }
 
+calc();
 initFromQuery();

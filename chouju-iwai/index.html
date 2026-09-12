@@ -113,15 +113,15 @@
       <p class="field-error" id="birthyear-error" role="alert">1900年〜今年までの西暦で入力してください。</p>
     </div>
     <div class="field">
-      <label for="select-relation">贈る方から見た間柄</label>
-      <select id="select-relation">
-        <option value="child">子として(親御さんへ)</option>
-        <option value="grandchild" selected>孫として(祖父母へ)</option>
-        <option value="relative">親戚として</option>
-        <option value="friend_colleague">友人・職場の方として</option>
-      </select>
+      <label id="label-relation">贈る方から見た間柄</label>
+      <div class="chip-group" id="chip-relation" role="group" aria-labelledby="label-relation">
+        <button class="chip" type="button" data-value="child">子として(親御さんへ)</button>
+        <button class="chip active" type="button" data-value="grandchild">孫として(祖父母へ)</button>
+        <button class="chip" type="button" data-value="relative">親戚として</button>
+        <button class="chip" type="button" data-value="friend_colleague">友人・職場の方として</button>
+      </div>
     </div>
-    <button class="btn-calc" id="btn-calc" type="button">長寿祝いを計算する</button>
+    <p class="calc-instant-note">選択すると同時に結果が更新されます</p>
   </div>
   </div>
 

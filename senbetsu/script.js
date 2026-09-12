@@ -115,13 +115,33 @@ const shareRow = document.getElementById('share-row');
 const btnCopyLink = document.getElementById('btn-copy-link');
 const btnShareX = document.getElementById('btn-share-x');
 const btnShareLine = document.getElementById('btn-share-line');
-const sceneSelect = document.getElementById('select-scene');
-const relationSelect = document.getElementById('select-relation');
+const chipScene = document.getElementById('chip-scene');
+const chipRelation = document.getElementById('chip-relation');
 let lastAmount = 0;
 
+// ---- チップ選択(2026-09-12、took.jp型UX) ----
+function getChipValue(container) {
+  return container.querySelector('.chip.active')?.dataset.value;
+}
+function setChipActive(container, value) {
+  [...container.children].forEach((btn) => btn.classList.toggle('active', btn.dataset.value === value));
+}
+function selectChip(container, value) {
+  setChipActive(container, value);
+  calc();
+}
+[chipScene, chipRelation].forEach((container) => {
+  container.querySelectorAll('.chip').forEach((btn) => {
+    btn.addEventListener('click', () => selectChip(container, btn.dataset.value));
+  });
+});
+document.querySelectorAll('input[name="giving"]').forEach((input) => {
+  input.addEventListener('change', calc);
+});
+
 function calc() {
-  const scene = SCENES[sceneSelect.value];
-  const relation = RELATIONS[relationSelect.value];
+  const scene = SCENES[getChipValue(chipScene)];
+  const relation = RELATIONS[getChipValue(chipRelation)];
   if (!scene || !relation) return;
   const giving = document.querySelector('input[name="giving"]:checked').value;
 
@@ -162,8 +182,6 @@ function calc() {
   resultCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
 
-document.getElementById('btn-calc').addEventListener('click', calc);
-
 document.getElementById('product-grid')?.addEventListener('click', (e) => {
   const card = e.target.closest('.product-card');
   if (!card || typeof gtag !== 'function') return;
@@ -187,8 +205,8 @@ document.querySelector('.survey-banner a')?.addEventListener('click', () => {
 
 function paramsFromState() {
   const params = new URLSearchParams();
-  params.set('scene', sceneSelect.value);
-  params.set('relation', relationSelect.value);
+  params.set('scene', getChipValue(chipScene));
+  params.set('relation', getChipValue(chipRelation));
   params.set('giving', document.querySelector('input[name="giving"]:checked').value);
   return params;
 }
@@ -199,8 +217,8 @@ function updateShareUrl() {
 }
 
 function shareText(amount) {
-  const scene = SCENES[sceneSelect.value];
-  const relation = RELATIONS[relationSelect.value];
+  const scene = SCENES[getChipValue(chipScene)];
+  const relation = RELATIONS[getChipValue(chipRelation)];
   return `${scene.label}(${relation.label})への餞別の相場を計算しました。\n目安:¥${amount.toLocaleString('ja-JP')}\n`;
 }
 
@@ -245,18 +263,21 @@ btnShareLine.addEventListener('click', () => {
   window.open(lineUrl, '_blank', 'noopener');
 });
 
+// 2026-09-12: ページ読み込み直後にcalc()が自動実行されhistory.replaceState()でURLが書き換わるため、
+// 「本来の」共有クエリはその前に退避しておく。
+const initialParams = new URLSearchParams(location.search);
 function initFromQuery() {
-  const params = new URLSearchParams(location.search);
+  const params = initialParams;
   const scene = params.get('scene');
   const relation = params.get('relation');
   const giving = params.get('giving');
   if (!scene || !SCENES[scene]) return;
   if (!relation || !RELATIONS[relation]) return;
   if (giving !== 'solo' && giving !== 'group') return;
-  sceneSelect.value = scene;
-  relationSelect.value = relation;
+  setChipActive(chipScene, scene);
+  setChipActive(chipRelation, relation);
   document.querySelector(`input[name="giving"][value="${giving}"]`).checked = true;
-  calc();
 }
 
 initFromQuery();
+calc();

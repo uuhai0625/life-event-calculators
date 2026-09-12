@@ -33,17 +33,11 @@ async function showProducts(keyword, labelText) {
       const img = rakutenImage(item);
       const price = Number(item.itemPrice).toLocaleString('ja-JP');
       const name = String(item.itemName || '').replace(/</g, '&lt;');
-      // レビュー件数・評価の表示(2026-08-15、ユーザー目線レビューで追加): APIはsort=-reviewCountで
-      // 人気順取得しているのに根拠(件数・評価)を見せていなかったため、購買後押しの機会損失だった。
-      // レビュー0件の商品は星評価がないため表示しない。
       const reviewCount = Number(item.reviewCount) || 0;
       const reviewAverage = Number(item.reviewAverage) || 0;
       const reviewHtml = reviewCount > 0
         ? `<p class="product-review">★${reviewAverage.toFixed(1)}<span class="product-review-count">(${reviewCount.toLocaleString('ja-JP')}件)</span></p>`
         : '';
-      // データ根拠バッジ(2026-08-15追加): 個々の商品に「なぜこれが選ばれているか」の一言もないという
-      // ユーザー目線レビュー指摘を受け、楽天APIの実データ(順位・レビュー件数・送料フラグ)のみから
-      // 客観的に判定できる範囲でバッジ化。憶測は含めない。
       const badges = [];
       if (index === 0) badges.push({ text: 'レビュー数1位', cls: 'product-badge--rank', title: '表示された商品の中でレビュー件数が最も多い商品です(市場全体の1位という意味ではありません)' });
       else if (reviewCount >= 3000) badges.push({ text: 'レビュー多数', cls: 'product-badge--rank' });
@@ -65,16 +59,11 @@ async function showProducts(keyword, labelText) {
     grid.classList.add('show');
     if (label) { label.textContent = labelText; label.style.display = ''; }
   } catch (e) {
-    // API呼び出しに失敗しても既存の検索リンクCTA(aff-card)がフォールバックとして機能するため、
-    // ここでは静かに諦める(エラー表示はしない)。
     grid.classList.remove('show');
   }
 }
 
 // ageTier補正倍率(近い関係=scalableな項目にのみ適用)
-// 2026-08-11、実際のマナーサイト複数(小さなお葬式/イオンのお葬式等)の年代別相場と突き合わせて再較正。
-// 例: 親への香典は「20代3〜10万円/40代以上10万円程度」が目安とされており、旧倍率(0.8/1.0/1.3/1.5)では
-// 40代以上が6.5万円止まりで実勢より低く出ていた。
 const AGE_MULTIPLIER = { '20s': 0.9, '30s': 1.0, '40s': 1.6, '50s': 2.0 };
 
 const RELATIONS = {
@@ -82,10 +71,6 @@ const RELATIONS = {
     { value: 'friend',   label: '友人・知人',              base: 30000, scalable: false },
     { value: 'colleague', label: '職場の同僚・部下',        base: 30000, scalable: false },
     { value: 'boss',      label: '職場の上司',              base: 30000, scalable: false },
-    // 2026-09-06、全互協「婚礼に関するアンケート調査報告書」(n=3,137)でいとこ(従兄弟姉妹・最多3万円)と
-    // 叔父叔母(最多5万円・平均81,629円)が別区分と判明したため、従来1つだったバケットを分離(コンテンツ拡充
-    // レビュー#13)。いとこは年代による変動が小さいためscalable:false(goshugi-itokoの実データと整合)、
-    // 叔父叔母は年代差が大きいためscalable:trueを維持。
     { value: 'cousin',    label: 'いとこなどの親族',          base: 30000, scalable: false },
     { value: 'uncle_aunt', label: '叔父叔母',                base: 50000, scalable: true },
     { value: 'sibling',   label: '兄弟姉妹',                base: 50000, scalable: true },
@@ -117,8 +102,8 @@ const ADVICE = {
 
 let currentScene = 'wedding';
 
-const relationSelect = document.getElementById('select-relation');
-const ageSelect = document.getElementById('select-age');
+const chipRelation = document.getElementById('chip-relation');
+const chipAge = document.getElementById('chip-age');
 const fieldWeddingAttend = document.getElementById('field-wedding-attend');
 const fieldFuneralMeal = document.getElementById('field-funeral-meal');
 const resultCard = document.getElementById('result-card');
@@ -145,26 +130,37 @@ const btnShareLine = document.getElementById('btn-share-line');
 const followX = document.getElementById('follow-x');
 let lastAmount = 0;
 
+// ---- チップ選択(2026-09-12、took.jp型UX: ドロップダウン+計算ボタンをやめ、
+// ボタンチップをクリックした瞬間に結果が更新される方式に変更) ----
+function getChipValue(container) {
+  return container.querySelector('.chip.active')?.dataset.value;
+}
+function setChipActive(container, value) {
+  [...container.children].forEach((btn) => btn.classList.toggle('active', btn.dataset.value === value));
+}
+function selectChip(container, value) {
+  setChipActive(container, value);
+  calc();
+}
+
 function populateRelations() {
-  // タブ切替(慶事⇔弔事)で選び直した間柄が消えないよう、同じvalueが新しいシーンにもあれば維持する
-  // (2026-09-12レビュー: 常に配列の先頭「ご近所」にリセットされ不自然、との指摘を受け対応)。
-  const previousValue = relationSelect.value;
-  relationSelect.innerHTML = '';
+  // タブ切替(慶事⇔弔事)で選び直した間柄が消えないよう、同じvalueが新しいシーンにもあれば維持する。
+  const previousValue = getChipValue(chipRelation);
+  chipRelation.innerHTML = '';
   RELATIONS[currentScene].forEach((r) => {
-    const opt = document.createElement('option');
-    opt.value = r.value;
-    opt.textContent = r.label;
-    relationSelect.appendChild(opt);
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'chip';
+    btn.dataset.value = r.value;
+    btn.textContent = r.label;
+    btn.addEventListener('click', () => selectChip(chipRelation, r.value));
+    chipRelation.appendChild(btn);
   });
-  if (RELATIONS[currentScene].some((r) => r.value === previousValue)) {
-    relationSelect.value = previousValue;
-  }
+  const hasPrevious = RELATIONS[currentScene].some((r) => r.value === previousValue);
+  setChipActive(chipRelation, hasPrevious ? previousValue : RELATIONS[currentScene][0].value);
 }
 
 function setScene(scene) {
-  // タブ切替で結果が無言で消え「計算できなくなった」と誤解されないよう、直前まで結果表示中だった場合だけ一言添える
-  // (2026-09-12レビュー指摘)。
-  toggleSceneSwitchHint(resultCard.classList.contains('show'));
   currentScene = scene;
   document.querySelectorAll('.scene-tab').forEach((btn) => {
     const isActive = btn.dataset.scene === scene;
@@ -176,16 +172,6 @@ function setScene(scene) {
   fieldFuneralMeal.style.display = scene === 'funeral' ? '' : 'none';
   document.body.classList.toggle('theme-solemn', scene === 'funeral');
   populateRelations();
-  resultCard.classList.remove('show');
-  if (nextTools) nextTools.classList.remove('show');
-  shareRow.classList.remove('show');
-  if (followX) followX.style.display = scene === 'wedding' ? '' : 'none';
-  affCard.classList.remove('show');
-  document.querySelector('.survey-banner')?.classList.remove('show');
-  mannerWedding.classList.remove('show');
-  mannerFuneral.classList.remove('show');
-  regionWedding.classList.remove('show');
-  regionFuneral.classList.remove('show');
   rateTableWedding.classList.toggle('show', scene === 'wedding');
   rateTableFuneral.classList.toggle('show', scene === 'funeral');
   const grid = document.getElementById('product-grid');
@@ -194,35 +180,22 @@ function setScene(scene) {
   if (gridLabel) gridLabel.style.display = 'none';
 
   // 祝儀袋/香典袋ジャンルの人気ランキング(2026-09-06追加)。計算結果とは独立した固定コンテンツのため
-  // シーン切替時に即座に切り替える(計算ボタンの押下を待たない)。
+  // シーン切替時に即座に切り替える。
   const rankingLabel = document.getElementById('ranking-grid-label');
   if (rankingLabel) rankingLabel.textContent = scene === 'wedding' ? '🏆 楽天市場「祝儀袋」ジャンルの人気ランキング' : '🏆 楽天市場「香典袋」ジャンルの人気ランキング';
   showRanking(scene === 'wedding' ? 210194 : 567467, 'ranking-grid');
+
+  // took.jp型UX: タブ切替直後にその場で再計算し、結果を即座に更新する(計算ボタン・待機なし)。
+  calc();
 }
 
 function roundTo(amount, step) {
   return Math.round(amount / step) * step;
 }
 
-let sceneSwitchHintEl = null;
-function toggleSceneSwitchHint(show) {
-  if (show) {
-    if (!sceneSwitchHintEl) {
-      sceneSwitchHintEl = document.createElement('p');
-      sceneSwitchHintEl.className = 'scene-switch-hint';
-      sceneSwitchHintEl.textContent = '内容が切り替わりました。もう一度「計算する」を押してください。';
-      document.getElementById('btn-calc').insertAdjacentElement('beforebegin', sceneSwitchHintEl);
-    }
-    sceneSwitchHintEl.style.display = '';
-  } else if (sceneSwitchHintEl) {
-    sceneSwitchHintEl.style.display = 'none';
-  }
-}
-
 function calc() {
-  toggleSceneSwitchHint(false);
-  const relationValue = relationSelect.value;
-  const ageTier = ageSelect.value;
+  const relationValue = getChipValue(chipRelation);
+  const ageTier = getChipValue(chipAge);
   const config = RELATIONS[currentScene].find((r) => r.value === relationValue);
   if (!config) return;
 
@@ -250,9 +223,6 @@ function calc() {
     }
   }
 
-  // レンジ算出は他ページ(出産祝い/プレゼント予算)と同じ「金額の±20%」方式に統一(2026-08-11)。
-  // 旧「固定±5,000円」だと、3,000円台の少額(香典の近所枠等)ではレンジが実質2.7倍まで広がってしまい、
-  // 高額帯(10万円超)ではレンジがほぼ意味をなさないほど狭くなる不整合があった。
   const rangeLow = Math.max(1000, roundTo(amount * 0.8, 1000));
   const rangeHigh = roundTo(amount * 1.2, 1000);
 
@@ -260,7 +230,6 @@ function calc() {
   resultAmount.textContent = amount.toLocaleString('ja-JP');
   resultRange.textContent = `目安レンジ:¥${rangeLow.toLocaleString('ja-JP')} 〜 ¥${rangeHigh.toLocaleString('ja-JP')}`;
   resultAdvice.textContent = adviceText;
-  // 計算根拠の可視化(行動経済学レビュー、2026-09-05): 基準額がどこから来ているかを一言添え、金額への納得感を補う。
   resultBreakdown.textContent = config.scalable
     ? `内訳の目安: ${config.label}の基準額¥${config.base.toLocaleString('ja-JP')} × 年代係数${AGE_MULTIPLIER[ageTier]}`
     : `内訳の目安: ${config.label}の基準額¥${config.base.toLocaleString('ja-JP')}`;
@@ -268,11 +237,9 @@ function calc() {
   if (nextTools) nextTools.classList.add('show');
   lastAmount = amount;
   updateShareUrl();
-  // グリーフケアレビュー(2026-08-31)対応: 香典シーンではXシェアボタン・運営フォロー誘導文のような
-  // 慶事向けの軽いトーンの導線を表示しない(遺族当事者・急かされない設計の複数レビュアーが指摘)。
-  // URLコピーボタンは家族間で結果を共有する実用的な用途があるため香典シーンでも残す。
   shareRow.classList.add('show');
   btnShareX.style.display = currentScene === 'wedding' ? '' : 'none';
+  btnShareLine.style.display = currentScene === 'wedding' ? '' : 'none';
   if (followX) followX.style.display = currentScene === 'wedding' ? '' : 'none';
 
   let productKeyword;
@@ -297,21 +264,21 @@ function calc() {
   }
   affCard.classList.add('show');
   document.querySelector('.survey-banner')?.classList.add('show');
-  // グリーフケアレビュー(2026-08-31)対応: 弔事では「人気の」「🛒」等ECサイトの煽り文句を控えめにする
-  // (body.theme-solemnの切り替え自体はsetScene()側で行う)。
   const productLabel = currentScene === 'wedding' ? '🛒 人気のご祝儀袋' : '不祝儀袋(香典袋)';
   showProducts(productKeyword, productLabel);
-
-  resultCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
 
 document.querySelectorAll('.scene-tab').forEach((btn) => {
   btn.addEventListener('click', () => setScene(btn.dataset.scene));
 });
-document.getElementById('btn-calc').addEventListener('click', calc);
+document.querySelectorAll('#chip-age .chip').forEach((btn) => {
+  btn.addEventListener('click', () => selectChip(chipAge, btn.dataset.value));
+});
+document.querySelectorAll('input[name="attend"], input[name="meal"]').forEach((input) => {
+  input.addEventListener('change', calc);
+});
 
-// GA4クリック計測(2026-08-15追加): 商品カード・検索CTAのクリックを計測し、
-// 導線が実際にクリックされているかを今後データで検証できるようにする(ユーザー目線レビューで判明した盲点)。
+// GA4クリック計測(2026-08-15追加)
 document.getElementById('product-grid')?.addEventListener('click', (e) => {
   const card = e.target.closest('.product-card');
   if (!card || typeof gtag !== 'function') return;
@@ -332,12 +299,11 @@ document.querySelector('.survey-banner a')?.addEventListener('click', () => {
 });
 
 // 結果の共有機能(2026-08-14): 現在の入力状態をURLクエリに保持し、結果ページを直接共有できるようにする。
-// 「サイトを紹介する」より「計算結果を共有する」方が拡散されやすいというPerplexity調査(集客装置化第2弾)を踏まえた実装。
 function paramsFromState() {
   const params = new URLSearchParams();
   params.set('scene', currentScene);
-  params.set('relation', relationSelect.value);
-  params.set('age', ageSelect.value);
+  params.set('relation', getChipValue(chipRelation));
+  params.set('age', getChipValue(chipAge));
   if (currentScene === 'wedding') {
     params.set('attend', document.querySelector('input[name="attend"]:checked').value);
   } else {
@@ -352,13 +318,11 @@ function updateShareUrl() {
 }
 
 function shareText(amount) {
-  const relationLabel = (RELATIONS[currentScene].find((r) => r.value === relationSelect.value) || {}).label || '';
+  const relationLabel = (RELATIONS[currentScene].find((r) => r.value === getChipValue(chipRelation)) || {}).label || '';
   const sceneLabel = currentScene === 'wedding' ? 'ご祝儀' : '香典';
   return `${relationLabel}への${sceneLabel}の相場を計算しました。\n目安:¥${amount.toLocaleString('ja-JP')}\n`;
 }
 
-// クリップボードAPIが権限待ちなどで応答しない環境があるため、1.5秒でタイムアウトし
-// 古いexecCommand('copy')にフォールバックする(2026-08-15、デバッグで発見した堅牢化)。
 function legacyCopyFallback(text) {
   try {
     const input = document.createElement('textarea');
@@ -387,7 +351,6 @@ btnCopyLink.addEventListener('click', async () => {
     showCopied();
   } catch (e) {
     if (legacyCopyFallback(location.href)) showCopied();
-    // それでも失敗した場合は静かに諦める(URLはアドレスバーから手動コピー可能なため)
   }
 });
 btnShareX.addEventListener('click', () => {
@@ -401,16 +364,20 @@ btnShareLine.addEventListener('click', () => {
   window.open(lineUrl, '_blank', 'noopener');
 });
 
-// 共有URLからの復元: 条件が有効な場合のみ自動計算する(不正・不完全なクエリは通常表示にフォールバック)
+// 共有URLからの復元: 条件が有効な場合のみ反映する(不正・不完全なクエリは通常表示にフォールバック)。
+// 2026-09-12、took.jp型UXでsetScene()自体がcalc()→updateShareUrl()を呼ぶようになったため、
+// 初回のsetScene('wedding')実行時点でURLクエリがデフォルト値に上書きされてしまうバグが発覚。
+// ページ読み込み直後の「本来のクエリ」を先に退避しておき、そちらを読む。
+const initialParams = new URLSearchParams(location.search);
 function initFromQuery() {
-  const params = new URLSearchParams(location.search);
+  const params = initialParams;
   const scene = params.get('scene');
   if (scene !== 'wedding' && scene !== 'funeral') return;
   setScene(scene);
   const relation = params.get('relation');
-  if (relation && RELATIONS[scene].some((r) => r.value === relation)) relationSelect.value = relation;
+  if (relation && RELATIONS[scene].some((r) => r.value === relation)) setChipActive(chipRelation, relation);
   const age = params.get('age');
-  if (age && AGE_MULTIPLIER[age]) ageSelect.value = age;
+  if (age && AGE_MULTIPLIER[age]) setChipActive(chipAge, age);
   if (scene === 'wedding') {
     const attend = params.get('attend');
     if (attend === 'present' || attend === 'absent') {

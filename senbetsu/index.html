@@ -108,20 +108,20 @@
   <div class="calc-layout-input">
   <div class="calc-card">
     <div class="field">
-      <label for="select-scene">場面</label>
-      <select id="select-scene">
-        <option value="teinen">定年退職</option>
-        <option value="taishoku" selected>退職・転職</option>
-        <option value="tenkin">転勤・異動</option>
-      </select>
+      <label id="label-scene">場面</label>
+      <div class="chip-group" id="chip-scene" role="group" aria-labelledby="label-scene">
+        <button class="chip" type="button" data-value="teinen">定年退職</button>
+        <button class="chip active" type="button" data-value="taishoku">退職・転職</button>
+        <button class="chip" type="button" data-value="tenkin">転勤・異動</button>
+      </div>
     </div>
     <div class="field">
-      <label for="select-relation">相手との間柄</label>
-      <select id="select-relation">
-        <option value="boss">上司</option>
-        <option value="colleague" selected>同僚・後輩</option>
-        <option value="subordinate">部下</option>
-      </select>
+      <label id="label-relation">相手との間柄</label>
+      <div class="chip-group" id="chip-relation" role="group" aria-labelledby="label-relation">
+        <button class="chip" type="button" data-value="boss">上司</button>
+        <button class="chip active" type="button" data-value="colleague">同僚・後輩</button>
+        <button class="chip" type="button" data-value="subordinate">部下</button>
+      </div>
     </div>
     <div class="field">
       <label>贈り方</label>
@@ -130,7 +130,7 @@
         <label><input type="radio" name="giving" value="group"> 職場でまとめて(連名)</label>
       </div>
     </div>
-    <button class="btn-calc" id="btn-calc" type="button">相場を計算する</button>
+    <p class="calc-instant-note">選択すると同時に結果が更新されます</p>
   </div>
   </div>
 

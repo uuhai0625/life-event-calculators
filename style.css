@@ -149,15 +149,6 @@ summary:focus-visible {
   line-height: 1;
 }
 .theme-toggle-btn:hover { background: rgba(255, 255, 255, 0.18); }
-.site-header.header-compact .theme-toggle-btn { top: 50%; transform: translateY(-50%); }
-/* スクロール中は画面の18%超を占有しコンテンツを隠す実測結果への対応(2026-09-07、header-scroll.js側でクラス切替)。
-   ページ最上部ではロゴ+タイトルをフル表示、少しスクロールしたらタイトルを隠しロゴだけの薄いバーにする。 */
-.site-header.header-compact { padding: 12px 0; }
-.site-header.header-compact .site-logo {
-  font-size: 1.2rem;
-  margin: 0;
-}
-.site-header.header-compact .site-tagline { display: none; }
 .skip-link {
   position: absolute;
   top: -100px;

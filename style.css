@@ -313,6 +313,24 @@ section:first-of-type .tool-section-heading { margin-top: 28px; }
   font-size: 0.85rem;
   color: var(--ink-sub);
 }
+
+/* ---- 計算機ページ専用のPC2カラムレイアウト(2026-09-12、PC/スマホでレイアウトを分ける方針を受けて追加)
+   モバイルは従来通り1カラム縦積み。PC幅では左=入力フォーム(スクロールに追従)、右=結果・関連導線の
+   2カラムにし、入力→スクロールして結果を確認、という往復をなくす。DOM順序は変更せず、
+   既存の.calc-card〜.survey-bannerのまとまりを丸ごとラップしただけなのでSEO/読み上げ順は無傷。 ---- */
+@media (min-width: 960px) {
+  main.wrap:has(.calc-layout) { max-width: 1000px; }
+  .calc-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 360px) minmax(0, 1fr);
+    gap: 0 32px;
+    align-items: start;
+  }
+  .calc-layout-input {
+    position: sticky;
+    top: 72px;
+  }
+}
 .tool-list {
   display: flex;
   flex-direction: column;

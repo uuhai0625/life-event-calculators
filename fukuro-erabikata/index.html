@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script>try{var t=localStorage.getItem('theme');if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https://thumbnail.image.rakuten.co.jp; connect-src 'self' https://openapi.rakuten.co.jp https://www.google-analytics.com https://*.google-analytics.com https://*.analytics.google.com https://www.googletagmanager.com; object-src 'none'; base-uri 'self'">
 <title>【2026年版】ご祝儀袋・香典袋の選び方ガイド(金額別)|相場ノート</title>
 <meta name="description" content="包む金額に見合った袋の「格」を選ぶのがマナーです。ご祝儀袋・香典袋それぞれの金額別の選び方、水引の種類、宗教別の使い分けをまとめました。">
@@ -35,9 +36,9 @@
   "@type": "FAQPage",
   "dateModified": "2026-09-06",
   "mainEntity": [
-    { "@type": "Question", "name": "袋の格を金額に合わせる必要があるのはなぜ?", "acceptedAnswer": { "@type": "Answer", "text": "金額が少ないのに豪華な袋を使ったり、逆に高額なのに簡素な袋を使ったりすると、受け取る側に不釣り合いな印象を与えてしまうためです。包む金額と袋の格をそろえるのが基本のマナーとされています。" } },
-    { "@type": "Question", "name": "コンビニで買った袋でも失礼にならない?", "acceptedAnswer": { "@type": "Answer", "text": "1万円前後までの金額であれば、コンビニや100円ショップで手に入るシンプルな水引の袋で問題ないとされています。高額を包む場合は、文具店やデパートで上質な和紙・立体的な水引の袋を選びましょう。" } },
-    { "@type": "Question", "name": "水引の色に地域差はある?", "acceptedAnswer": { "@type": "Answer", "text": "香典袋の水引は、黒白・双銀が全国的に広く使われる一方、黄白は主に関西から西日本の地域で用いられる傾向があります。迷った場合は黒白を選べば問題ありません。" } }
+    { "@type": "Question", "name": "袋の格を金額に合わせる必要があるのはなぜ?", "acceptedAnswer": { "@type": "Answer", "text": "結論:包む金額と袋の格をそろえるのが基本のマナーとされているためです。金額が少ないのに豪華な袋を使ったり、逆に高額なのに簡素な袋を使ったりすると、受け取る側に不釣り合いな印象を与えてしまいます。" } },
+    { "@type": "Question", "name": "コンビニで買った袋でも失礼にならない?", "acceptedAnswer": { "@type": "Answer", "text": "結論:1万円前後までの金額であれば問題ないとされています。コンビニや100円ショップで手に入るシンプルな水引の袋で構いません。高額を包む場合は、文具店やデパートで上質な和紙・立体的な水引の袋を選びましょう。" } },
+    { "@type": "Question", "name": "水引の色に地域差はある?", "acceptedAnswer": { "@type": "Answer", "text": "結論:はい、あります。香典袋の水引は、黒白・双銀が全国的に広く使われる一方、黄白は主に関西から西日本の地域で用いられる傾向があります。迷った場合は黒白を選べば問題ありません。" } }
   ]
 }
 </script>
@@ -47,7 +48,8 @@
   "@type": "BreadcrumbList",
   "itemListElement": [
     { "@type": "ListItem", "position": 1, "name": "相場ノート", "item": "https://uuhai0625.github.io/life-event-calculators/" },
-    { "@type": "ListItem", "position": 2, "name": "ご祝儀袋・香典袋の選び方ガイド", "item": "https://uuhai0625.github.io/life-event-calculators/fukuro-erabikata/" }
+    { "@type": "ListItem", "position": 2, "name": "参考コンテンツ", "item": "https://uuhai0625.github.io/life-event-calculators/#section-reference" },
+    { "@type": "ListItem", "position": 3, "name": "ご祝儀袋・香典袋の選び方ガイド", "item": "https://uuhai0625.github.io/life-event-calculators/fukuro-erabikata/" }
   ]
 }
 </script>
@@ -80,15 +82,21 @@
   <div class="wrap">
     <a class="site-logo heading-font" href="../">相場<span class="accent">ノート</span></a>
     <h1 class="site-tagline">ご祝儀袋・香典袋の選び方ガイド</h1>
+    <button class="theme-toggle-btn" id="theme-toggle-btn" type="button" aria-label="ダークモードに切り替え">🌓</button>
   </div>
 </header>
 
 <main class="wrap" id="main-content">
   <nav class="breadcrumb" aria-label="パンくずリスト">
-    <a href="../">相場ノート</a><span class="breadcrumb-sep" aria-hidden="true">›</span><span aria-current="page">ご祝儀袋・香典袋の選び方ガイド</span>
+    <a href="../">相場ノート</a><span class="breadcrumb-sep" aria-hidden="true">›</span><a href="../#section-reference">参考コンテンツ</a><span class="breadcrumb-sep" aria-hidden="true">›</span><span aria-current="page">ご祝儀袋・香典袋の選び方ガイド</span>
   </nav>
+  <div class="site-search">
+    <label for="site-search-input" class="sr-only">他の計算機を探す</label>
+    <input type="search" id="site-search-input" placeholder="🔍 他の計算機を探す(例: 香典、ことば)" autocomplete="off">
+    <div class="site-search-results" id="site-search-results"></div>
+  </div>
   <p class="page-intro-note">金額の目安が決まったら、次は袋選びです。包む金額に見合った袋の「格」を選ぶのが基本のマナーとされています。金額別の選び方をまとめました。</p>
-  <p class="page-updated-note">最終更新: 2026年9月 ・ <a href="../#about">運営者情報・データの調査方法</a></p>
+  <p class="page-updated-note">最終更新: 2026年9月12日 ・ <a href="../#about">運営者情報・データの調査方法</a></p>
   <p class="page-tldr">結論から言うと、1〜2万円は水引が印刷されたシンプルな袋、3万円は立体的な水引の袋、5万円以上は上質な和紙・豪華な水引の袋を選ぶのが目安です。</p>
 
   <div class="share-row show" style="margin:0 0 20px;">
@@ -135,15 +143,15 @@
     <h3>よくある質問</h3>
     <details class="faq-item">
       <summary>袋の格を金額に合わせる必要があるのはなぜ?</summary>
-      <p>金額が少ないのに豪華な袋を使ったり、逆に高額なのに簡素な袋を使ったりすると、受け取る側に不釣り合いな印象を与えてしまうためです。包む金額と袋の格をそろえるのが基本のマナーとされています。</p>
+      <p>結論:包む金額と袋の格をそろえるのが基本のマナーとされているためです。金額が少ないのに豪華な袋を使ったり、逆に高額なのに簡素な袋を使ったりすると、受け取る側に不釣り合いな印象を与えてしまいます。</p>
     </details>
     <details class="faq-item">
       <summary>コンビニで買った袋でも失礼にならない?</summary>
-      <p>1万円前後までの金額であれば、コンビニや100円ショップで手に入るシンプルな水引の袋で問題ないとされています。高額を包む場合は、文具店やデパートで上質な和紙・立体的な水引の袋を選びましょう。</p>
+      <p>結論:1万円前後までの金額であれば問題ないとされています。コンビニや100円ショップで手に入るシンプルな水引の袋で構いません。高額を包む場合は、文具店やデパートで上質な和紙・立体的な水引の袋を選びましょう。</p>
     </details>
     <details class="faq-item">
       <summary>水引の色に地域差はある?</summary>
-      <p>香典袋の水引は、黒白・双銀が全国的に広く使われる一方、黄白は主に関西から西日本の地域で用いられる傾向があります。迷った場合は黒白を選べば問題ありません。</p>
+      <p>結論:はい、あります。香典袋の水引は、黒白・双銀が全国的に広く使われる一方、黄白は主に関西から西日本の地域で用いられる傾向があります。迷った場合は黒白を選べば問題ありません。</p>
     </details>
   </div>
 
@@ -177,6 +185,8 @@
 
 <script src="../ga.js"></script>
 <script src="../header-scroll.js"></script>
+<script src="../site-search.js"></script>
+<script src="../theme-toggle.js"></script>
 <script src="../rakuten-shared.js"></script>
 <script src="script.js"></script>
 </body>

@@ -23,7 +23,7 @@
 }
 
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not([data-theme="light"]) {
     --bg: #1c1a17;
     --bg-card: #262320;
     --ink: #ede7de;
@@ -52,6 +52,30 @@
     --highlight-bg: #302c27;
     --select-arrow: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='9'%3E%3Cpath d='M1 1l6 6 6-6' stroke='%23b3a898' stroke-width='2' fill='none' fill-rule='evenodd'/%3E%3C/svg%3E");
   }
+}
+/* 手動ダークモード切替(2026-09-12追加)用。上のprefers-color-scheme版と同じ値を、
+   OS設定に関わらず明示的にdata-theme="dark"が指定された場合にも適用できるよう複製する。 */
+:root[data-theme="dark"] {
+  --bg: #1c1a17;
+  --bg-card: #262320;
+  --ink: #ede7de;
+  --ink-sub: #b3a898;
+  --navy: #3a5c82;
+  --navy-dark: #223c54;
+  --navy-text: #8fb4dd;
+  --gold: #d9b64f;
+  --gold-soft: #3d341a;
+  --line: #3d372e;
+  --vermilion: #d9754a;
+  --vermilion-soft: #331d13;
+  --slate: #b0b0b0;
+  --slate-soft: #3a3a3a;
+  --shadow: 0 10px 28px rgba(0, 0, 0, 0.45);
+  --shadow-soft: 0 4px 14px rgba(0, 0, 0, 0.35);
+  --check-bg: #23384a;
+  --gold-text: #d9b64f;
+  --highlight-bg: #302c27;
+  --select-arrow: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='9'%3E%3Cpath d='M1 1l6 6 6-6' stroke='%23b3a898' stroke-width='2' fill='none' fill-rule='evenodd'/%3E%3C/svg%3E");
 }
 
 * { box-sizing: border-box; }
@@ -109,7 +133,24 @@ summary:focus-visible {
   z-index: 50;
   transition: padding 0.15s ease;
 }
-.site-header .wrap { max-width: 720px; }
+.site-header .wrap { max-width: 720px; position: relative; }
+/* 手動ダークモード切替ボタン(2026-09-12追加) */
+.theme-toggle-btn {
+  position: absolute;
+  top: 0;
+  right: 20px;
+  width: 36px;
+  height: 36px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+  font-size: 1rem;
+  cursor: pointer;
+  line-height: 1;
+}
+.theme-toggle-btn:hover { background: rgba(255, 255, 255, 0.18); }
+.site-header.header-compact .theme-toggle-btn { top: 50%; transform: translateY(-50%); }
 /* スクロール中は画面の18%超を占有しコンテンツを隠す実測結果への対応(2026-09-07、header-scroll.js側でクラス切替)。
    ページ最上部ではロゴ+タイトルをフル表示、少しスクロールしたらタイトルを隠しロゴだけの薄いバーにする。 */
 .site-header.header-compact { padding: 12px 0; }
@@ -229,6 +270,56 @@ a.site-logo:hover { opacity: 0.85; }
   font-size: 0.82rem;
   color: var(--ink-sub);
   min-height: 1.2em;
+}
+/* ---- 個別ページ用の横断検索(2026-09-12、競合調査で個別ページにも検索を常設しているのを参考に追加) ---- */
+.site-search {
+  position: relative;
+  margin: 14px 0 0;
+}
+.site-search input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 12px 14px;
+  border-radius: var(--radius);
+  border: 1px solid var(--line);
+  background: var(--bg-card);
+  color: var(--ink);
+  font-size: 0.95rem;
+  font-family: inherit;
+}
+.site-search input:focus-visible {
+  outline: 3px solid var(--gold);
+  outline-offset: 2px;
+}
+.site-search-results {
+  display: none;
+  position: absolute;
+  z-index: 60;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  background: var(--bg-card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+.site-search-results.show { display: block; }
+.site-search-results a {
+  display: block;
+  padding: 10px 14px;
+  color: var(--ink);
+  text-decoration: none;
+  font-size: 0.9rem;
+  border-bottom: 1px solid var(--line);
+}
+.site-search-results a:last-child { border-bottom: none; }
+.site-search-results a:hover { background: var(--check-bg); color: var(--navy-text); }
+.site-search-empty {
+  margin: 0;
+  padding: 10px 14px;
+  font-size: 0.85rem;
+  color: var(--ink-sub);
 }
 .tool-jump {
   display: flex;

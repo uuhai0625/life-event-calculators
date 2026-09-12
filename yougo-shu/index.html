@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script>try{var t=localStorage.getItem('theme');if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https://thumbnail.image.rakuten.co.jp; connect-src 'self' https://openapi.rakuten.co.jp https://www.google-analytics.com https://*.google-analytics.com https://*.analytics.google.com https://www.googletagmanager.com; object-src 'none'; base-uri 'self'">
 <title>【2026年版】冠婚葬祭のことば辞典|相場ノート</title>
 <meta name="description" content="表書き・水引・のし袋・袱紗・御霊前など、冠婚葬祭でよく使われる言葉の意味をまとめました。相場ノートの各計算機ページと合わせてご利用ください。">
@@ -57,7 +58,8 @@
   "@type": "BreadcrumbList",
   "itemListElement": [
     { "@type": "ListItem", "position": 1, "name": "相場ノート", "item": "https://uuhai0625.github.io/life-event-calculators/" },
-    { "@type": "ListItem", "position": 2, "name": "冠婚葬祭のことば辞典", "item": "https://uuhai0625.github.io/life-event-calculators/yougo-shu/" }
+    { "@type": "ListItem", "position": 2, "name": "参考コンテンツ", "item": "https://uuhai0625.github.io/life-event-calculators/#section-reference" },
+    { "@type": "ListItem", "position": 3, "name": "冠婚葬祭のことば辞典", "item": "https://uuhai0625.github.io/life-event-calculators/yougo-shu/" }
   ]
 }
 </script>
@@ -90,15 +92,21 @@
   <div class="wrap">
     <a class="site-logo heading-font" href="../">相場<span class="accent">ノート</span></a>
     <h1 class="site-tagline">冠婚葬祭のことば辞典</h1>
+    <button class="theme-toggle-btn" id="theme-toggle-btn" type="button" aria-label="ダークモードに切り替え">🌓</button>
   </div>
 </header>
 
 <main class="wrap" id="main-content">
   <nav class="breadcrumb" aria-label="パンくずリスト">
-    <a href="../">相場ノート</a><span class="breadcrumb-sep" aria-hidden="true">›</span><span aria-current="page">冠婚葬祭のことば辞典</span>
+    <a href="../">相場ノート</a><span class="breadcrumb-sep" aria-hidden="true">›</span><a href="../#section-reference">参考コンテンツ</a><span class="breadcrumb-sep" aria-hidden="true">›</span><span aria-current="page">冠婚葬祭のことば辞典</span>
   </nav>
+  <div class="site-search">
+    <label for="site-search-input" class="sr-only">他の計算機を探す</label>
+    <input type="search" id="site-search-input" placeholder="🔍 他の計算機を探す(例: 香典、ことば)" autocomplete="off">
+    <div class="site-search-results" id="site-search-results"></div>
+  </div>
   <p class="page-intro-note">相場ノートの各計算機ページで使っている冠婚葬祭関連の言葉を、辞典形式でまとめました。金封や表書きの選び方に迷ったときにご利用ください。</p>
-  <p class="page-updated-note">最終更新: 2026年9月 ・ <a href="../#about">運営者情報・データの調査方法</a></p>
+  <p class="page-updated-note">最終更新: 2026年9月12日 ・ <a href="../#about">運営者情報・データの調査方法</a></p>
   <p class="page-tldr">結論から言うと、慶事は「蝶結び+新札+のし付き」、弔事は「結び切り+旧札+のしなし」が基本の組み合わせです。詳しい使い分けは下記をご覧ください。</p>
 
   <div class="share-row show" style="margin:0 0 20px;">
@@ -186,5 +194,7 @@
 
 <script src="../ga.js"></script>
 <script src="../header-scroll.js"></script>
+<script src="../site-search.js"></script>
+<script src="../theme-toggle.js"></script>
 </body>
 </html>

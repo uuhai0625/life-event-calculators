@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script>try{var t=localStorage.getItem('theme');if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https://thumbnail.image.rakuten.co.jp; connect-src 'self' https://openapi.rakuten.co.jp https://www.google-analytics.com https://*.google-analytics.com https://*.analytics.google.com https://www.googletagmanager.com; object-src 'none'; base-uri 'self'">
 <title>【2026年版】冠婚葬祭の金額早見表まとめ(全13シーン一覧)|相場ノート</title>
 <meta name="description" content="ご祝儀・香典・出産祝い・結婚祝い・お中元お歳暮・餞別・長寿祝いなど、相場ノート全13ページの早見表を1ページにまとめました。それぞれの前提条件・出典付きで一覧できます。">
@@ -35,8 +36,8 @@
   "@type": "FAQPage",
   "dateModified": "2026-09-06",
   "mainEntity": [
-    { "@type": "Question", "name": "このページの金額はそのまま使っていい?", "acceptedAnswer": { "@type": "Answer", "text": "各表は代表的な条件(年代・出欠・会食有無など)を1つ選んで算出した目安です。実際の金額は年代や状況によって変わるため、該当する計算機で自分の条件を入力して計算することをおすすめします。" } },
-    { "@type": "Question", "name": "表に載っていない間柄・シーンはある?", "acceptedAnswer": { "@type": "Answer", "text": "各計算機ページにはこの一覧に載せきれていない間柄(祖父母・叔父叔母・甥姪など)も用意しています。詳しくは各計算機ページの早見表・間柄別解説をご覧ください。" } }
+    { "@type": "Question", "name": "このページの金額はそのまま使っていい?", "acceptedAnswer": { "@type": "Answer", "text": "結論:目安として使えますが、正確な金額は該当する計算機で自分の条件を入力して計算することをおすすめします。各表は代表的な条件(年代・出欠・会食有無など)を1つ選んで算出した目安のため、実際の金額は年代や状況によって変わります。" } },
+    { "@type": "Question", "name": "表に載っていない間柄・シーンはある?", "acceptedAnswer": { "@type": "Answer", "text": "結論:はい、あります。各計算機ページにはこの一覧に載せきれていない間柄(祖父母・叔父叔母・甥姪など)も用意しています。詳しくは各計算機ページの早見表・間柄別解説をご覧ください。" } }
   ]
 }
 </script>
@@ -46,7 +47,8 @@
   "@type": "BreadcrumbList",
   "itemListElement": [
     { "@type": "ListItem", "position": 1, "name": "相場ノート", "item": "https://uuhai0625.github.io/life-event-calculators/" },
-    { "@type": "ListItem", "position": 2, "name": "冠婚葬祭の金額早見表まとめ", "item": "https://uuhai0625.github.io/life-event-calculators/souba-ichiran/" }
+    { "@type": "ListItem", "position": 2, "name": "参考コンテンツ", "item": "https://uuhai0625.github.io/life-event-calculators/#section-reference" },
+    { "@type": "ListItem", "position": 3, "name": "冠婚葬祭の金額早見表まとめ", "item": "https://uuhai0625.github.io/life-event-calculators/souba-ichiran/" }
   ]
 }
 </script>
@@ -79,15 +81,21 @@
   <div class="wrap">
     <a class="site-logo heading-font" href="../">相場<span class="accent">ノート</span></a>
     <h1 class="site-tagline">冠婚葬祭の金額早見表まとめ</h1>
+    <button class="theme-toggle-btn" id="theme-toggle-btn" type="button" aria-label="ダークモードに切り替え">🌓</button>
   </div>
 </header>
 
 <main class="wrap" id="main-content">
   <nav class="breadcrumb" aria-label="パンくずリスト">
-    <a href="../">相場ノート</a><span class="breadcrumb-sep" aria-hidden="true">›</span><span aria-current="page">冠婚葬祭の金額早見表まとめ</span>
+    <a href="../">相場ノート</a><span class="breadcrumb-sep" aria-hidden="true">›</span><a href="../#section-reference">参考コンテンツ</a><span class="breadcrumb-sep" aria-hidden="true">›</span><span aria-current="page">冠婚葬祭の金額早見表まとめ</span>
   </nav>
+  <div class="site-search">
+    <label for="site-search-input" class="sr-only">他の計算機を探す</label>
+    <input type="search" id="site-search-input" placeholder="🔍 他の計算機を探す(例: 香典、ことば)" autocomplete="off">
+    <div class="site-search-results" id="site-search-results"></div>
+  </div>
   <p class="page-intro-note">相場ノートで公開している全13ページの早見表を1ページにまとめました。各表は特定の条件(年代・出欠等)を前提とした目安です。ご自身の条件に近い計算機で計算すると、より正確な目安が確認できます。</p>
-  <p class="page-updated-note">最終更新: 2026年9月 ・ <a href="../#about">運営者情報・データの調査方法</a></p>
+  <p class="page-updated-note">最終更新: 2026年9月12日 ・ <a href="../#about">運営者情報・データの調査方法</a></p>
   <p class="page-tldr">結論から言うと、冠婚葬祭で個人が包む金額の目安は、ご近所・浅い間柄で3千〜5千円、友人・同僚クラスで5千円〜3万円、祖父母・親などの近しい親族で1万円〜10万円が中心的なレンジです。詳細は下記シーン別の早見表をご覧ください。</p>
 
   <div class="share-row show" style="margin:0 0 20px;">
@@ -252,11 +260,11 @@
     <h3>よくある質問</h3>
     <details class="faq-item">
       <summary>このページの金額はそのまま使っていい?</summary>
-      <p>各表は代表的な条件(年代・出欠・会食有無など)を1つ選んで算出した目安です。実際の金額は年代や状況によって変わるため、該当する計算機で自分の条件を入力して計算することをおすすめします。</p>
+      <p>結論:目安として使えますが、正確な金額は該当する計算機で自分の条件を入力して計算することをおすすめします。各表は代表的な条件(年代・出欠・会食有無など)を1つ選んで算出した目安のため、実際の金額は年代や状況によって変わります。</p>
     </details>
     <details class="faq-item">
       <summary>表に載っていない間柄・シーンはある?</summary>
-      <p>各計算機ページにはこの一覧に載せきれていない間柄(祖父母・叔父叔母・甥姪など)も用意しています。詳しくは各計算機ページの早見表・間柄別解説をご覧ください。</p>
+      <p>結論:はい、あります。各計算機ページにはこの一覧に載せきれていない間柄(祖父母・叔父叔母・甥姪など)も用意しています。詳しくは各計算機ページの早見表・間柄別解説をご覧ください。</p>
     </details>
   </div>
 
@@ -286,5 +294,7 @@
 
 <script src="../ga.js"></script>
 <script src="../header-scroll.js"></script>
+<script src="../site-search.js"></script>
+<script src="../theme-toggle.js"></script>
 </body>
 </html>

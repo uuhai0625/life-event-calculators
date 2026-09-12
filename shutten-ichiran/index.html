@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script>try{var t=localStorage.getItem('theme');if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https://thumbnail.image.rakuten.co.jp; connect-src 'self' https://openapi.rakuten.co.jp https://www.google-analytics.com https://*.google-analytics.com https://*.analytics.google.com https://www.googletagmanager.com; object-src 'none'; base-uri 'self'">
 <title>【2026年版】相場データの情報源まとめ|相場ノート</title>
 <meta name="description" content="相場ノートに掲載している金額の出典を、シーンごとに一覧でまとめました。調査主体・実施年・確認日を明記しています。">
@@ -35,8 +36,8 @@
   "@type": "FAQPage",
   "dateModified": "2026-09-06",
   "mainEntity": [
-    { "@type": "Question", "name": "なぜ複数の情報源を比較しているの?", "acceptedAnswer": { "@type": "Answer", "text": "単一のブログ記事の言い回しをそのまま採用すると、根拠の薄い数字が広まってしまうリスクがあります。相場ノートでは、可能な限り調査主体・実施年・回答数が明記された一次情報を優先し、複数の情報源で近い水準の数字が確認できたものを掲載する方針をとっています。" } },
-    { "@type": "Question", "name": "出典が1件しかないシーンもあるのはなぜ?", "acceptedAnswer": { "@type": "Answer", "text": "出産祝い・プレゼント予算・結婚祝い(招待されていない場合)・餞別・長寿祝いについては、業界団体による大規模な実施アンケートが見つからず、ギフト専門サイトの情報を中心に掲載しています。より権威性の高い情報源が見つかり次第、随時更新する方針です。" } }
+    { "@type": "Question", "name": "なぜ複数の情報源を比較しているの?", "acceptedAnswer": { "@type": "Answer", "text": "結論:根拠の薄い数字が広まるのを防ぐためです。単一のブログ記事の言い回しをそのまま採用すると、根拠の薄い数字が広まってしまうリスクがあります。相場ノートでは、可能な限り調査主体・実施年・回答数が明記された一次情報を優先し、複数の情報源で近い水準の数字が確認できたものを掲載する方針をとっています。" } },
+    { "@type": "Question", "name": "出典が1件しかないシーンもあるのはなぜ?", "acceptedAnswer": { "@type": "Answer", "text": "結論:業界団体による大規模な実施アンケートが見つからなかったためです。出産祝い・プレゼント予算・結婚祝い(招待されていない場合)・餞別・長寿祝いについては、ギフト専門サイトの情報を中心に掲載しています。より権威性の高い情報源が見つかり次第、随時更新する方針です。" } }
   ]
 }
 </script>
@@ -46,7 +47,8 @@
   "@type": "BreadcrumbList",
   "itemListElement": [
     { "@type": "ListItem", "position": 1, "name": "相場ノート", "item": "https://uuhai0625.github.io/life-event-calculators/" },
-    { "@type": "ListItem", "position": 2, "name": "相場データの情報源まとめ", "item": "https://uuhai0625.github.io/life-event-calculators/shutten-ichiran/" }
+    { "@type": "ListItem", "position": 2, "name": "参考コンテンツ", "item": "https://uuhai0625.github.io/life-event-calculators/#section-reference" },
+    { "@type": "ListItem", "position": 3, "name": "相場データの情報源まとめ", "item": "https://uuhai0625.github.io/life-event-calculators/shutten-ichiran/" }
   ]
 }
 </script>
@@ -79,15 +81,21 @@
   <div class="wrap">
     <a class="site-logo heading-font" href="../">相場<span class="accent">ノート</span></a>
     <h1 class="site-tagline">相場データの情報源まとめ</h1>
+    <button class="theme-toggle-btn" id="theme-toggle-btn" type="button" aria-label="ダークモードに切り替え">🌓</button>
   </div>
 </header>
 
 <main class="wrap" id="main-content">
   <nav class="breadcrumb" aria-label="パンくずリスト">
-    <a href="../">相場ノート</a><span class="breadcrumb-sep" aria-hidden="true">›</span><span aria-current="page">相場データの情報源まとめ</span>
+    <a href="../">相場ノート</a><span class="breadcrumb-sep" aria-hidden="true">›</span><a href="../#section-reference">参考コンテンツ</a><span class="breadcrumb-sep" aria-hidden="true">›</span><span aria-current="page">相場データの情報源まとめ</span>
   </nav>
+  <div class="site-search">
+    <label for="site-search-input" class="sr-only">他の計算機を探す</label>
+    <input type="search" id="site-search-input" placeholder="🔍 他の計算機を探す(例: 香典、ことば)" autocomplete="off">
+    <div class="site-search-results" id="site-search-results"></div>
+  </div>
   <p class="page-intro-note">相場ノートの各ページに掲載している金額の出典を、シーンごとに一覧でまとめました。単一の情報源に頼らず、複数のマナー系情報サイト・業界団体の調査を比較したうえで、より具体的な根拠(調査主体・実施年・回答数)を持つ情報源を優先する方針で選定しています。</p>
-  <p class="page-updated-note">最終更新: 2026年9月 ・ <a href="../#about">運営者情報・データの調査方法</a></p>
+  <p class="page-updated-note">最終更新: 2026年9月12日 ・ <a href="../#about">運営者情報・データの調査方法</a></p>
   <p class="page-tldr">結論から言うと、ご祝儀・香典の金額は全国冠婚葬祭互助協会(全互協)の実施アンケート(有効回答3,000〜5,000件規模)を主な根拠とし、その他のシーンは各分野のギフト専門サイト・業界メディアの情報を根拠としています。</p>
 
   <div class="share-row show" style="margin:0 0 20px;">
@@ -170,11 +178,11 @@
     <h3>よくある質問</h3>
     <details class="faq-item">
       <summary>なぜ複数の情報源を比較しているの?</summary>
-      <p>単一のブログ記事の言い回しをそのまま採用すると、根拠の薄い数字が広まってしまうリスクがあります。相場ノートでは、可能な限り調査主体・実施年・回答数が明記された一次情報を優先し、複数の情報源で近い水準の数字が確認できたものを掲載する方針をとっています。</p>
+      <p>結論:根拠の薄い数字が広まるのを防ぐためです。単一のブログ記事の言い回しをそのまま採用すると、根拠の薄い数字が広まってしまうリスクがあります。相場ノートでは、可能な限り調査主体・実施年・回答数が明記された一次情報を優先し、複数の情報源で近い水準の数字が確認できたものを掲載する方針をとっています。</p>
     </details>
     <details class="faq-item">
       <summary>出典が1件しかないシーンもあるのはなぜ?</summary>
-      <p>出産祝い・プレゼント予算・結婚祝い(招待されていない場合)・餞別・長寿祝いについては、業界団体による大規模な実施アンケートが見つからず、ギフト専門サイトの情報を中心に掲載しています。より権威性の高い情報源が見つかり次第、随時更新する方針です。</p>
+      <p>結論:業界団体による大規模な実施アンケートが見つからなかったためです。出産祝い・プレゼント予算・結婚祝い(招待されていない場合)・餞別・長寿祝いについては、ギフト専門サイトの情報を中心に掲載しています。より権威性の高い情報源が見つかり次第、随時更新する方針です。</p>
     </details>
   </div>
 
@@ -196,5 +204,7 @@
 
 <script src="../ga.js"></script>
 <script src="../header-scroll.js"></script>
+<script src="../site-search.js"></script>
+<script src="../theme-toggle.js"></script>
 </body>
 </html>

@@ -197,17 +197,22 @@ summary:focus-visible {
   border-bottom: 1px solid var(--line);
 }
 .header-menu-section-label {
-  margin: 8px 0 2px;
-  padding: 0 14px;
-  font-size: 0.78rem;
+  margin: 0;
+  padding: 8px 14px 4px;
+  font-size: 0.76rem;
+  font-weight: 700;
   color: var(--ink-sub);
+  background: var(--check-bg);
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
 }
 .header-menu-panel a:not(.header-menu-portal-link) {
   display: block;
-  padding: 8px 14px;
+  padding: 9px 14px;
   color: var(--ink);
   text-decoration: none;
   font-size: 0.88rem;
+  border-bottom: 1px solid var(--line);
 }
 .header-menu-panel a:hover { background: var(--check-bg); color: var(--navy-text); }
 .skip-link {

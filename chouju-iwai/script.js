@@ -138,6 +138,7 @@ const affCard = document.getElementById('aff-card');
 const shareRow = document.getElementById('share-row');
 const btnCopyLink = document.getElementById('btn-copy-link');
 const btnShareX = document.getElementById('btn-share-x');
+const btnShareLine = document.getElementById('btn-share-line');
 const birthYearInput = document.getElementById('input-birthyear');
 const birthYearError = document.getElementById('birthyear-error');
 const relationSelect = document.getElementById('select-relation');
@@ -285,6 +286,10 @@ btnCopyLink.addEventListener('click', async () => {
 btnShareX.addEventListener('click', () => {
   const intentUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(lastShareText)}&url=${encodeURIComponent(location.href)}`;
   window.open(intentUrl, '_blank', 'noopener');
+});
+btnShareLine.addEventListener('click', () => {
+  const lineUrl = `https://social-plugins.line.me/lineit/share?url=${encodeURIComponent(location.href)}&text=${encodeURIComponent(lastShareText)}`;
+  window.open(lineUrl, '_blank', 'noopener');
 });
 
 function initFromQuery() {

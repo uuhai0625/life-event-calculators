@@ -76,6 +76,7 @@ const affCard = document.getElementById('aff-card');
 const shareRow = document.getElementById('share-row');
 const btnCopyLink = document.getElementById('btn-copy-link');
 const btnShareX = document.getElementById('btn-share-x');
+const btnShareLine = document.getElementById('btn-share-line');
 let lastAmount = 0;
 
 function calc() {
@@ -184,6 +185,11 @@ btnShareX.addEventListener('click', () => {
   const text = shareText(lastAmount);
   const intentUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(location.href)}`;
   window.open(intentUrl, '_blank', 'noopener');
+});
+btnShareLine.addEventListener('click', () => {
+  const text = shareText(lastAmount);
+  const lineUrl = `https://social-plugins.line.me/lineit/share?url=${encodeURIComponent(location.href)}&text=${encodeURIComponent(text)}`;
+  window.open(lineUrl, '_blank', 'noopener');
 });
 
 function initFromQuery() {

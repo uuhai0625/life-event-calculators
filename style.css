@@ -712,12 +712,14 @@ section:first-of-type .tool-section-heading { margin-top: 28px; }
 /* ---- 結果の共有 ---- */
 .share-row {
   display: none;
+  flex-wrap: wrap;
   gap: 10px;
   margin-top: 14px;
 }
 .share-row.show { display: flex; }
 .share-btn {
   flex: 1;
+  min-width: 100px;
   min-height: 44px;
   padding: 12px 10px;
   border-radius: 10px;

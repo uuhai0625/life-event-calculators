@@ -141,6 +141,7 @@ const shareRow = document.getElementById('share-row');
 const nextTools = document.querySelector('.next-tools');
 const btnCopyLink = document.getElementById('btn-copy-link');
 const btnShareX = document.getElementById('btn-share-x');
+const btnShareLine = document.getElementById('btn-share-line');
 const followX = document.getElementById('follow-x');
 let lastAmount = 0;
 
@@ -393,6 +394,11 @@ btnShareX.addEventListener('click', () => {
   const text = shareText(lastAmount);
   const intentUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(location.href)}`;
   window.open(intentUrl, '_blank', 'noopener');
+});
+btnShareLine.addEventListener('click', () => {
+  const text = shareText(lastAmount);
+  const lineUrl = `https://social-plugins.line.me/lineit/share?url=${encodeURIComponent(location.href)}&text=${encodeURIComponent(text)}`;
+  window.open(lineUrl, '_blank', 'noopener');
 });
 
 // 共有URLからの復元: 条件が有効な場合のみ自動計算する(不正・不完全なクエリは通常表示にフォールバック)

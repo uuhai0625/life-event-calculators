@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script>try{var t=localStorage.getItem('theme');if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https://thumbnail.image.rakuten.co.jp; connect-src 'self' https://openapi.rakuten.co.jp https://www.google-analytics.com https://*.google-analytics.com https://*.analytics.google.com https://www.googletagmanager.com; object-src 'none'; base-uri 'self'">
 <title>相場ノート|冠婚葬祭・くらしの「いくら?」がすぐわかる計算ツール集</title>
 <meta name="description" content="ご祝儀・香典の相場、還暦などの長寿祝いの年など、日本のくらしの行事にまつわる「いくら?」「いくつ?」を、複数の情報源を比較し出典を明記したうえで無料計算できるツール集。">
@@ -68,6 +69,7 @@
   <div class="wrap">
     <p class="site-logo heading-font">相場<span class="accent">ノート</span></p>
     <h1 class="site-tagline">冠婚葬祭・くらしの「いくら?」を、選ぶだけで計算</h1>
+    <button class="theme-toggle-btn" id="theme-toggle-btn" type="button" aria-label="ダークモードに切り替え">🌓</button>
   </div>
 </header>
 
@@ -83,6 +85,12 @@
     <a href="#section-longtail">🔍 間柄をもっと詳しく</a>
     <a href="#section-reference">📚 参考コンテンツ</a>
   </nav>
+
+  <section aria-labelledby="section-favorites" id="favorites-section" style="display:none;">
+    <h2 class="tool-section-heading" id="section-favorites">⭐ お気に入り</h2>
+    <p class="tool-section-note">各ページの☆ボタンで保存した計算機です(このブラウザだけに保存されます)。</p>
+    <div class="tool-list" id="favorites-list" style="margin-top: 16px;"></div>
+  </section>
 
   <section aria-labelledby="section-main">
     <h2 class="tool-section-heading" id="section-main">🎯 メイン計算機</h2>
@@ -228,5 +236,7 @@
 <script src="ga.js"></script>
 <script src="header-scroll.js"></script>
 <script src="portal-search.js"></script>
+<script src="theme-toggle.js"></script>
+<script src="favorites.js"></script>
 </body>
 </html>

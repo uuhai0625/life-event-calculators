@@ -211,6 +211,18 @@ a.site-logo:hover { opacity: 0.85; }
 .breadcrumb a:hover { opacity: 1; }
 .breadcrumb-sep { opacity: 0.4; }
 .breadcrumb [aria-current="page"] { color: var(--navy-text); opacity: 0.6; }
+/* お気に入りボタン(2026-09-12追加) */
+.favorite-btn {
+  margin-left: auto;
+  border: none;
+  background: none;
+  color: var(--gold-text);
+  font-size: 1.3rem;
+  line-height: 1;
+  cursor: pointer;
+  padding: 2px 4px;
+}
+.favorite-btn.is-active { color: var(--gold); }
 
 /* ---- ページ冒頭の一言注記(多様な家族形態・世代トレンドレビュー対応) ---- */
 .page-intro-note {

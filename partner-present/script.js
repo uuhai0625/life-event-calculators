@@ -153,11 +153,6 @@ function selectChip(container, value) {
   });
 });
 
-// 2026-10-03: 読み込み直後の初回計算では結果へスクロールしない。スクロールすると開いた直後にページ冒頭の
-// 見出し・結論文・入力欄が画面外へ流れてしまうため(結果が見えない問題は画面下のバー=result-bar.jsで補う)。
-// ユーザー操作による再計算でだけ結果を画面内に寄せる。
-let initialRenderDone = false;
-
 function calc() {
   const relation = RELATIONS[getChipValue(chipRelation)];
   const event = EVENTS[getChipValue(chipEvent)];
@@ -183,8 +178,6 @@ function calc() {
   affCard.classList.add('show');
   document.querySelector('.survey-banner')?.classList.add('show');
   showProducts(eventKeyword, `🛒 人気の${relation.label}への${event.label}プレゼント`, rangeLow, rangeHigh);
-
-  if (initialRenderDone) resultCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
 
 // GA4クリック計測(2026-08-15追加): 詳細はgoshugi-koden/script.jsのコメント参照
@@ -291,5 +284,3 @@ function initFromQuery() {
 
 initFromQuery();
 calc();
-
-initialRenderDone = true;

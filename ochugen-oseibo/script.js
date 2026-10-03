@@ -174,11 +174,6 @@ function setScene(scene) {
   calc();
 }
 
-// 2026-10-03: 読み込み直後の初回計算では結果へスクロールしない。スクロールすると開いた直後にページ冒頭の
-// 見出し・結論文・入力欄が画面外へ流れてしまうため(結果が見えない問題は画面下のバー=result-bar.jsで補う)。
-// ユーザー操作による再計算でだけ結果を画面内に寄せる。
-let initialRenderDone = false;
-
 function calc() {
   const relationValue = getChipValue(chipRelation);
   const closeness = document.querySelector('input[name="closeness"]:checked').value;
@@ -212,8 +207,6 @@ function calc() {
   affCard.classList.add('show');
   document.querySelector('.survey-banner')?.classList.add('show');
   showProducts(scene.keyword, `🛒 人気の${scene.label}ギフト`, rangeLow, rangeHigh);
-
-  if (initialRenderDone) resultCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
 
 document.querySelectorAll('.scene-tab').forEach((btn) => {
@@ -326,5 +319,3 @@ function initFromQuery() {
 // 最初から共有URLのシーンで描画する。
 setScene(initialParams.get('scene') === 'seibo' ? 'seibo' : 'chugen');
 initFromQuery();
-
-initialRenderDone = true;

@@ -87,7 +87,9 @@ const RELATIONS = {
     { value: 'grandparent', label: '祖父母',                 base: 11000, scalable: true,
       // 全互協 第6回香典調査(令和3年度)の祖父母の年代別平均額を千円に丸めた値。50sは50代17,522円と60代以上20,596円の中間値。
       ageAmounts: { '20s': 9000, '30s': 11000, '40s': 12000, '50s': 19000 } },
-    { value: 'sibling',   label: '兄弟姉妹',                  base: 30000, scalable: true },
+    // 全互協 第6回香典調査(令和3年度)の兄弟姉妹は最多回答額50,000円・平均額45,452円(50代54,000円・60代以上47,357円)。
+    // 回答は84件と少なく年代別の表は作れないため、モデル(基準額×年代係数)のままにして、50代以上だけ最多回答額に合わせる。
+    { value: 'sibling',   label: '兄弟姉妹',                  base: 30000, scalable: true, tierOverrides: { '50s': 50000 } },
     { value: 'parent',    label: '親',                       base: 50000, scalable: true },
   ],
 };
@@ -205,6 +207,8 @@ function calc() {
   let amount = config.base;
   if (config.ageAmounts) {
     amount = config.ageAmounts[ageTier];
+  } else if (config.tierOverrides && config.tierOverrides[ageTier] != null) {
+    amount = config.tierOverrides[ageTier];
   } else if (config.scalable) {
     amount = roundTo(config.base * AGE_MULTIPLIER[ageTier], 1000);
   }
@@ -237,6 +241,8 @@ function calc() {
   resultAdvice.textContent = adviceText;
   resultBreakdown.textContent = config.ageAmounts
     ? `内訳の目安: ${config.label}の${AGE_LABEL[ageTier]}の平均額(全互協の調査)¥${config.ageAmounts[ageTier].toLocaleString('ja-JP')}`
+    : config.tierOverrides && config.tierOverrides[ageTier] != null
+      ? `内訳の目安: ${config.label}の基準額¥${config.base.toLocaleString('ja-JP')}をもとに、${AGE_LABEL[ageTier]}は全互協の調査(最多回答額)に合わせた¥${config.tierOverrides[ageTier].toLocaleString('ja-JP')}`
     : config.scalable
       ? `内訳の目安: ${config.label}の基準額¥${config.base.toLocaleString('ja-JP')} × 年代係数${AGE_MULTIPLIER[ageTier]}`
       : `内訳の目安: ${config.label}の基準額¥${config.base.toLocaleString('ja-JP')}`;

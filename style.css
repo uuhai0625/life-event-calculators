@@ -861,7 +861,7 @@ section:first-of-type .tool-section-heading { margin-top: 28px; }
   display: none;
 }
 .manner-box.show { display: block; }
-.manner-box h3 {
+.manner-box h2 {
   margin: 0 0 10px;
   font-size: 1rem;
   color: var(--navy-text);
@@ -919,7 +919,7 @@ section:first-of-type .tool-section-heading { margin-top: 28px; }
 }
 .rate-table-box.show { display: block; }
 .rate-table-box { overflow-x: auto; }
-.rate-table-box h3 {
+.rate-table-box h2 {
   margin: 0 0 4px;
   font-size: 1rem;
   color: var(--navy-text);
@@ -969,7 +969,7 @@ section:first-of-type .tool-section-heading { margin-top: 28px; }
 .faq-section {
   margin-bottom: 24px;
 }
-.faq-section h3 {
+.faq-section h2 {
   margin: 0 0 12px;
   font-size: 1.05rem;
   color: var(--navy-text);
@@ -1182,17 +1182,23 @@ section:first-of-type .tool-section-heading { margin-top: 28px; }
 .detail-section {
   margin-bottom: 24px;
 }
-.detail-section h3 {
+/* 2026-10-03: 見出し階層をh1→h2→h3に是正(従来はh1→h3→h4で2階層目が欠落)したため、セレクタを1段ずつ繰り上げた。
+   旧h4は本文フォント・通常字間だったので、h3になっても見た目が変わらないよう明示的に打ち消している。 */
+.detail-section h2 {
   font-size: 1.05rem;
   color: var(--navy-text);
   margin: 0 0 14px;
 }
-.detail-section h4 {
+.detail-section h3,
+.detail-section h2.policy-heading {
+  font-family: inherit;
+  letter-spacing: normal;
   font-size: 0.92rem;
   color: var(--ink);
   margin: 18px 0 6px;
 }
-.detail-section h4:first-of-type { margin-top: 0; }
+.detail-section h3:first-of-type,
+.detail-section h2.policy-heading:first-of-type { margin-top: 0; }
 .detail-section-intro {
   margin-bottom: 16px !important;
   font-style: italic;
@@ -1257,7 +1263,7 @@ section:first-of-type .tool-section-heading { margin-top: 28px; }
 .related-tools {
   margin-bottom: 24px;
 }
-.related-tools h3 {
+.related-tools h2 {
   margin: 0 0 12px;
   font-size: 1rem;
   color: var(--navy-text);

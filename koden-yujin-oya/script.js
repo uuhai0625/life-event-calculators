@@ -55,7 +55,7 @@ async function showProducts(keyword, labelText) {
 // 一般的な友人の親は20-30代3,000〜5,000円/40代以上5,000〜10,000円、特に親しい・家族ぐるみは年代を問わず10,000円程度まで、という複数ソース共通の傾向を反映。
 const AMOUNTS = {
   general: { '20s': 3000, '30s': 5000, '40s': 5000, '50s': 5000 },
-  close:   { '20s': 5000, '30s': 10000, '40s': 10000, '50s': 10000 },
+  close:   { '20s': 5000, '30s': 5000, '40s': 10000, '50s': 10000 },
 };
 
 function roundTo(amount, step) {
@@ -100,7 +100,9 @@ function calc() {
   if (!AMOUNTS[closeness] || AMOUNTS[closeness][ageTier] == null) return;
   const amount = AMOUNTS[closeness][ageTier];
   const adviceText = closeness === 'close'
-    ? '家族ぐるみの付き合いなど特に親しい関係の目安です。年代を問わず1万円程度まで包むケースも珍しくありません。'
+    ? (ageTier === '20s' || ageTier === '30s'
+        ? '特に親しい関係の目安です。20〜30代では、特に親しい場合でも5,000円程度が目安とされています。'
+        : '家族ぐるみの付き合いなど特に親しい関係の目安です。40代以上では、1万円程度まで包むケースもあります。')
     : '一般的な友人関係の目安です。面識が少ない場合は控えめでも問題ありません。';
 
   const rangeLow = Math.max(1000, roundTo(amount * 0.8, 1000));

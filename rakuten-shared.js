@@ -70,6 +70,8 @@ document.addEventListener('DOMContentLoaded', markStaleSources);
 // から実機確認して取得(2026-09-06時点、祝儀袋=210194、香典袋=567467)。
 const RAKUTEN_RANKING_VERSION = '20220601';
 
+// 2026-10-03: 結果ではなくPromiseをキャッシュする。初期化中に同じ取得が連続して呼ばれても(取得中でも)
+// リクエストは1本にまとまる。失敗・0件は次回また試せるようキャッシュから外す。
 async function fetchRakutenRanking(genreId, hits) {
   const cacheKey = `ranking|${genreId}`;
   if (rakutenProductCache.has(cacheKey)) return rakutenProductCache.get(cacheKey);
@@ -80,19 +82,23 @@ async function fetchRakutenRanking(genreId, hits) {
   url.searchParams.set('genreId', String(genreId));
   url.searchParams.set('format', 'json');
   url.searchParams.set('formatVersion', '2');
-  try {
-    const res = await fetch(url.toString());
-    if (!res.ok) return [];
-    const data = await res.json();
-    // formatVersion=2はitems(小文字)直下に商品情報が並ぶが、念のため商品検索APIと同じItems/Item
-    // 構造が返ってきた場合にも対応できるようにしておく。
-    const raw = data.items || data.Items || [];
-    const items = raw.map((entry) => entry.Item || entry).slice(0, hits || 4);
-    rakutenProductCache.set(cacheKey, items);
-    return items;
-  } catch (e) {
-    return [];
-  }
+  const request = (async () => {
+    try {
+      const res = await fetch(url.toString());
+      if (!res.ok) return [];
+      const data = await res.json();
+      // formatVersion=2はitems(小文字)直下に商品情報が並ぶが、念のため商品検索APIと同じItems/Item
+      // 構造が返ってきた場合にも対応できるようにしておく。
+      const raw = data.items || data.Items || [];
+      return raw.map((entry) => entry.Item || entry).slice(0, hits || 4);
+    } catch (e) {
+      return [];
+    }
+  })();
+  rakutenProductCache.set(cacheKey, request);
+  const items = await request;
+  if (!items.length) rakutenProductCache.delete(cacheKey);
+  return items;
 }
 
 function rankingCardHtml(item, rank) {
@@ -147,14 +153,18 @@ async function fetchRakutenProducts(keyword, hits, minPrice, maxPrice) {
   if (minPrice != null) url.searchParams.set('minPrice', String(Math.max(1, Math.round(minPrice))));
   if (maxPrice != null) url.searchParams.set('maxPrice', String(Math.round(maxPrice)));
   url.searchParams.set('format', 'json');
-  try {
-    const res = await fetch(url.toString());
-    if (!res.ok) return [];
-    const data = await res.json();
-    const items = (data.Items || []).map((entry) => entry.Item || entry);
-    rakutenProductCache.set(cacheKey, items);
-    return items;
-  } catch (e) {
-    return [];
-  }
+  const request = (async () => {
+    try {
+      const res = await fetch(url.toString());
+      if (!res.ok) return [];
+      const data = await res.json();
+      return (data.Items || []).map((entry) => entry.Item || entry);
+    } catch (e) {
+      return [];
+    }
+  })();
+  rakutenProductCache.set(cacheKey, request);
+  const items = await request;
+  if (!items.length) rakutenProductCache.delete(cacheKey);
+  return items;
 }

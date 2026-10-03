@@ -380,7 +380,7 @@ function initFromQuery() {
   const params = initialParams;
   const scene = params.get('scene');
   if (scene !== 'wedding' && scene !== 'funeral') return;
-  setScene(scene);
+  if (scene !== currentScene) setScene(scene);
   const relation = params.get('relation');
   if (relation && RELATIONS[scene].some((r) => r.value === relation)) setChipActive(chipRelation, relation);
   const age = params.get('age');
@@ -399,5 +399,7 @@ function initFromQuery() {
   calc();
 }
 
-setScene('wedding');
+// 2026-10-03: 常に慶事で描画してから弔事へ切り替えると、?scene=funeralで開いた時に慶事の描画・APIを
+// 無駄に実行してしまう(楽天API 5回中2回が慶事用だった)。最初から共有URLのシーンで描画する。
+setScene(initialParams.get('scene') === 'funeral' ? 'funeral' : 'wedding');
 initFromQuery();

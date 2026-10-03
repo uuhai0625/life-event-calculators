@@ -312,7 +312,7 @@ function initFromQuery() {
   const params = initialParams;
   const scene = params.get('scene');
   if (scene !== 'chugen' && scene !== 'seibo') return;
-  setScene(scene);
+  if (scene !== currentScene) setScene(scene);
   const relation = params.get('relation');
   if (relation && RELATIONS[relation]) setChipActive(chipRelation, relation);
   const closeness = params.get('closeness');
@@ -322,7 +322,9 @@ function initFromQuery() {
   calc();
 }
 
-setScene('chugen');
+// 2026-10-03: 常にお中元で描画してからお歳暮へ切り替えると、?scene=seiboで開いた時に二重描画・API呼び出しになるため、
+// 最初から共有URLのシーンで描画する。
+setScene(initialParams.get('scene') === 'seibo' ? 'seibo' : 'chugen');
 initFromQuery();
 
 initialRenderDone = true;

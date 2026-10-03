@@ -44,6 +44,15 @@
   new IntersectionObserver(updatePosition).observe(card);
   new ResizeObserver(updatePosition).observe(card);
   window.addEventListener('resize', updatePosition);
+  // 結果カードが画面内を通らずに一気に飛ぶスクロール(ページ内リンク・スクロール位置の復元・素早いフリック)は
+  // IOでは交差の変化として検知できず、状態が古いまま残る(例: 結果のはるか下でバーが出続ける)。
+  // そのためスクロールでも、1フレームに1回だけ位置を再計算する。
+  let scrollTicking = false;
+  window.addEventListener('scroll', () => {
+    if (scrollTicking) return;
+    scrollTicking = true;
+    requestAnimationFrame(() => { scrollTicking = false; updatePosition(); });
+  }, { passive: true });
 
   bar.addEventListener('click', () => {
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;

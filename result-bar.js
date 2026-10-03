@@ -33,11 +33,17 @@
   if (label) new MutationObserver(render).observe(label, { childList: true, characterData: true, subtree: true });
 
   // 結果カードが「画面より下」にある時だけtrue(非表示=高さ0、または画面上端より上=結果を通り過ぎた場合はfalse)
-  new IntersectionObserver((entries) => {
-    const entry = entries[entries.length - 1];
-    cardBelowViewport = !entry.isIntersecting && entry.boundingClientRect.height > 0 && entry.boundingClientRect.top > 0;
+  function updatePosition() {
+    const rect = card.getBoundingClientRect();
+    cardBelowViewport = rect.height > 0 && rect.top >= window.innerHeight;
     render();
-  }).observe(card);
+  }
+  // IntersectionObserverは「交差状態が変わった時」しか通知しない。結果カードが非表示(高さ0)から表示に
+  // 変わっても「画面外」のままで通知されず、読み込みのタイミング次第でバーが出なくなるため、
+  // スクロール(IO)に加えてカードの大きさの変化(ResizeObserver)・画面サイズ変化でも位置を再計算する。
+  new IntersectionObserver(updatePosition).observe(card);
+  new ResizeObserver(updatePosition).observe(card);
+  window.addEventListener('resize', updatePosition);
 
   bar.addEventListener('click', () => {
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;

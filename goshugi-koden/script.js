@@ -65,6 +65,7 @@ async function showProducts(keyword, labelText) {
 
 // ageTier補正倍率(近い関係=scalableな項目にのみ適用)
 const AGE_MULTIPLIER = { '20s': 0.9, '30s': 1.0, '40s': 1.6, '50s': 2.0 };
+const AGE_LABEL = { '20s': '20代以下', '30s': '30代', '40s': '40代', '50s': '50代以上' };
 
 const RELATIONS = {
   wedding: [
@@ -83,7 +84,9 @@ const RELATIONS = {
     { value: 'colleague', label: '職場の同僚・部下',          base: 5000,  scalable: false },
     { value: 'boss',      label: '職場の上司',                base: 5000,  scalable: false },
     { value: 'relative',  label: 'いとこ・叔父叔母などの親族', base: 10000, scalable: true },
-    { value: 'grandparent', label: '祖父母',                 base: 10000, scalable: true },
+    { value: 'grandparent', label: '祖父母',                 base: 11000, scalable: true,
+      // 全互協 第6回香典調査(令和3年度)の祖父母の年代別平均額を千円に丸めた値。50sは50代17,522円と60代以上20,596円の中間値。
+      ageAmounts: { '20s': 9000, '30s': 11000, '40s': 12000, '50s': 19000 } },
     { value: 'sibling',   label: '兄弟姉妹',                  base: 30000, scalable: true },
     { value: 'parent',    label: '親',                       base: 50000, scalable: true },
   ],
@@ -200,7 +203,9 @@ function calc() {
   if (!config) return;
 
   let amount = config.base;
-  if (config.scalable) {
+  if (config.ageAmounts) {
+    amount = config.ageAmounts[ageTier];
+  } else if (config.scalable) {
     amount = roundTo(config.base * AGE_MULTIPLIER[ageTier], 1000);
   }
 
@@ -230,9 +235,11 @@ function calc() {
   resultAmount.textContent = amount.toLocaleString('ja-JP');
   resultRange.textContent = `目安レンジ:¥${rangeLow.toLocaleString('ja-JP')} 〜 ¥${rangeHigh.toLocaleString('ja-JP')}`;
   resultAdvice.textContent = adviceText;
-  resultBreakdown.textContent = config.scalable
-    ? `内訳の目安: ${config.label}の基準額¥${config.base.toLocaleString('ja-JP')} × 年代係数${AGE_MULTIPLIER[ageTier]}`
-    : `内訳の目安: ${config.label}の基準額¥${config.base.toLocaleString('ja-JP')}`;
+  resultBreakdown.textContent = config.ageAmounts
+    ? `内訳の目安: ${config.label}の${AGE_LABEL[ageTier]}の平均額(全互協の調査)¥${config.ageAmounts[ageTier].toLocaleString('ja-JP')}`
+    : config.scalable
+      ? `内訳の目安: ${config.label}の基準額¥${config.base.toLocaleString('ja-JP')} × 年代係数${AGE_MULTIPLIER[ageTier]}`
+      : `内訳の目安: ${config.label}の基準額¥${config.base.toLocaleString('ja-JP')}`;
   resultCard.classList.add('show');
   if (nextTools) nextTools.classList.add('show');
   lastAmount = amount;

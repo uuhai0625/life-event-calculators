@@ -51,9 +51,11 @@ async function showProducts(keyword, labelText) {
   }
 }
 
-// 祖父母(通夜・葬儀)の相場ロジック: goshugi-kodenのRELATIONS.funeral.grandparent(base:10000, scalable:true)と同じ数値を使用。
-const AGE_MULTIPLIER = { '20s': 0.9, '30s': 1.0, '40s': 1.6, '50s': 2.0 };
-const BASE_AMOUNT = 10000;
+// 祖父母(通夜・葬儀)の年代別金額: 全互協 第6回香典調査(令和3年度)の祖父母の年代別平均額を千円に丸めた値。
+// goshugi-kodenのRELATIONS.funeral.grandparent.ageAmountsと同じ数値(2026-10-03、汎用の年代係数モデルから切替)。
+// 50sは50代17,522円と60代以上20,596円の中間値。
+const GRANDPARENT_AMOUNTS = { '20s': 9000, '30s': 11000, '40s': 12000, '50s': 19000 };
+const AGE_LABEL = { '20s': '20代以下', '30s': '30代', '40s': '40代', '50s': '50代以上' };
 
 function roundTo(amount, step) {
   return Math.round(amount / step) * step;
@@ -94,7 +96,7 @@ function calc() {
   const ageTier = getChipValue(chipAge);
   const meal = document.querySelector('input[name="meal"]:checked').value;
 
-  let amount = roundTo(BASE_AMOUNT * AGE_MULTIPLIER[ageTier], 1000);
+  let amount = GRANDPARENT_AMOUNTS[ageTier];
   let adviceText = '通夜・葬儀に参列する場合の目安です。';
   if (meal === 'yes') {
     amount += 5000;
@@ -107,7 +109,7 @@ function calc() {
   resultAmount.textContent = amount.toLocaleString('ja-JP');
   resultRange.textContent = `目安レンジ:¥${rangeLow.toLocaleString('ja-JP')} 〜 ¥${rangeHigh.toLocaleString('ja-JP')}`;
   resultAdvice.textContent = adviceText;
-  resultBreakdown.textContent = `内訳の目安: 基準額¥${BASE_AMOUNT.toLocaleString('ja-JP')} × 年代係数${AGE_MULTIPLIER[ageTier]}${meal === 'yes' ? '(+会食分¥5,000)' : ''}`;
+  resultBreakdown.textContent = `内訳の目安: 祖父母(${AGE_LABEL[ageTier]})の平均額(全互協の調査)¥${GRANDPARENT_AMOUNTS[ageTier].toLocaleString('ja-JP')}${meal === 'yes' ? '(+会食分¥5,000)' : ''}`;
   resultCard.classList.add('show');
   if (nextTools) nextTools.classList.add('show');
   lastAmount = amount;
@@ -200,7 +202,7 @@ function initFromQuery() {
   const params = initialParams;
   const age = params.get('age');
   const meal = params.get('meal');
-  if (!age || !AGE_MULTIPLIER[age]) return;
+  if (!age || !GRANDPARENT_AMOUNTS[age]) return;
   if (meal !== 'yes' && meal !== 'no') return;
   setChipActive(chipAge, age);
   document.querySelector(`input[name="meal"][value="${meal}"]`).checked = true;

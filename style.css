@@ -80,6 +80,9 @@
 
 * { box-sizing: border-box; }
 
+/* 2026-10-03: ページ内リンク(#section-main等)で飛んだ先の見出しが固定ヘッダーに隠れないようにする */
+[id] { scroll-margin-top: 80px; }
+
 html, body {
   margin: 0;
   min-height: 100vh;
@@ -268,14 +271,14 @@ a.site-logo:hover { opacity: 0.85; }
   margin: 18px 0 0;
   font-size: 0.85rem;
 }
+/* 2026-10-03: リンクにopacity:0.75をかけると実測3.49:1でAA(4.5:1)未達だったため、不透明のまま文字色で階層を表す */
 .breadcrumb a {
   color: var(--navy-text);
   text-decoration: none;
-  opacity: 0.75;
 }
-.breadcrumb a:hover { opacity: 1; }
+.breadcrumb a:hover { text-decoration: underline; }
 .breadcrumb-sep { opacity: 0.4; }
-.breadcrumb [aria-current="page"] { color: var(--navy-text); opacity: 0.6; }
+.breadcrumb [aria-current="page"] { color: var(--ink-sub); }
 /* お気に入りボタン(2026-09-12追加) */
 .favorite-btn {
   margin-left: auto;
@@ -287,7 +290,9 @@ a.site-logo:hover { opacity: 0.85; }
   cursor: pointer;
   padding: 2px 4px;
 }
-.favorite-btn.is-active { color: var(--gold); }
+/* 2026-10-03: 選択中の★を--gold(ライト背景で約2:1)にすると非テキストのコントラスト3:1に届かないため、
+   文字色用の--gold-textのままにする。★/☆の字形でも状態は区別できる。 */
+.favorite-btn.is-active { color: var(--gold-text); }
 
 /* ---- ページ冒頭の一言注記(多様な家族形態・世代トレンドレビュー対応) ---- */
 .page-intro-note {
@@ -301,7 +306,6 @@ a.site-logo:hover { opacity: 0.85; }
   margin: 4px 0 0;
   font-size: 0.74rem;
   color: var(--ink-sub);
-  opacity: 0.85;
 }
 
 .page-tldr {
@@ -526,6 +530,13 @@ section:first-of-type .tool-section-heading { margin-top: 28px; }
   .calc-layout-input {
     position: sticky;
     top: 72px;
+    /* 入力項目が多い計算機で画面より高くなると下部が見えなくなるため、画面内に収めて内部スクロールにする。
+       padding/負のmarginはフォーカス枠(outline)がoverflowで切れないための余白。 */
+    max-height: calc(100vh - 88px);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding: 6px;
+    margin: -6px;
   }
 }
 .tool-list {

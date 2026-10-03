@@ -71,6 +71,14 @@ const HEADER_MENU_SECTIONS = [
     if (!e.target.closest('.header-menu-panel') && e.target !== btn) closeMenu();
   });
   document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') closeMenu();
+    if (e.key !== 'Escape' || !panel.classList.contains('show')) return;
+    // メニュー内にフォーカスがあった場合はボタンへ戻す(閉じたパネル内にフォーカスが残るのを防ぐ)
+    const wasInside = panel.contains(document.activeElement);
+    closeMenu();
+    if (wasInside) btn.focus();
+  });
+  // Tabでメニューの外へフォーカスが移ったら閉じる(開きっぱなしで後続の要素を覆うのを防ぐ)
+  panel.addEventListener('focusout', (e) => {
+    if (e.relatedTarget && !panel.contains(e.relatedTarget) && e.relatedTarget !== btn) closeMenu();
   });
 })();

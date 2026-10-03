@@ -1171,6 +1171,24 @@ section:first-of-type .tool-section-heading { margin-top: 28px; }
   color: #fff;
   background: var(--ink-sub);
 }
+/* 商品カード・ランキングの直前に出す広告表記(2026-10-03、ステマ規制対応。PRバッジに加えて文章でも明示する) */
+.ad-disclosure {
+  margin: 0 0 10px;
+  font-size: 0.78rem;
+  line-height: 1.6;
+  color: var(--ink-sub);
+}
+.ad-disclosure-tag {
+  display: inline-block;
+  margin-right: 6px;
+  padding: 0 6px;
+  border: 1px solid var(--ink-sub);
+  border-radius: 4px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  vertical-align: 1px;
+}
+
 .product-note {
   display: none;
   margin: -8px 0 16px;

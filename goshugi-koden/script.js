@@ -185,7 +185,7 @@ function setScene(scene) {
   // 祝儀袋/香典袋ジャンルの人気ランキング(2026-09-06追加)。計算結果とは独立した固定コンテンツのため
   // シーン切替時に即座に切り替える。
   const rankingLabel = document.getElementById('ranking-grid-label');
-  if (rankingLabel) rankingLabel.textContent = scene === 'wedding' ? '🏆 楽天市場「祝儀袋」ジャンルの人気ランキング' : '🏆 楽天市場「香典袋」ジャンルの人気ランキング';
+  if (rankingLabel) rankingLabel.textContent = scene === 'wedding' ? '🏆 楽天市場「祝儀袋」ジャンルの人気ランキング' : '楽天市場「香典袋」ジャンルの売れ筋ランキング';
   showRanking(scene === 'wedding' ? 210194 : 567467, 'ranking-grid');
 
   // took.jp型UX: タブ切替直後にその場で再計算し、結果を即座に更新する(計算ボタン・待機なし)。

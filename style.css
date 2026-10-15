@@ -1379,3 +1379,25 @@ section:first-of-type .tool-section-heading { margin-top: 28px; }
 @media (max-width: 380px) {
   .product-band-grid { grid-template-columns: 1fr; }
 }
+
+/* ---- 内祝い・香典返しの「いただいた額から品を探す」「贈る目安の日付」(2026-10-15、return-gift.js) ---- */
+.return-gift-tool { margin-top: 18px; padding: 4px 0 0 14px; border-left: 3px solid var(--gold); }
+.return-gift-tool-title { font-size: 1rem; font-weight: 700; margin: 0 0 10px; color: var(--navy-text); }
+.return-gift-label { margin: 0 0 6px; font-size: 0.85rem; font-weight: 700; color: var(--ink-sub); }
+.return-gift-label label { font: inherit; }
+.return-gift-range { margin: 10px 0 12px; font-size: 0.88rem; line-height: 1.7; }
+.return-gift-grid.show { min-height: 0; }
+.return-gift-grid .product-band-grid.is-loading { opacity: 0.45; }
+.return-gift-note { margin: 0 0 10px; font-size: 0.78rem; line-height: 1.7; color: var(--ink-sub); }
+.return-gift-more { margin: 4px 0 0; font-size: 0.85rem; }
+.return-date { margin: 0 0 18px; }
+.return-date-input {
+  width: 100%; max-width: 260px; padding: 12px 14px;
+  border: 1.5px solid var(--line); border-radius: 10px;
+  font-size: 1rem; font-family: inherit; color: var(--ink); background-color: var(--bg-card);
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .return-date-input { color-scheme: dark; } }
+:root[data-theme="dark"] .return-date-input { color-scheme: dark; }
+.return-date-result { margin: 10px 0 4px; font-size: 0.92rem; font-weight: 700; line-height: 1.7; }
+.return-date-note { margin: 0; font-size: 0.8rem; line-height: 1.7; color: var(--ink-sub); }

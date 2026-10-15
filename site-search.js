@@ -11,6 +11,7 @@ const SITE_PAGES = [
   { title: '長寿祝いの年計算機', path: 'chouju-iwai/' },
   { title: '祖父母への香典の相場計算機', path: 'koden-sofubo/' },
   { title: '友人の親への香典の相場計算機', path: 'koden-yujin-oya/' },
+  { title: '職場の人・取引先の香典の相場計算機', path: 'koden-shokuba/' },
   { title: 'いとこの結婚式のご祝儀相場計算機', path: 'goshugi-itoko/' },
   { title: 'おじ・おばへの香典の相場計算機', path: 'koden-ojioba/' },
   { title: '叔父・叔母の結婚式のご祝儀相場計算機', path: 'goshugi-ojioba/' },

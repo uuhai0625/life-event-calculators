@@ -160,7 +160,9 @@ let lastShareText = '';
 
 function calc() {
   const currentYear = new Date().getFullYear();
-  const birthYear = parseInt(birthYearInput.value, 10);
+  // 2026-10-15: 「1950.5」のような小数や「1950abc」をparseIntで1950に丸めて通していたため、4桁の整数だけを受け付ける
+  const rawBirthYear = birthYearInput.value.trim();
+  const birthYear = /^\d{4}$/.test(rawBirthYear) ? Number(rawBirthYear) : NaN;
   const relation = getChipValue(chipRelation);
 
   if (!Number.isInteger(birthYear) || birthYear < 1900 || birthYear > currentYear) {

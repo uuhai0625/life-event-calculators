@@ -126,6 +126,8 @@ const regionWedding = document.getElementById('region-wedding');
 const regionFuneral = document.getElementById('region-funeral');
 const rateTableWedding = document.getElementById('rate-table-wedding');
 const rateTableFuneral = document.getElementById('rate-table-funeral');
+const returnFuneral = document.getElementById('return-funeral');
+const returnFuneralPoints = document.getElementById('return-funeral-points');
 const calcPanel = document.getElementById('calc-panel');
 const shareRow = document.getElementById('share-row');
 const nextTools = document.querySelector('.next-tools');
@@ -179,6 +181,8 @@ function setScene(scene) {
   populateRelations();
   rateTableWedding.classList.toggle('show', scene === 'wedding');
   rateTableFuneral.classList.toggle('show', scene === 'funeral');
+  returnFuneral.classList.toggle('show', scene === 'funeral');
+  returnFuneralPoints.classList.toggle('show', scene === 'funeral');
   const grid = document.getElementById('product-grid');
   const gridLabel = document.getElementById('product-grid-label');
   if (grid) { grid.innerHTML = ''; grid.classList.remove('show'); }

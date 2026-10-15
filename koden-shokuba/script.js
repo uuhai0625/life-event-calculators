@@ -26,8 +26,7 @@ async function showProducts(keyword, labelText) {
         ? `<p class="product-review">★${reviewAverage.toFixed(1)}<span class="product-review-count">(${reviewCount.toLocaleString('ja-JP')}件)</span></p>`
         : '';
       const badges = [];
-      if (index === 0) badges.push({ text: 'レビュー数1位', cls: 'product-badge--rank', title: '表示された商品の中でレビュー件数が最も多い商品です(市場全体の1位という意味ではありません)' });
-      else if (reviewCount >= 3000) badges.push({ text: 'レビュー多数', cls: 'product-badge--rank' });
+      if (index === 0) badges.push({ text: '表示中でレビュー最多', cls: 'product-badge--rank', title: '表示された商品の中でレビュー件数が最も多い商品です(品質や市場全体の順位を示すものではありません)' });
       if (Number(item.postageFlag) === 0) badges.push({ text: '送料無料', cls: 'product-badge--shipping' });
       const badgeHtml = badges.length
         ? `<div class="product-badges">${badges.map((b) => `<span class="product-badge ${b.cls}" title="${b.title || ''}">${b.text}</span>`).join('')}</div>`
@@ -88,6 +87,7 @@ const RELATIONS = {
 const resultCard = document.getElementById('result-card');
 const nextTools = document.querySelector('.next-tools');
 const resultLabel = document.getElementById('result-label');
+const resultLive = document.getElementById('result-live');
 const resultAmount = document.getElementById('result-amount');
 const resultRange = document.getElementById('result-range');
 const resultAdvice = document.getElementById('result-advice');
@@ -127,6 +127,7 @@ function calc() {
   resultAmount.textContent = amount.toLocaleString('ja-JP');
   resultRange.textContent = `目安レンジ(編集部の参考幅):¥${low.toLocaleString('ja-JP')} 〜 ¥${high.toLocaleString('ja-JP')}`;
   resultAdvice.textContent = rel.advice;
+  resultLive.textContent = `${rel.label}への香典の目安は${amount.toLocaleString('ja-JP')}円、目安レンジは${low.toLocaleString('ja-JP')}円から${high.toLocaleString('ja-JP')}円です。`;
   resultBreakdown.textContent = `内訳の目安: 全互協の区分「${rel.zenLabel}」の最も多い回答額¥${amount.toLocaleString('ja-JP')}(${rel.avgNote})`;
   resultCard.classList.add('show');
   if (nextTools) nextTools.classList.add('show');

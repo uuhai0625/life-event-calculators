@@ -57,6 +57,9 @@
   bar.addEventListener('click', () => {
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     card.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'start' });
+    // 結果が見える位置に来るとバーは非表示になり、フォーカスが失われるため、結果カードへフォーカスを移す
+    card.setAttribute('tabindex', '-1');
+    card.focus({ preventScroll: true });
     if (typeof gtag === 'function') gtag('event', 'result_bar_click', { page_path: location.pathname });
   });
 

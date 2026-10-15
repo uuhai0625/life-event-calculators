@@ -833,10 +833,14 @@ section:first-of-type .tool-section-heading { margin-top: 28px; }
 }
 .result-bar-amount {
   font-family: "Zen Old Mincho", serif;
-  font-size: 1.4rem;
+  /* 「¥20,000〜¥50,000」のようなレンジでも折り返さないよう、狭い画面ではやや小さくする(375px以上は従来どおり1.4rem) */
+  font-size: clamp(1.1rem, 6vw, 1.4rem);
   font-weight: 700;
   line-height: 1.3;
   color: var(--navy-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .result-bar-go { flex: none; font-size: 0.85rem; font-weight: 700; color: var(--navy-text); }
 .result-note {
@@ -997,6 +1001,12 @@ section:first-of-type .tool-section-heading { margin-top: 28px; }
   color: var(--ink-sub);
   font-weight: 700;
   font-size: 0.78rem;
+}
+/* 行見出し(<th scope="row">)は、従来の<td>と同じ見た目にする(スクリーンリーダーが行の見出しを読めるようにするため) */
+.rate-table th[scope="row"] {
+  font-size: inherit;
+  font-weight: inherit;
+  color: inherit;
 }
 .rate-table td:last-child, .rate-table th:last-child {
   text-align: right;

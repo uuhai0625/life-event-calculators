@@ -32,7 +32,7 @@ app/
     └── script.js         # そのページ固有の計算ロジック
 ```
 
-計算機ごとのディレクトリ(`goshugi-koden` / `shussan-iwai` / `partner-present` / `kekkon-iwai` / `ochugen-oseibo` / `senbetsu` / `chouju-iwai` / `koden-sofubo` / `koden-yujin-oya` / `koden-shokuba`)はすべて同じ構成です。
+計算機ごとのディレクトリ(`goshugi-koden` / `shussan-iwai` / `partner-present` / `kekkon-iwai` / `ochugen-oseibo` / `senbetsu` / `chouju-iwai` / `koden-sofubo` / `koden-yujin-oya` / `koden-shokuba` / `houyo-koden` / `goshugi-itoko` / `koden-ojioba` / `goshugi-ojioba`)はすべて同じ構成です。
 
 ## ローカル動作確認
 

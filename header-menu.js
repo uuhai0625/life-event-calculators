@@ -11,6 +11,7 @@ const HEADER_MENU_SECTIONS = [
       { title: '結婚祝いの相場計算機', path: 'kekkon-iwai/' },
       { title: 'お中元・お歳暮の相場計算機', path: 'ochugen-oseibo/' },
       { title: '餞別・送別ギフトの相場計算機', path: 'senbetsu/' },
+      { title: 'お見舞い・快気祝いの相場計算機', path: 'omimai-kaiki/' },
       { title: '長寿祝いの年計算機', path: 'chouju-iwai/' },
     ],
   },

@@ -1,7 +1,7 @@
 // 内祝い・香典返しの節に付ける「いただいた額から品を探す」と「贈る目安の日付」(2026-10-15追加、5名レビュー反映)。
-// 対象: shussan-iwai(出産内祝い)・kekkon-iwai(結婚内祝い)・goshugi-koden(弔事の香典返し)。
+// 対象: shussan-iwai(出産内祝い)・kekkon-iwai(結婚内祝い)・goshugi-koden(弔事の香典返し)・omimai-kaiki(快気祝い)。
 // 読み込み順: rakuten-shared.js → return-gift.js。ページ側は #return-gift-tool に data 属性だけ置く。
-//   data-kind     'birth' | 'wedding' | 'funeral'(日付入力は birth / wedding のみ。弔事は日付を入力させない)
+//   data-kind     'birth' | 'wedding' | 'recovery' | 'funeral'(日付入力は birth / wedding / recovery のみ。弔事は日付を入力させない)
 //   data-keyword  楽天の検索語
 //   data-band     GA4 product_click の band に入れる名前
 //   data-default  最初に選んでおく「いただいた額」
@@ -25,7 +25,7 @@
   const esc = (v) => String(v == null ? '' : v)
     .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
-  // ---------- 贈る目安の日付(出産・結婚のみ。商品取得とは独立) ----------
+  // ---------- 贈る目安の日付(出産・結婚・快気祝い。商品取得とは独立) ----------
   const WEEK = ['日', '月', '火', '水', '木', '金', '土'];
   function fmt(d) {
     return d.getFullYear() + '年' + (d.getMonth() + 1) + '月' + d.getDate() + '日(' + WEEK[d.getDay()] + ')';
@@ -34,6 +34,9 @@
     const first = new Date(d.getFullYear(), d.getMonth() + n, 1);
     const last = new Date(first.getFullYear(), first.getMonth() + 1, 0).getDate();
     return new Date(first.getFullYear(), first.getMonth(), Math.min(d.getDate(), last));
+  }
+  function addDays(d, n) {
+    return new Date(d.getFullYear(), d.getMonth(), d.getDate() + n);
   }
   // 実在する日付で、年が2000〜2100のときだけ返す(入力途中の「0002」「2025-02-31」などは空扱い)
   function parse(v) {
@@ -56,6 +59,11 @@
       note: '挙式後(挙式をしない場合は、お祝いを受け取った日から)1か月以内に贈るのが目安とされています。',
       text: (d) => '贈る目安は ' + fmt(addMonths(d, 1)) + ' 頃までです。',
     },
+    recovery: {
+      label: '退院した日(退院後も療養した場合は、療養を終えた日)',
+      note: '退院から10日〜1か月ほどとする解説が多くあります。体調の回復を優先し、無理のない時期で構いません。退院後も療養が続く場合は、表書きを「快気内祝い」とするとされています。',
+      text: (d) => '贈る目安は ' + fmt(addDays(d, 10)) + ' 頃から、' + fmt(addMonths(d, 1)) + ' 頃までです。',
+    },
   };
   const cfg = DATE_KINDS[kind];
   if (cfg) {
@@ -69,11 +77,11 @@
     root.appendChild(box);
     const input = box.querySelector('input');
     const out = box.querySelector('.return-date-result');
-    let live = false;
+    // aria-liveは入力欄にフォーカスした時点で付ける(属性追加と本文更新を同時にすると、初回が読み上げられないことがある)
+    input.addEventListener('focus', () => out.setAttribute('aria-live', 'polite'), { once: true });
     input.addEventListener('change', () => {
-      if (!live) { out.setAttribute('aria-live', 'polite'); live = true; }
       const d = parse(input.value);
-      out.textContent = d ? cfg.text(d) : '';
+      out.textContent = d ? cfg.text(d) : (input.value ? '日付を正しく入力してください。' : '');
     });
   }
 
@@ -155,6 +163,8 @@
     noteEl.style.display = '';
   }
 
+  // 範囲文のaria-liveは、チップにフォーカスが来た時点で付ける(初回の自動読み込みでは読み上げない)
+  chips.forEach((c) => c.addEventListener('focus', () => { userTouched = true; if (!rangeEl.hasAttribute('aria-live')) rangeEl.setAttribute('aria-live', 'polite'); }));
   chips.forEach((c) => c.addEventListener('click', () => { userTouched = true; started = true; select(c.dataset.amount, c); }));
 
   // 商品の取得は、この節が画面に近づいてから(または額を選んだとき)だけ。ページを開いただけでは呼ばない。

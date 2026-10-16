@@ -123,7 +123,7 @@
     '<p class="ad-disclosure return-gift-pr"><span class="ad-disclosure-tag">PR</span>以下の商品リンクは広告(楽天アフィリエイト)を含みます。リンク経由の購入で、当サイトが紹介料を受け取ることがあります。</p>' +
     '<div class="product-grid return-gift-grid" aria-live="off"><div class="product-band-grid"></div></div>' +
     '<p class="return-gift-note">楽天市場の検索結果を、レビュー件数の多い順に表示しています(品質やおすすめ度を示すものではありません)。価格・送料・レビューは取得時点の楽天市場の表示で、変更されることがあります。</p>' +
-    '<p class="return-gift-more"><span class="ad-disclosure-tag">PR</span><a href="' + esc(affiliateUrl(firstKeyword)) + '" target="_blank" rel="noopener sponsored">楽天市場で「' + esc(itemsMode ? extraItems[0][0] : firstKeyword) + '」をもっと見る</a></p>';
+    '<p class="return-gift-more"><span class="ad-disclosure-tag">PR</span><a href="' + esc(affiliateUrl(firstKeyword)) + '" target="_blank" rel="nofollow sponsored noopener" style="word-wrap:break-word;">楽天市場で「' + esc(itemsMode ? extraItems[0][0] : firstKeyword) + '」をもっと見る</a></p>';
   root.appendChild(wrap);
 
   const chips = Array.from(wrap.querySelectorAll('.chip'));

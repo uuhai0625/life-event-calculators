@@ -137,7 +137,7 @@ function calc() {
   shareRow.classList.add('show');
   document.querySelector('.survey-banner')?.classList.add('show');
 
-  affCard.href = affiliateUrl('ご祝儀袋 結婚');
+  { const l = affCard.querySelector('a'); if (l) l.href = affiliateUrl('ご祝儀袋 結婚'); }
   if (!productsRequested) {
     productsRequested = true;
     showProducts('ご祝儀袋 結婚', 'ご祝儀袋(レビュー件数順)');

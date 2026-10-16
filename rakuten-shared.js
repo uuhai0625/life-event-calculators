@@ -22,9 +22,12 @@ function rakutenImage(item) {
 // ドロップダウンで確認した「レビュー件数順」(?s=5、購入者が多いほどレビューが集まる=人気の代用指標)
 // を使い、人気の高い商品が上位に出るようにしている(2026-08-11)。
 function affiliateUrl(keyword) {
-  const searchUrl = `https://search.rakuten.co.jp/search/mall/${encodeURIComponent(keyword)}/?s=5`;
+  // 公式「URLからリンク作成」の出力と同じ組み立て(2026-10-17、楽天ガイドライン対応): キーワードは生のままURLに入れ、
+  // 全体を1回だけエンコードする(空白は+)。公式ツールの出力とバイト単位で一致することを確認済み。
+  // 以前はキーワードを先にエンコードしていたため日本語が二重にエンコードされ、公式の出力と異なっていた。
+  const searchUrl = `https://search.rakuten.co.jp/search/mall/${keyword}/?s=5`;
   if (!RAKUTEN_AFFILIATE_ID) return searchUrl;
-  const encoded = encodeURIComponent(searchUrl);
+  const encoded = encodeURIComponent(searchUrl).replace(/%20/g, '+');
   return `https://hb.afl.rakuten.co.jp/hgc/${RAKUTEN_AFFILIATE_ID}/?pc=${encoded}&link_type=text&ut=eyJwYWdlIjoidXJsIiwidHlwZSI6InRleHQiLCJjb2wiOjF9`;
 }
 

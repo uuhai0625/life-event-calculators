@@ -162,7 +162,7 @@ function calc() {
 
   if (!productsRequested) {
     productsRequested = true;
-    affCard.href = affiliateUrl('不祝儀袋 御仏前');
+    { const l = affCard.querySelector('a'); if (l) l.href = affiliateUrl('不祝儀袋 御仏前'); }
     // 取得に失敗した場合(楽天APIの一時的な制限など)は、次のチップ操作で再試行する
     showProducts('不祝儀袋 御仏前', '不祝儀袋(香典袋)').then(() => {
       if (!document.querySelector('#product-grid .product-card')) productsRequested = false;

@@ -173,8 +173,8 @@ function calc() {
   updateShareUrl();
   shareRow.classList.add('show');
 
-  affTitle.textContent = `${scene.label}の送別ギフトを探す`;
-  affCard.href = affiliateUrl(scene.productKeyword);
+  { const l = affTitle.querySelector('a'); if (l) l.textContent = `${scene.label}の送別ギフトを探す`; }
+  { const l = affCard.querySelector('a'); if (l) l.href = affiliateUrl(scene.productKeyword); }
   affCard.classList.add('show');
   document.querySelector('.survey-banner')?.classList.add('show');
   showProducts(scene.productKeyword, `🛒 人気の${scene.label}ギフト`, rangeLow, rangeHigh);

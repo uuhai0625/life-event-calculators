@@ -262,8 +262,8 @@ function calc() {
   let productKeyword;
   if (currentScene === 'wedding') {
     affIcon.textContent = '🎁';
-    affTitle.textContent = 'ご祝儀袋を探す';
-    affCard.href = affiliateUrl('ご祝儀袋');
+    { const l = affTitle.querySelector('a'); if (l) l.textContent = 'ご祝儀袋を探す'; }
+    { const l = affCard.querySelector('a'); if (l) l.href = affiliateUrl('ご祝儀袋'); }
     mannerWedding.classList.add('show');
     mannerFuneral.classList.remove('show');
     regionWedding.classList.add('show');
@@ -271,8 +271,8 @@ function calc() {
     productKeyword = 'ご祝儀袋';
   } else {
     affIcon.textContent = '🖤';
-    affTitle.textContent = '不祝儀袋(香典袋)を探す';
-    affCard.href = affiliateUrl('不祝儀袋 香典袋');
+    { const l = affTitle.querySelector('a'); if (l) l.textContent = '不祝儀袋(香典袋)を探す'; }
+    { const l = affCard.querySelector('a'); if (l) l.href = affiliateUrl('不祝儀袋 香典袋'); }
     mannerFuneral.classList.add('show');
     mannerWedding.classList.remove('show');
     regionFuneral.classList.add('show');

@@ -230,7 +230,7 @@ function calc() {
   shareRow.classList.add('show');
   document.querySelector('.survey-banner')?.classList.add('show');
 
-  affCard.href = affiliateUrl(PRODUCT_KEYWORD);
+  { const l = affCard.querySelector('a'); if (l) l.href = affiliateUrl(PRODUCT_KEYWORD); }
   showProducts(PRODUCT_KEYWORD, PRODUCT_LABEL, cell.bandLow || cell.low, cell.bandHigh || cell.high);
 }
 

@@ -121,7 +121,7 @@ function calc() {
   shareRow.classList.add('show');
   document.querySelector('.survey-banner')?.classList.add('show');
 
-  affCard.href = affiliateUrl('ご祝儀袋');
+  { const l = affCard.querySelector('a'); if (l) l.href = affiliateUrl('ご祝儀袋'); }
   showProducts('ご祝儀袋', '🛒 人気のご祝儀袋');
 }
 

@@ -224,7 +224,7 @@ function calc() {
   shareRow.classList.add('show');
 
   const keyword = `${targetCeleb.name}祝い ギフト`;
-  affCard.href = affiliateUrl(keyword);
+  { const l = affCard.querySelector('a'); if (l) l.href = affiliateUrl(keyword); }
   affCard.classList.add('show');
   document.querySelector('.survey-banner')?.classList.add('show');
   showProducts(keyword, `🛒 人気の${targetCeleb.name}祝いギフト`, rangeLow, rangeHigh);

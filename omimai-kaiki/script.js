@@ -157,10 +157,10 @@ function calc() {
   shareRow.classList.add('show');
   document.querySelector('.survey-banner')?.classList.add('show');
 
-  affCard.href = affiliateUrl('御見舞 封筒');
+  affCard.href = affiliateUrl('お見舞い のし袋');
   if (!productsRequested) {
     productsRequested = true;
-    showProducts('御見舞 封筒', 'お見舞い用の封筒(のし袋)');
+    showProducts('お見舞い のし袋', 'お見舞い用の封筒(のし袋)');
   }
 }
 

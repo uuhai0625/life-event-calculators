@@ -73,7 +73,7 @@ async function showProducts(keyword, labelText, rangeLow, rangeHigh) {
 
 // ---- データ(金額・出典は cfg 由来。根拠は各ページの早見表・出典欄に書いてある) ----
 const NOUN = "入学祝い";
-const PRODUCT_KEYWORD = "入学祝い プレゼント";
+const PRODUCT_KEYWORD = "入学祝い ギフト";
 const PRODUCT_LABEL = "入学祝いの品(レビュー件数順)";
 const REL = {
   "grandchild": {

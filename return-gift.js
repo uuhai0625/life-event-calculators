@@ -1,7 +1,7 @@
 // 内祝い・香典返しの節に付ける「いただいた額から品を探す」と「贈る目安の日付」(2026-10-15追加、5名レビュー反映)。
-// 対象: shussan-iwai(出産内祝い)・kekkon-iwai(結婚内祝い)・goshugi-koden(弔事の香典返し)・omimai-kaiki(快気祝い)。
+// 対象: shussan-iwai(出産内祝い)・kekkon-iwai(結婚内祝い)・goshugi-koden(弔事の香典返し)・omimai-kaiki(快気祝い)・kekkon-kesseki(結婚式欠席の「送る時期の目安」だけ。品探しは使わない)。
 // 読み込み順: rakuten-shared.js → return-gift.js。ページ側は #return-gift-tool に data 属性だけ置く。
-//   data-kind     'birth' | 'wedding' | 'recovery' | 'funeral'(日付入力は birth / wedding / recovery のみ。弔事は日付を入力させない)
+//   data-kind     'birth' | 'wedding' | 'recovery' | 'absent' | 'funeral'(日付入力は birth / wedding / recovery / absent のみ。弔事は日付を入力させない)
 //   data-keyword  楽天の検索語
 //   data-band     GA4 product_click の band に入れる名前
 //   data-default  最初に選んでおく「いただいた額」
@@ -25,7 +25,7 @@
   const esc = (v) => String(v == null ? '' : v)
     .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
-  // ---------- 贈る目安の日付(出産・結婚・快気祝い。商品取得とは独立) ----------
+  // ---------- 贈る目安の日付(出産・結婚・快気祝い・結婚式欠席。商品取得とは独立) ----------
   const WEEK = ['日', '月', '火', '水', '木', '金', '土'];
   function fmt(d) {
     return d.getFullYear() + '年' + (d.getMonth() + 1) + '月' + d.getDate() + '日(' + WEEK[d.getDay()] + ')';
@@ -64,6 +64,20 @@
       note: '退院から10日〜1か月ほどとする解説が多くあります。体調の回復を優先し、無理のない時期で構いません。退院後も療養が続く場合は、表書きを「快気内祝い」とするとされています。',
       text: (d) => '贈る目安は ' + fmt(addDays(d, 10)) + ' 頃から、' + fmt(addMonths(d, 1)) + ' 頃までです。',
     },
+    absent: {
+      label: '結婚式の日',
+      note: '現金書留は、遅くとも式の1週間前に届くようにするのが目安です。式の1〜2か月前の早めがよいとする記事もあります。式の後になる場合も、できるだけ早く送ります。',
+      text: (d) => {
+        const today = new Date();
+        const t0 = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+        if (d < t0) return '結婚式の日を過ぎています。できるだけ早く送りましょう。';
+        if (d.getTime() === t0.getTime()) return '本日が結婚式の日です。できるだけ早く送りましょう。';
+        if (addDays(d, -7) < t0) return '式の1週間前を過ぎています。できるだけ早く送りましょう。' + (addDays(d, -14) < t0 ? ' 式まで2週間を切っているため、今から欠席を伝える場合は「2週間前を過ぎてからの欠席」にあたります。' : '');
+        const lateStart = addMonths(d, -1);
+        const early = lateStart >= t0 ? ' 早めに贈るなら ' + fmt(addMonths(d, -2) < t0 ? t0 : addMonths(d, -2)) + ' 〜 ' + fmt(lateStart) + ' 頃です。' : '';
+        return '遅くとも ' + fmt(addDays(d, -7)) + ' までに届くように送るのが目安です。' + early;
+      },
+    },
   };
   const cfg = DATE_KINDS[kind];
   if (cfg) {
@@ -81,7 +95,7 @@
     input.addEventListener('focus', () => out.setAttribute('aria-live', 'polite'), { once: true });
     input.addEventListener('change', () => {
       const d = parse(input.value);
-      out.textContent = d ? cfg.text(d) : (input.value ? '日付を正しく入力してください。' : '');
+      out.textContent = d ? cfg.text(d) : (input.value ? '日付を正しく入力してください(2000〜2100年)。' : '');
     });
   }
 

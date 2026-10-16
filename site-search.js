@@ -17,6 +17,7 @@ const SITE_PAGES = [
   { title: 'いとこの結婚式のご祝儀相場計算機', path: 'goshugi-itoko/' },
   { title: 'おじ・おばへの香典の相場計算機', path: 'koden-ojioba/' },
   { title: '叔父・叔母の結婚式のご祝儀相場計算機', path: 'goshugi-ojioba/' },
+  { title: '結婚式を欠席するときのご祝儀の相場計算機', path: 'kekkon-kesseki/' },
   { title: '冠婚葬祭の金額早見表まとめ', path: 'souba-ichiran/' },
   { title: '相場データの情報源まとめ', path: 'shutten-ichiran/' },
   { title: '冠婚葬祭のことば辞典', path: 'yougo-shu/' },

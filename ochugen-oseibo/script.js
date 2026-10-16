@@ -152,8 +152,34 @@ document.querySelectorAll('input[name="closeness"]').forEach((input) => {
   input.addEventListener('change', calc);
 });
 
+// 今日の日付から見た「贈る時期の目安」(2026-10-17追加)。時期はこのページの地域別の時期(西武そごう・JR東海ほか)と同じ。
+// 偽の緊急性は出さず、事実(期間と、期間までの日数)だけを示す。
+const SEASON_WINDOWS = {
+  chugen: { label: 'お中元', kanto: [7, 1, 7, 15], kansai: [7, 15, 8, 15], after: '時期を過ぎた場合は「暑中御見舞」「残暑御見舞」として贈ります。', kantoText: '7月1日〜15日頃', kansaiText: '7月15日〜8月15日頃' },
+  seibo: { label: 'お歳暮', kanto: [12, 1, 12, 20], kansai: [12, 13, 12, 25], after: '時期を過ぎた場合は「御年賀」「寒中御見舞」として贈ります。', kantoText: '12月1日〜20日頃', kansaiText: '12月13日〜25日頃' },
+};
+function seasonNoteText(scene, now) {
+  const w = SEASON_WINDOWS[scene];
+  const y = now.getFullYear();
+  const today = new Date(y, now.getMonth(), now.getDate());
+  const start = new Date(y, w.kanto[0] - 1, w.kanto[1]);
+  const end = new Date(y, w.kansai[2] - 1, w.kansai[3]);
+  const base = `${w.label}の時期の目安は、関東が${w.kantoText}、関西が${w.kansaiText}です。`;
+  const pastText = `${w.label}の時期の目安(関東${w.kantoText}、関西${w.kansaiText})は過ぎています。` + w.after;
+  // 1月のお歳暮は前年12月の時期が過ぎた後(同じ年の12月はこれから来る、と読めないようにする)
+  if (scene === 'seibo' && now.getMonth() === 0) return pastText;
+  if (today < start) {
+    const days = Math.round((start - today) / 86400000);
+    return base + (days <= 60 ? `関東の時期まであと${days}日です。` : '');
+  }
+  if (today <= end) return base + '今は目安の期間内です。';
+  return pastText;
+}
+
 function setScene(scene) {
   currentScene = scene;
+  const seasonNote = document.getElementById('season-note');
+  if (seasonNote) seasonNote.textContent = seasonNoteText(scene, new Date());
   document.querySelectorAll('.scene-tab').forEach((btn) => {
     const isActive = btn.dataset.scene === scene;
     btn.classList.toggle('active', isActive);
@@ -317,5 +343,8 @@ function initFromQuery() {
 
 // 2026-10-03: 常にお中元で描画してからお歳暮へ切り替えると、?scene=seiboで開いた時に二重描画・API呼び出しになるため、
 // 最初から共有URLのシーンで描画する。
-setScene(initialParams.get('scene') === 'seibo' ? 'seibo' : 'chugen');
+// 共有URLに scene があればそれを優先。なければ時期で選ぶ(10月〜1月はお歳暮、それ以外はお中元)。
+const sceneParam = initialParams.get('scene');
+const seasonalDefault = (() => { const m = new Date().getMonth() + 1; return (m >= 10 || m === 1) ? 'seibo' : 'chugen'; })();
+setScene(sceneParam === 'seibo' || sceneParam === 'chugen' ? sceneParam : seasonalDefault);
 initFromQuery();

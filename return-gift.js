@@ -2,19 +2,24 @@
 // 対象: shussan-iwai(出産内祝い)・kekkon-iwai(結婚内祝い)・goshugi-koden(弔事の香典返し)・omimai-kaiki(快気祝い)・kekkon-kesseki(結婚式欠席の「送る時期の目安」だけ。品探しは使わない)。
 // 読み込み順: rakuten-shared.js → return-gift.js。ページ側は #return-gift-tool に data 属性だけ置く。
 //   data-kind     'birth' | 'wedding' | 'recovery' | 'absent' | 'funeral'(日付入力は birth / wedding / recovery / absent のみ。弔事は日付を入力させない)
-//   data-keyword  楽天の検索語
+//   data-keyword  楽天の検索語(額モード)
 //   data-band     GA4 product_click の band に入れる名前
 //   data-default  最初に選んでおく「いただいた額」
 //   data-options  [[いただいた額, お返しの下限, 上限], ...](ページの早見表の行と同じ値)
+//   data-items    [[ラベル, 楽天の検索語], ...](「あわせて用意するもの」モード。額の代わりに品目チップを出し、検索語ごとに人気4件を表示。
+//                 data-keyword / data-options は不要。data-default は最初に選ぶ品目の番号(0始まり))
+// 1ページに複数置ける(.return-gift-tool を全て初期化する)。日付入力(birth/wedding/recovery/absent)は1ページに1つだけ。
 // 入力した日付・選んだ額は端末の外へ送らない(GA4イベントは既存の product_click / affiliate_cta_click だけ)。
 // TODO: 商品カードの描画(cardHtml)は各ページのscript.jsにも重複がある。次に触るときrakuten-shared.jsへ寄せる。
 (function () {
   'use strict';
 
-  const root = document.getElementById('return-gift-tool');
-  if (!root) return;
+  document.querySelectorAll('.return-gift-tool').forEach(init);
 
+  function init(root, rootIndex) {
   let options = [];
+  let extraItems = [];
+  try { extraItems = JSON.parse(root.dataset.items || '[]'); } catch (e) { extraItems = []; }
   try { options = JSON.parse(root.dataset.options || '[]'); } catch (e) { options = []; }
   const keyword = root.dataset.keyword || '';
   const kind = root.dataset.kind || '';
@@ -100,20 +105,25 @@
   }
 
   // ---------- いただいた額から品を探す(楽天APIが使えない環境ではここで止める) ----------
-  if (typeof fetchRakutenProducts !== 'function' || !options.length || !keyword) return;
+  const itemsMode = extraItems.length > 0;
+  if (typeof fetchRakutenProducts !== 'function' || (!itemsMode && (!options.length || !keyword))) return;
+  const labelId = 'return-gift-label-' + rootIndex;
+  const firstKeyword = itemsMode ? extraItems[0][1] : keyword;
 
   const wrap = document.createElement('div');
   wrap.className = 'return-gift-picker';
   wrap.innerHTML =
-    '<p class="return-gift-label" id="return-gift-amount-label">いただいた額を選ぶと、お返しの品の例を表示します</p>' +
-    '<div class="chip-group" role="group" aria-labelledby="return-gift-amount-label">' +
-    options.map((o) => '<button class="chip" type="button" data-amount="' + o[0] + '">' + yen(o[0]) + '</button>').join('') +
+    '<p class="return-gift-label" id="' + labelId + '">' + (itemsMode ? '気になるものを選ぶと、人気の商品の例を表示します' : 'いただいた額を選ぶと、お返しの品の例を表示します') + '</p>' +
+    '<div class="chip-group" role="group" aria-labelledby="' + labelId + '">' +
+    (itemsMode
+      ? extraItems.map((it, i) => '<button class="chip" type="button" data-amount="' + i + '">' + esc(it[0]) + '</button>').join('')
+      : options.map((o) => '<button class="chip" type="button" data-amount="' + o[0] + '">' + yen(o[0]) + '</button>').join('')) +
     '</div>' +
     '<p class="return-gift-range"></p>' +
     '<p class="ad-disclosure return-gift-pr"><span class="ad-disclosure-tag">PR</span>以下の商品リンクは広告(楽天アフィリエイト)を含みます。リンク経由の購入で、当サイトが紹介料を受け取ることがあります。</p>' +
     '<div class="product-grid return-gift-grid" aria-live="off"><div class="product-band-grid"></div></div>' +
     '<p class="return-gift-note">楽天市場の検索結果を、レビュー件数の多い順に表示しています(品質やおすすめ度を示すものではありません)。価格・送料・レビューは取得時点の楽天市場の表示で、変更されることがあります。</p>' +
-    '<p class="return-gift-more"><span class="ad-disclosure-tag">PR</span><a href="' + esc(affiliateUrl(keyword)) + '" target="_blank" rel="noopener sponsored">楽天市場で「' + esc(keyword) + '」をもっと見る</a></p>';
+    '<p class="return-gift-more"><span class="ad-disclosure-tag">PR</span><a href="' + esc(affiliateUrl(firstKeyword)) + '" target="_blank" rel="noopener sponsored">楽天市場で「' + esc(itemsMode ? extraItems[0][0] : firstKeyword) + '」をもっと見る</a></p>';
   root.appendChild(wrap);
 
   const chips = Array.from(wrap.querySelectorAll('.chip'));
@@ -121,7 +131,15 @@
   const gridEl = wrap.querySelector('.return-gift-grid');
   const bandEl = gridEl.querySelector('.product-band-grid');
   const noteEl = wrap.querySelector('.return-gift-note');
+  const moreLink = wrap.querySelector('.return-gift-more a');
+  const prEl = wrap.querySelector('.return-gift-pr');
   noteEl.style.display = 'none';
+  prEl.style.display = 'none';
+  // 品目が1つだけのときは、選べない選択UI(案内文とチップ)を出さず、静的な文にする
+  if (itemsMode && extraItems.length === 1) {
+    wrap.querySelector('.return-gift-label').style.display = 'none';
+    wrap.querySelector('.chip-group').style.display = 'none';
+  }
 
   function cardHtml(item) {
     const img = typeof rakutenImage === 'function' ? rakutenImage(item) : '';
@@ -146,18 +164,28 @@
   let requestId = 0;
   let userTouched = false;
   async function select(amount, button) {
-    const row = options.find((o) => Number(o[0]) === Number(amount));
+    // 額モード: row = [いただいた額, 下限, 上限]。品目モード: row = [ラベル, 検索語]
+    const row = itemsMode ? extraItems[Number(amount)] : options.find((o) => Number(o[0]) === Number(amount));
     if (!row) return;
+    const kw = itemsMode ? row[1] : keyword;
+    const minP = itemsMode ? null : row[1];
+    const maxP = itemsMode ? null : row[2];
+    if (itemsMode) {
+      moreLink.href = affiliateUrl(kw);
+      moreLink.textContent = '楽天市場で「' + row[0] + '」をもっと見る';
+    }
     chips.forEach((c) => c.classList.toggle('active', c === button));
     if (userTouched && !rangeEl.hasAttribute('aria-live')) rangeEl.setAttribute('aria-live', 'polite');
-    const base = yen(row[0]) + 'をいただいた場合のお返しの目安は ' + yen(row[1]) + '〜' + yen(row[2]) + ' です。';
+    const base = itemsMode
+      ? '「' + row[0] + '」の人気商品の例です。'
+      : yen(row[0]) + 'をいただいた場合のお返しの目安は ' + yen(row[1]) + '〜' + yen(row[2]) + ' です。';
     rangeEl.textContent = base + ' 商品を取得しています…';
     gridEl.setAttribute('aria-busy', 'true');
     bandEl.classList.add('is-loading'); // 古いカードは残して薄くする(高さの急変を避ける)
     const myRequest = ++requestId;
     let items = [];
     try {
-      items = await fetchRakutenProducts(keyword, 4, row[1], row[2]);
+      items = await fetchRakutenProducts(kw, 4, minP, maxP);
     } catch (e) {
       items = [];
     }
@@ -168,13 +196,15 @@
       bandEl.innerHTML = '';
       gridEl.classList.remove('show');
       noteEl.style.display = 'none';
-      rangeEl.textContent = base + ' この価格帯の商品を表示できませんでした。下のリンクから楽天市場で探せます。';
+      prEl.style.display = 'none';
+      rangeEl.textContent = base.replace('の人気商品の例です。', '') + (itemsMode ? 'の商品を表示できませんでした。下のリンクから楽天市場で探せます。' : ' この価格帯の商品を表示できませんでした。下のリンクから楽天市場で探せます。');
       return;
     }
-    rangeEl.textContent = base + ' この価格帯の商品の例です。';
+    rangeEl.textContent = itemsMode ? base : base + ' この価格帯の商品の例です。';
     bandEl.innerHTML = items.map(cardHtml).join('');
     gridEl.classList.add('show');
     noteEl.style.display = '';
+    prEl.style.display = '';
   }
 
   // 範囲文のaria-liveは、チップにフォーカスが来た時点で付ける(初回の自動読み込みでは読み上げない)
@@ -186,7 +216,7 @@
   function startOnce() {
     if (started) return;
     started = true;
-    const target = chips.find((c) => Number(c.dataset.amount) === defaultAmount) || chips[0];
+    const target = (itemsMode ? chips[defaultAmount] : chips.find((c) => Number(c.dataset.amount) === defaultAmount)) || chips[0];
     select(target.dataset.amount, target);
   }
   if ('IntersectionObserver' in window) {
@@ -208,8 +238,9 @@
       band: bandName,
     });
   });
-  wrap.querySelector('.return-gift-more a').addEventListener('click', () => {
+  moreLink.addEventListener('click', () => {
     if (typeof gtag !== 'function') return;
     gtag('event', 'affiliate_cta_click', { link_label: bandName + ' もっと見る' });
   });
+  }
 })();

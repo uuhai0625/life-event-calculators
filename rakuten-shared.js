@@ -73,6 +73,23 @@ document.addEventListener('DOMContentLoaded', markStaleSources);
 // から実機確認して取得(2026-09-06時点、祝儀袋=210194、香典袋=567467)。
 const RAKUTEN_RANKING_VERSION = '20220601';
 
+// 2026-10-17: 楽天APIが一時的な制限(429/503)や通信エラーを返したときだけ、少し待って1回だけ再試行する。
+// 読み込み直後に商品検索とランキングが同時に呼ばれ、片方が制限で落ちて「初回だけ商品カードが0件」になるのを防ぐ。
+// 結果が0件の正常な応答(200)や、その他のエラー(400・403など)は再試行しない。再試行は1回まで(連打しない)。
+async function fetchRakutenJson(url) {
+  for (let attempt = 0; attempt < 2; attempt++) {
+    try {
+      const res = await fetch(url);
+      if (res.ok) return await res.json();
+      if (res.status !== 429 && res.status !== 503) return null;
+    } catch (e) {
+      // 通信エラーは、下で1回だけ再試行する
+    }
+    if (attempt === 0) await new Promise((resolve) => setTimeout(resolve, 1200 + Math.random() * 600));
+  }
+  return null;
+}
+
 // 2026-10-03: 結果ではなくPromiseをキャッシュする。初期化中に同じ取得が連続して呼ばれても(取得中でも)
 // リクエストは1本にまとまる。失敗・0件は次回また試せるようキャッシュから外す。
 async function fetchRakutenRanking(genreId, hits) {
@@ -87,9 +104,8 @@ async function fetchRakutenRanking(genreId, hits) {
   url.searchParams.set('formatVersion', '2');
   const request = (async () => {
     try {
-      const res = await fetch(url.toString());
-      if (!res.ok) return [];
-      const data = await res.json();
+      const data = await fetchRakutenJson(url.toString());
+      if (!data) return [];
       // formatVersion=2はitems(小文字)直下に商品情報が並ぶが、念のため商品検索APIと同じItems/Item
       // 構造が返ってきた場合にも対応できるようにしておく。
       const raw = data.items || data.Items || [];
@@ -158,9 +174,8 @@ async function fetchRakutenProducts(keyword, hits, minPrice, maxPrice) {
   url.searchParams.set('format', 'json');
   const request = (async () => {
     try {
-      const res = await fetch(url.toString());
-      if (!res.ok) return [];
-      const data = await res.json();
+      const data = await fetchRakutenJson(url.toString());
+      if (!data) return [];
       return (data.Items || []).map((entry) => entry.Item || entry);
     } catch (e) {
       return [];

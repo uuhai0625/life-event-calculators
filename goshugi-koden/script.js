@@ -97,7 +97,7 @@ const RELATIONS = {
 const ADVICE = {
   wedding: {
     present: '結婚式に出席する場合の目安です。会場やご祝儀相場は地域差が大きいため、同世代の親族・友人と事前にすり合わせておくと安心です。',
-    absent: '欠席する場合は、出席時の3割程度を目安にお祝い金として贈るか、贈り物やメッセージを添えるのが一般的です。出席の返信後や直前の欠席は、出席時と同額とする解説が多くあります。',
+    absent: '欠席する場合は、出席時の約3分の1を目安にお祝い金として贈るか、贈り物やメッセージを添えるのが一般的です。出席の返信後や直前の欠席は、出席時と同額とする解説が多くあります。',
   },
   funeral: {
     base: '通夜・葬儀に参列する場合の目安です。',
@@ -222,7 +222,7 @@ function calc() {
   if (currentScene === 'wedding') {
     const attend = document.querySelector('input[name="attend"]:checked').value;
     if (attend === 'absent') {
-      amount = Math.max(10000, roundTo(amount * 0.35, 5000));
+      amount = Math.max(10000, roundTo(amount / 3, 5000));
       adviceText = ADVICE.wedding.absent;
     } else {
       adviceText = ADVICE.wedding.present;

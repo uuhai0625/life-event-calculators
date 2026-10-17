@@ -100,8 +100,8 @@ function calc() {
   let amount = base;
   let adviceText = '結婚式(披露宴)に出席する場合の目安です。';
   if (attend === 'absent') {
-    amount = Math.max(10000, roundTo(base * 0.35, 5000));
-    adviceText = '欠席する場合は、出席時の3割程度を目安にお祝い金として贈るか、贈り物やメッセージを添えるのが一般的です。出席の返信後や直前の欠席は、出席時と同額とする解説が多くあります。';
+    amount = Math.max(10000, roundTo(base / 3, 5000));
+    adviceText = '欠席する場合は、出席時の約3分の1を目安にお祝い金として贈るか、贈り物やメッセージを添えるのが一般的です。出席の返信後や直前の欠席は、出席時と同額とする解説が多くあります。';
   }
 
   const rangeLow = Math.max(1000, roundTo(amount * 0.8, 1000));
@@ -113,7 +113,7 @@ function calc() {
   resultAdvice.textContent = adviceText;
   resultBreakdown.textContent = attend === 'present'
     ? `内訳の目安: 全互協調査における${ageLabel}の最多回答額¥${base.toLocaleString('ja-JP')}`
-    : `内訳の目安: 出席時の目安¥${base.toLocaleString('ja-JP')} × 欠席係数0.35`;
+    : `内訳の目安: 出席時の目安¥${base.toLocaleString('ja-JP')} × 欠席係数1/3`;
   resultCard.classList.add('show');
   if (nextTools) nextTools.classList.add('show');
   lastAmount = amount;

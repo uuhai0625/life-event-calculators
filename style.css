@@ -953,7 +953,9 @@ section:first-of-type .tool-section-heading { margin-top: 28px; }
   margin-bottom: 24px;
 }
 .aff-card.show { display: flex; }
-.aff-card .aff-icon { font-size: 1.8rem; }
+.aff-card .aff-icon { font-size: 1.8rem; width: 56px; height: 56px; flex: none; display: flex; align-items: center; justify-content: center; }
+/* 商品写真(rakuten-shared.jsのinitAffCardThumbが差し込む)。絵文字と同じ56px四角で、読み込み前後で高さが変わらない */
+.aff-card .aff-icon img { width: 56px; height: 56px; object-fit: cover; border-radius: 8px; display: block; background: var(--bg); }
 .aff-card .aff-text { flex: 1; }
 .aff-card .aff-title { font-weight: 700; font-size: 0.92rem; margin: 0 0 2px; }
 /* カード全体を押せるようにするが、リンク(<a>)自体は公式の出力のままにする(楽天ガイドライン対応、2026-10-17)。
@@ -1428,7 +1430,15 @@ section:first-of-type .tool-section-heading { margin-top: 28px; }
 .return-gift-grid.show { min-height: 0; }
 .return-gift-grid .product-band-grid.is-loading { opacity: 0.45; }
 .return-gift-note { margin: 0 0 10px; font-size: 0.78rem; line-height: 1.7; color: var(--ink-sub); }
-.return-gift-more { margin: 4px 0 0; font-size: 0.85rem; }
+.return-gift-more { margin: 4px 0 0; font-size: 0.85rem; position: relative; display: flex; align-items: center; gap: 10px; }
+.return-gift-more-thumb:empty { display: none; }
+.return-gift-more-thumb img { width: 48px; height: 48px; object-fit: cover; border-radius: 6px; display: block; background: var(--bg); }
+/* 行全体を押せるようにするが、リンク(<a>)自体は公式の出力のままにする(aff-cardと同じ方針) */
+.return-gift-more a::after { content: ""; position: absolute; inset: -4px; }
+@supports selector(:has(*)) {
+  .return-gift-more a:focus-visible { outline: none; }
+  .return-gift-more:has(a:focus-visible) { outline: 3px solid var(--gold); outline-offset: 2px; border-radius: 6px; }
+}
 .return-date { margin: 0 0 18px; }
 .return-date-input {
   width: 100%; max-width: 260px; padding: 12px 14px;

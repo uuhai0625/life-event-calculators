@@ -186,3 +186,34 @@ async function fetchRakutenProducts(keyword, hits, minPrice, maxPrice) {
   if (!items.length) rakutenProductCache.delete(cacheKey);
   return items;
 }
+
+// 2026-10-17: 「楽天市場でもっと探す」カード(#aff-card)を画像付きにする。カードの絵文字(.aff-icon)を、同じページの
+// 商品カード(#product-grid)の先頭の商品写真に置き換える。リンク(<a>、楽天公式の出力)には触らない。商品が取れていない間は
+// 絵文字のまま。商品を切り替えたとき(チップ操作など)は、先頭の写真に追従する。追加のAPI呼び出しはしない。
+function initAffCardThumb() {
+  const icon = document.querySelector('#aff-card .aff-icon');
+  const grid = document.getElementById('product-grid');
+  if (!icon || !grid) return;
+  const apply = () => {
+    const first = grid.querySelector('.product-card img');
+    const src = first && first.getAttribute('src');
+    if (!src) return; // 取得中・失敗中は、いまの表示(絵文字か直前の写真)のまま
+    const small = src.replace(/_ex=\d+x\d+/, '_ex=128x128');
+    const cur = icon.querySelector('img');
+    if (cur && cur.dataset.origin === src) return;
+    const img = document.createElement('img');
+    img.alt = '';
+    img.width = 56;
+    img.height = 56;
+    img.decoding = 'async';
+    img.dataset.origin = src;
+    img.addEventListener('error', () => { if (img.getAttribute('src') !== src) img.src = src; }, { once: true });
+    img.src = small;
+    icon.textContent = '';
+    icon.appendChild(img);
+  };
+  new MutationObserver(apply).observe(grid, { childList: true, subtree: true });
+  apply();
+}
+if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initAffCardThumb);
+else initAffCardThumb();

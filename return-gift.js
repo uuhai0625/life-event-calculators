@@ -123,7 +123,7 @@
     '<p class="ad-disclosure return-gift-pr"><span class="ad-disclosure-tag">PR</span>以下の商品リンクは広告(楽天アフィリエイト)を含みます。リンク経由の購入で、当サイトが紹介料を受け取ることがあります。</p>' +
     '<div class="product-grid return-gift-grid" aria-live="off"><div class="product-band-grid"></div></div>' +
     '<p class="return-gift-note">楽天市場の検索結果を、レビュー件数の多い順に表示しています(品質やおすすめ度を示すものではありません)。価格・送料・レビューは取得時点の楽天市場の表示で、変更されることがあります。</p>' +
-    '<p class="return-gift-more"><span class="ad-disclosure-tag">PR</span><a href="' + esc(affiliateUrl(firstKeyword)) + '" target="_blank" rel="nofollow sponsored noopener" style="word-wrap:break-word;">楽天市場で「' + esc(itemsMode ? extraItems[0][0] : firstKeyword) + '」をもっと見る</a></p>';
+    '<p class="return-gift-more"><span class="return-gift-more-thumb" aria-hidden="true"></span><span class="return-gift-more-text"><span class="ad-disclosure-tag">PR</span><a href="' + esc(affiliateUrl(firstKeyword)) + '" target="_blank" rel="nofollow sponsored noopener" style="word-wrap:break-word;">楽天市場で「' + esc(itemsMode ? extraItems[0][0] : firstKeyword) + '」をもっと見る</a></span></p>';
   root.appendChild(wrap);
 
   const chips = Array.from(wrap.querySelectorAll('.chip'));
@@ -132,6 +132,23 @@
   const bandEl = gridEl.querySelector('.product-band-grid');
   const noteEl = wrap.querySelector('.return-gift-note');
   const moreLink = wrap.querySelector('.return-gift-more a');
+  const moreThumb = wrap.querySelector('.return-gift-more-thumb');
+  // 「もっと見る」の行に、先頭の商品の小さな写真を出す(2026-10-17、画像付きにするため)。リンク(<a>)には触らない。
+  function setMoreThumb(item) {
+    if (!moreThumb) return;
+    const raw = item ? rakutenImage(item) : '';
+    if (!raw) { moreThumb.textContent = ''; return; }
+    const img = document.createElement('img');
+    img.alt = '';
+    img.width = 48;
+    img.height = 48;
+    img.decoding = 'async';
+    img.loading = 'lazy';
+    img.addEventListener('error', () => { if (img.getAttribute('src') !== raw) img.src = raw; }, { once: true });
+    img.src = raw.replace(/_ex=\d+x\d+/, '_ex=128x128');
+    moreThumb.textContent = '';
+    moreThumb.appendChild(img);
+  }
   const prEl = wrap.querySelector('.return-gift-pr');
   noteEl.style.display = 'none';
   prEl.style.display = 'none';
@@ -192,6 +209,7 @@
     if (myRequest !== requestId) return;
     gridEl.removeAttribute('aria-busy');
     bandEl.classList.remove('is-loading');
+    setMoreThumb(items[0]);
     if (!items.length) {
       bandEl.innerHTML = '';
       gridEl.classList.remove('show');

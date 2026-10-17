@@ -672,6 +672,13 @@ section:first-of-type .tool-section-heading { margin-top: 28px; }
   display: none;
 }
 .field-error.show { display: block; }
+/* 学年ごとの人数入力(otoshidama/、2026-10-17) */
+.count-list { display: grid; gap: 10px; }
+.field .count-row { display: flex; align-items: center; gap: 10px; }
+.field .count-row label { flex: 1; margin: 0; font-size: 0.95rem; font-weight: 500; color: var(--ink); }
+.field .count-row input[type="number"] { width: 88px; flex: none; text-align: right; }
+.field .count-row input[type="number"][aria-invalid="true"] { border-color: var(--vermilion); }
+.count-unit { color: var(--ink-sub); font-size: 0.9rem; }
 .radio-group {
   display: flex;
   gap: 10px;
@@ -1031,6 +1038,17 @@ section:first-of-type .tool-section-heading { margin-top: 28px; }
   font-weight: 400;
   color: var(--ink-sub);
   white-space: normal;
+}
+/* 学齢別の早見表(otoshidama/): 金額列は折り返さず右寄せ、「標準」列を強調。最多の金額帯は学齢の下に小さく併記する。スマホ幅では余白と文字を小さくする */
+.rate-table--grades th:nth-child(n+2), .rate-table--grades td:nth-child(n+1) { text-align: right; white-space: nowrap; }
+.rate-table--grades th[scope="row"] { text-align: left; white-space: normal; }
+.rate-table--grades td:last-child { font-weight: 400; color: inherit; }
+.rate-table--grades td:nth-child(3) { font-weight: 700; color: var(--navy-text); }
+.rate-table--grades th:last-child { color: var(--ink-sub); }
+.rate-table--grades .band-note { display: block; font-size: 0.74rem; font-weight: 400; color: var(--ink-sub); }
+@media (max-width: 480px) {
+  .rate-table--grades th, .rate-table--grades td { padding: 8px 4px; font-size: 0.84rem; }
+  .rate-table--grades th[scope="col"] { font-size: 0.72rem; }
 }
 .rate-source {
   margin: 10px 0 0;

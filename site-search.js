@@ -21,6 +21,7 @@ const SITE_PAGES = [
   { title: '入学祝いの相場計算機', path: 'nyugaku-iwai/' },
   { title: '成人祝いの相場計算機', path: 'seijin-iwai/' },
   { title: '新築祝いの相場計算機', path: 'shinchiku-iwai/' },
+  { title: 'お年玉の相場と総額の計算機', path: 'otoshidama/' },
   { title: '冠婚葬祭の金額早見表まとめ', path: 'souba-ichiran/' },
   { title: '相場データの情報源まとめ', path: 'shutten-ichiran/' },
   { title: '冠婚葬祭のことば辞典', path: 'yougo-shu/' },

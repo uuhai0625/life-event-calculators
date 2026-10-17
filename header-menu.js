@@ -29,6 +29,7 @@ const HEADER_MENU_SECTIONS = [
       { title: '入学祝いの相場計算機', path: 'nyugaku-iwai/' },
       { title: '成人祝いの相場計算機', path: 'seijin-iwai/' },
       { title: '新築祝いの相場計算機', path: 'shinchiku-iwai/' },
+      { title: 'お年玉の相場と総額の計算機', path: 'otoshidama/' },
     ],
   },
   {

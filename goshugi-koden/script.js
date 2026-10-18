@@ -73,7 +73,9 @@ const RELATIONS = {
     { value: 'colleague', label: '職場の同僚・部下',        base: 30000, scalable: false },
     { value: 'boss',      label: '職場の上司',              base: 30000, scalable: false },
     { value: 'cousin',    label: 'いとこなどの親族',          base: 30000, scalable: false },
-    { value: 'uncle_aunt', label: '叔父叔母',                base: 50000, scalable: true },
+    // 全互協 令和5年度の叔父/叔母区分(回答者が叔父・叔母の側)の年代別最多回答額。50sは50〜60代(10万円)。
+    { value: 'uncle_aunt', label: '甥・姪の結婚式に出る叔父叔母', base: 50000, scalable: true, ageAmountsLabel: '最多回答額',
+      ageAmounts: { '20s': 30000, '30s': 50000, '40s': 50000, '50s': 100000 } },
     { value: 'sibling',   label: '兄弟姉妹',                base: 50000, scalable: true },
     { value: 'grandchild', label: '祖父母(孫の立場から)',    base: 70000, scalable: true },
     { value: 'child',     label: '自分の子ども(親の立場から)', base: 100000, scalable: true },
@@ -244,7 +246,7 @@ function calc() {
   resultRange.textContent = `目安レンジ:¥${rangeLow.toLocaleString('ja-JP')} 〜 ¥${rangeHigh.toLocaleString('ja-JP')}`;
   resultAdvice.textContent = adviceText;
   resultBreakdown.textContent = config.ageAmounts
-    ? `内訳の目安: ${config.label}の${AGE_LABEL[ageTier]}の平均額(全互協の調査)¥${config.ageAmounts[ageTier].toLocaleString('ja-JP')}`
+    ? `内訳の目安: ${config.label}の${AGE_LABEL[ageTier]}の${config.ageAmountsLabel || '平均額'}(全互協の調査)¥${config.ageAmounts[ageTier].toLocaleString('ja-JP')}`
     : config.tierOverrides && config.tierOverrides[ageTier] != null
       ? `内訳の目安: ${config.label}の基準額¥${config.base.toLocaleString('ja-JP')}をもとに、${AGE_LABEL[ageTier]}は全互協の調査(最多回答額)に合わせた¥${config.tierOverrides[ageTier].toLocaleString('ja-JP')}`
     : config.scalable

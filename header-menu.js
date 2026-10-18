@@ -24,7 +24,7 @@ const HEADER_MENU_SECTIONS = [
       { title: '法事・法要の香典の相場計算機', path: 'houyo-koden/' },
       { title: 'いとこの結婚式のご祝儀相場計算機', path: 'goshugi-itoko/' },
       { title: 'おじ・おばへの香典の相場計算機', path: 'koden-ojioba/' },
-      { title: '叔父・叔母の結婚式のご祝儀相場計算機', path: 'goshugi-ojioba/' },
+      { title: '甥・姪の結婚式のご祝儀の相場計算機(叔父・叔母として)', path: 'goshugi-ojioba/' },
       { title: '結婚式を欠席するときのご祝儀の相場計算機', path: 'kekkon-kesseki/' },
       { title: '入学祝いの相場計算機', path: 'nyugaku-iwai/' },
       { title: '成人祝いの相場計算機', path: 'seijin-iwai/' },

@@ -19,6 +19,7 @@ const SITE_PAGES = [
   { title: '甥・姪の結婚式のご祝儀の相場計算機(叔父・叔母として)', path: 'goshugi-ojioba/' },
   { title: '結婚式を欠席するときのご祝儀の相場計算機', path: 'kekkon-kesseki/' },
   { title: '入学祝いの相場計算機', path: 'nyugaku-iwai/' },
+  { title: '卒業祝いの相場計算機', path: 'sotsugyo-iwai/' },
   { title: '成人祝いの相場計算機', path: 'seijin-iwai/' },
   { title: '新築祝いの相場計算機', path: 'shinchiku-iwai/' },
   { title: 'お年玉の相場と総額の計算機', path: 'otoshidama/' },

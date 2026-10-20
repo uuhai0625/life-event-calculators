@@ -72,13 +72,18 @@ const RELATIONS = {
     { value: 'friend',   label: '友人・知人',              base: 30000, scalable: false },
     { value: 'colleague', label: '職場の同僚・部下',        base: 30000, scalable: false },
     { value: 'boss',      label: '職場の上司',              base: 30000, scalable: false },
-    { value: 'cousin',    label: 'いとこなどの親族',          base: 30000, scalable: false },
+    { value: 'cousin',    label: 'いとこなどの親族',          base: 30000, scalable: false, kin: true },
     // 全互協 令和5年度の叔父/叔母区分(回答者が叔父・叔母の側)の年代別最多回答額。50sは50〜60代(10万円)。
-    { value: 'uncle_aunt', label: '甥・姪の結婚式に出る叔父叔母', base: 50000, scalable: true, ageAmountsLabel: '最多回答額',
+    { value: 'uncle_aunt', label: '甥・姪の結婚式に出る叔父叔母', base: 50000, scalable: true, kin: true, ageAmountsLabel: '最多回答額',
       ageAmounts: { '20s': 30000, '30s': 50000, '40s': 50000, '50s': 100000 } },
-    { value: 'sibling',   label: '兄弟姉妹',                base: 50000, scalable: true },
-    { value: 'grandchild', label: '祖父母(孫の立場から)',    base: 70000, scalable: true },
-    { value: 'child',     label: '自分の子ども(親の立場から)', base: 100000, scalable: true },
+    // 兄弟姉妹: 全互協 令和5年度の年代別平均額(20代43,891円・30代54,920円・40代82,375円)に近いモデル値。最多回答額は20代5万円・30代3万円と分かれる。50代以上は回答9件以下。
+    { value: 'sibling',   label: '兄弟姉妹',                base: 50000, scalable: true, kin: true,
+      breakdownNote: (age) => age === '50s'
+        ? '(全互協 令和5年度の兄弟姉妹は、50代以上が9件以下のため参考値です)'
+        : '(全互協 令和5年度の年代別平均額に近い目安です)' },
+    // 自分の子ども: 全互協の婚礼アンケートに該当区分がない編集部の暫定目安。出典のない年代係数は掛けず一律にする。
+    { value: 'child',     label: '自分の子ども(親の立場から)', base: 100000, scalable: false, kin: true,
+      breakdownNote: '(全互協に該当する区分がないため、編集部の暫定目安です。年代による加減はしていません)' },
   ],
   funeral: [
     { value: 'neighbor',  label: 'ご近所',                  base: 3000,  scalable: false },
@@ -204,11 +209,23 @@ function roundTo(amount, step) {
   return Math.round(amount / step) * step;
 }
 
+// 親族の欠席時の金額を示す出典がないため、親族(kin)を選んだときは「欠席する」を選べないようにする。
+// 親族以外に戻したときは、利用者が選んでいた出欠に戻す。
+let preferredAttend = 'present';
+function updateAttendField(config) {
+  const kin = currentScene === 'wedding' && !!config.kin;
+  document.querySelector('input[name="attend"][value="absent"]').disabled = kin;
+  document.querySelector(`input[name="attend"][value="${kin ? 'present' : preferredAttend}"]`).checked = true;
+  const note = document.getElementById('attend-kin-note');
+  if (note) note.hidden = !kin;
+}
+
 function calc() {
   const relationValue = getChipValue(chipRelation);
   const ageTier = getChipValue(chipAge);
   const config = RELATIONS[currentScene].find((r) => r.value === relationValue);
   if (!config) return;
+  updateAttendField(config);
 
   let amount = config.base;
   if (config.ageAmounts) {
@@ -245,13 +262,14 @@ function calc() {
   resultAmount.textContent = amount.toLocaleString('ja-JP');
   resultRange.textContent = `目安レンジ:¥${rangeLow.toLocaleString('ja-JP')} 〜 ¥${rangeHigh.toLocaleString('ja-JP')}`;
   resultAdvice.textContent = adviceText;
+  const breakdownNote = typeof config.breakdownNote === 'function' ? config.breakdownNote(ageTier) : (config.breakdownNote || '');
   resultBreakdown.textContent = config.ageAmounts
     ? `内訳の目安: ${config.label}の${AGE_LABEL[ageTier]}の${config.ageAmountsLabel || '平均額'}(全互協の調査)¥${config.ageAmounts[ageTier].toLocaleString('ja-JP')}`
     : config.tierOverrides && config.tierOverrides[ageTier] != null
       ? `内訳の目安: ${config.label}の基準額¥${config.base.toLocaleString('ja-JP')}をもとに、${AGE_LABEL[ageTier]}は全互協の調査(最多回答額)に合わせた¥${config.tierOverrides[ageTier].toLocaleString('ja-JP')}`
     : config.scalable
-      ? `内訳の目安: ${config.label}の基準額¥${config.base.toLocaleString('ja-JP')} × 年代係数${AGE_MULTIPLIER[ageTier]}`
-      : `内訳の目安: ${config.label}の基準額¥${config.base.toLocaleString('ja-JP')}`;
+      ? `内訳の目安: ${config.label}の基準額¥${config.base.toLocaleString('ja-JP')} × 年代係数${AGE_MULTIPLIER[ageTier]}${breakdownNote}`
+      : `内訳の目安: ${config.label}の基準額¥${config.base.toLocaleString('ja-JP')}${breakdownNote}`;
   resultCard.classList.add('show');
   if (nextTools) nextTools.classList.add('show');
   lastAmount = amount;
@@ -292,6 +310,9 @@ document.querySelectorAll('.scene-tab').forEach((btn) => {
 });
 document.querySelectorAll('#chip-age .chip').forEach((btn) => {
   btn.addEventListener('click', () => selectChip(chipAge, btn.dataset.value));
+});
+document.querySelectorAll('input[name="attend"]').forEach((input) => {
+  input.addEventListener('change', () => { preferredAttend = input.value; });
 });
 document.querySelectorAll('input[name="attend"], input[name="meal"]').forEach((input) => {
   input.addEventListener('change', calc);
@@ -396,11 +417,12 @@ function initFromQuery() {
   const relation = params.get('relation');
   if (relation && RELATIONS[scene].some((r) => r.value === relation)) setChipActive(chipRelation, relation);
   const age = params.get('age');
-  if (age && AGE_MULTIPLIER[age]) setChipActive(chipAge, age);
+  if (age && Object.prototype.hasOwnProperty.call(AGE_MULTIPLIER, age)) setChipActive(chipAge, age);
   if (scene === 'wedding') {
     const attend = params.get('attend');
     if (attend === 'present' || attend === 'absent') {
       document.querySelector(`input[name="attend"][value="${attend}"]`).checked = true;
+      preferredAttend = attend;
     }
   } else {
     const meal = params.get('meal');

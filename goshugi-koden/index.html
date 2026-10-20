@@ -6,7 +6,7 @@
 <script>try{var t=localStorage.getItem('theme');if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https://thumbnail.image.rakuten.co.jp; connect-src 'self' https://openapi.rakuten.co.jp https://www.google-analytics.com https://*.google-analytics.com https://*.analytics.google.com https://www.googletagmanager.com; object-src 'none'; base-uri 'self'">
 <title>【2026年版】ご祝儀・香典の相場はいくら?関係別の金額目安|相場ノート</title>
-<meta name="description" content="友人のご祝儀は3万円、香典は5千円が目安。結婚式のご祝儀・通夜葬儀の香典の相場を、間柄と年代を選ぶだけで計算できる無料ツールです。複数の情報源を比較し出典を明記、出欠・会食の有無にも対応しています。">
+<meta name="description" content="友人のご祝儀は3万円、香典は5千円が目安。結婚式のご祝儀・通夜葬儀の香典の相場を、間柄と年代を選ぶだけで計算できる無料ツールです。複数の情報源を比較し出典を明記、友人・職場の人は出欠、香典は会食の有無にも対応しています。">
 
 <meta property="og:type" content="website">
 <meta property="og:title" content="【2026年版】ご祝儀・香典の相場はいくら?関係別の金額目安|相場ノート">
@@ -29,12 +29,12 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Zen+Old+Mincho:wght@700&family=Noto+Sans+JP:wght@400..700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../style.css?v=1d173f0b">
+<link rel="stylesheet" href="../style.css?v=33a00095">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@type": "FAQPage",
-  "dateModified": "2026-10-18",
+  "dateModified": "2026-10-20",
   "mainEntity": [
     { "@type": "Question", "name": "ご祝儀はいつ、どうやって渡す?", "acceptedAnswer": { "@type": "Answer", "text": "結論:受付で袱紗(ふくさ)から取り出し、一言添えて両手で渡すのが基本です。具体的には「本日はおめでとうございます」と添えます。袱紗がない場合は、ハンカチなどで代用しても構いません。" } },
     { "@type": "Question", "name": "新札じゃないとダメ?", "acceptedAnswer": { "@type": "Answer", "text": "結論:ご祝儀は新札を用意するのが正式なマナーです。近くの銀行・郵便局の窓口で両替できます。逆に香典は新札を避けるのがマナーで、やむを得ず新札しかない場合は一度折り目をつけてから包みます。" } },
@@ -104,7 +104,7 @@
     <div class="site-search-results" id="site-search-results"></div>
   </div>
   <p class="page-intro-note">ここでご紹介する金額は、日本の伝統的な慣習に基づく目安です。結婚式・葬儀とも地域や間柄によって相場は変わるため、無理のない範囲で参考にしてください。</p>
-  <p class="page-updated-note">最終更新: 2026年10月18日 ・ <a href="../#about">運営者情報・データの調査方法</a></p>
+  <p class="page-updated-note">最終更新: 2026年10月20日 ・ <a href="../#about">運営者情報・データの調査方法</a></p>
   <p class="page-tldr">結論から言うと、友人・同僚へのご祝儀(結婚式出席)は3万円、香典(通夜・葬儀)は5千円が最も一般的な目安です。</p>
 
   <div class="calc-layout">
@@ -131,9 +131,10 @@
     <div class="field" id="field-wedding-attend">
       <label>結婚式に出席しますか?</label>
       <div class="radio-group">
-        <label><input type="radio" name="attend" value="present" checked> 出席する</label>
-        <label><input type="radio" name="attend" value="absent"> 欠席する</label>
+        <label><input type="radio" name="attend" value="present" checked aria-describedby="attend-kin-note"> 出席する</label>
+        <label><input type="radio" name="attend" value="absent" aria-describedby="attend-kin-note"> 欠席する</label>
       </div>
+      <p class="calc-instant-note" id="attend-kin-note" hidden>親族が欠席するときの金額を示す出典が見つからないため、欠席の目安は友人・知人・職場の人のみ表示します。親族の欠席は<a href="../kekkon-kesseki/">結婚式を欠席するときのご祝儀</a>もご覧ください。</p>
     </div>
     <div class="field" id="field-funeral-meal" style="display:none;">
       <label>通夜振る舞い・お斎(おとき/会食)に参加しますか?</label>
@@ -171,9 +172,9 @@
       <tr><th scope="row">いとこなどの親族</th><td>30,000円</td></tr>
       <tr><th scope="row">甥・姪の結婚式に出る叔父叔母</th><td>50,000円</td></tr>
       <tr><th scope="row">兄弟姉妹</th><td>50,000円</td></tr>
-      <tr><th scope="row">祖父母(孫の立場から)</th><td>70,000円</td></tr>
-      <tr><th scope="row">自分の子ども(親の立場から)</th><td>100,000円</td></tr>
+      <tr><th scope="row">自分の子ども(親の立場から)<span style="display:block;font-size:.8em;font-weight:400">編集部の暫定目安</span></th><td>100,000円</td></tr>
     </table>
+    <p class="rate-table-note">兄弟姉妹は、全互協(令和5年度)の年代別平均額(20代43,891円・30代54,920円・40代82,375円)に近い目安です。最多回答額は20代が5万円、30代が3万円と分かれます。「自分の子ども」は全互協に該当する区分がなく、編集部の暫定目安です。</p>
     <p class="rate-source" data-confirmed="2026-09">参考: <a href="https://www.zengokyo.or.jp/other-activity/report/wedding-gifts/result/" target="_blank" rel="noopener">全互協「婚礼に関するアンケート調査報告書」(2023年実施・有効回答3,137件)</a>・<a href="https://zexy.net/mar/manual/guest_gosyugi/chapter1.html" target="_blank" rel="noopener">ゼクシィ「結婚式のご祝儀相場」</a>ほか(2026年9月確認) / 出典の一覧: <a href="../shutten-ichiran/">相場データの情報源まとめ</a></p>
   </div>
 
@@ -353,13 +354,13 @@
     <p>友人や同僚への結婚式のご祝儀は、年代や地域によらず3万円が長年の相場として定着しています。これは「割り切れない・縁起の良い奇数」であることに加え、料理・引出物・お祝いの気持ち分を含めた金額として広く定着しているためです。香典は5,000円が目安ですが、特に親しい間柄であれば1万円を包むケースもあります。職場全体で連名にする場合は、個人負担を抑えつつ気持ちを伝えられるため、部署内で相談してみるのもよいでしょう。なお<a href="../koden-yujin-oya/">友人の親への香典</a>は、友人本人への香典とは別の相場になります。</p>
 
     <h3>兄弟姉妹へのご祝儀・香典</h3>
-    <p>兄弟姉妹は、間柄の中でも金額の幅が特に大きくなりやすい関係です。結婚式のご祝儀は、自分の年代が上がるほど相場も上がる傾向があり、20代なら4万円台、40代以上では8万円前後まで上がることも珍しくありません。全互協の調査(令和5年度)では、兄弟姉妹へのご祝儀の平均額は20代が43,891円(78件)、30代が54,920円(88件)、40代が82,375円(40件)でした。最多回答額は20代が5万円、30代が3万円と分かれ、40代は3万円・5万円・10万円が同数で、高額を贈る人に平均が引き上げられている面もあります。50代以上は回答が9件以下と少なく、年代別の目安としては使えません。香典も同様に年代で変わり、このツールでは20代なら3万円弱、50代以上では5万円を目安にしています。全互協の調査(令和3年度)では、兄弟姉妹への香典は最多回答額が5万円、平均額が45,452円でした。ただし兄弟姉妹の回答は84件と少なく、年代別の平均額はぶれが大きいため(50代は54,000円、60代以上は47,357円)、あくまで目安として、きょうだい間で事前に相談してください。兄弟姉妹間では事前に金額をすり合わせておくと、後々のトラブルを避けやすくなります。</p>
+    <p>兄弟姉妹は、間柄の中でも金額の幅が特に大きくなりやすい関係です。結婚式のご祝儀は、自分の年代が上がるほど相場も上がる傾向があり、20代なら4万円台、40代では8万円前後まで上がることも珍しくありません。全互協の調査(令和5年度)では、兄弟姉妹へのご祝儀の平均額は20代が43,891円(78件)、30代が54,920円(88件)、40代が82,375円(40件)でした。最多回答額は20代が5万円、30代が3万円と分かれ、40代は3万円・5万円・10万円が同数で、高額を贈る人に平均が引き上げられている面もあります。50代以上は回答が9件以下と少なく、計算機の50代以上の金額も参考値にとどまります。香典も同様に年代で変わり、このツールでは20代なら3万円弱、50代以上では5万円を目安にしています。全互協の調査(令和3年度)では、兄弟姉妹への香典は最多回答額が5万円、平均額が45,452円でした。ただし兄弟姉妹の回答は84件と少なく、年代別の平均額はぶれが大きいため(50代は54,000円、60代以上は47,357円)、あくまで目安として、きょうだい間で事前に相談してください。兄弟姉妹間では事前に金額をすり合わせておくと、後々のトラブルを避けやすくなります。</p>
 
     <h3>職場関係(上司・部下)へのご祝儀・香典</h3>
     <p>上司・部下いずれの場合も、基本の相場は友人・同僚と同じ3万円(ご祝儀)・5,000円(香典)です。全互協の調査(令和5年度)では、ご祝儀の最多回答額は新郎新婦の上司として出席した人も部下として出席した人も3万円ですが、平均額は上司として出席した人(37,505円)の方が部下として出席した人(34,921円)や同僚(31,696円)より高めです(詳しくは<a href="../kekkon-shokuba/">職場の人の結婚式のご祝儀の相場</a>)。役職が上がるほど相場も上がる傾向があり、特に部長職以上や特にお世話になった上司には、少し多めに包むという考え方をする方もいます。職場単位で連名にする慣習がある会社も多いため、まずは同僚や総務に確認するのが確実です。 職場の人の香典に絞って、上司・同僚・部下の家族や取引先の場合は<a href="../koden-shokuba/">職場の人・取引先の香典の相場計算機</a>で確認できます。</p>
 
     <h3>親族(いとこ・叔父叔母・祖父母・親)への金額</h3>
-    <p>親族へのご祝儀・香典は、血縁の近さと自分の年代の両方で金額が変わります。全互協の実施調査では、いとこ(従兄弟姉妹)は年代によらず3万円前後が最多回答である一方、甥・姪の結婚式に叔父・叔母として出席する人は年代差が大きく、20代で3万円・50〜60代で10万円が最多回答額で、同じ「親族」でも金額の水準が異なります(全互協の「叔父/叔母」区分は、回答した人が叔父・叔母の側の金額です)。<a href="../koden-sofubo/">祖父母への香典</a>や親になるとさらに年代による差が大きく現れ、50代以上になると祖父母への香典が2万円、親への香典は10万円に達することもあります(全互協の調査では、親への香典は回答121件で、最多回答額が10万円、平均額が59,711円でした)。金額に迷った際は、同じ立場の親族(兄弟姉妹やいとこ)と事前に相談し、足並みを揃えるのが一般的です。</p>
+    <p>親族へのご祝儀・香典は、血縁の近さと自分の年代の両方で金額が変わります。全互協の実施調査では、いとこ(従兄弟姉妹)は20〜40代では3万円が最多回答である一方、甥・姪の結婚式に叔父・叔母として出席する人は年代差が大きく、20代で3万円・50〜60代で10万円が最多回答額で、同じ「親族」でも金額の水準が異なります(全互協の「叔父/叔母」区分は、回答した人が叔父・叔母の側の金額です)。なお、孫の結婚式に祖父母として出席する場合は、全互協の婚礼調査に該当する区分がなく、このページでは目安を示していません。<a href="../koden-sofubo/">祖父母への香典</a>や親になるとさらに年代による差が大きく現れ、50代以上になると祖父母への香典が2万円、親への香典は10万円に達することもあります(全互協の調査では、親への香典は回答121件で、最多回答額が10万円、平均額が59,711円でした)。金額に迷った際は、同じ立場の親族(兄弟姉妹やいとこ)と事前に相談し、足並みを揃えるのが一般的です。</p>
     </details>
   </div>
 
@@ -406,6 +407,6 @@
 <script src="../return-gift.js?v=f4e9207f"></script>
 <script src="../chip-a11y.js?v=b4deaf3a"></script>
 <script src="../result-bar.js?v=83503b73"></script>
-<script src="script.js?v=4303bb85"></script>
+<script src="script.js?v=e1dfe0b5"></script>
 </body>
 </html>

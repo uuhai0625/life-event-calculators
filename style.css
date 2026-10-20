@@ -703,6 +703,10 @@ section:first-of-type .tool-section-heading { margin-top: 28px; }
   border-color: var(--navy);
   background: var(--check-bg);
 }
+.radio-group label:has(input:disabled) {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
 
 /* ---- 選択肢チップ(2026-09-12、took.jp型UXの試作。selectドロップダウンの代わりに
    ボタン形式で選ばせ、選択と同時に結果を更新する) ---- */

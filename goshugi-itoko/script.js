@@ -62,6 +62,10 @@ const AGE_TABLE = {
   '70s': 30000,
 };
 
+// 全互協 令和5年度の従兄弟/従姉妹区分の年代別回答件数(回答が30件未満の年代は結果欄で参考値と示す)。
+const AGE_N = { '20s': 86, '30s': 42, '40s': 42, '50s': 15, '60s': 8, '70s': 4 };
+const SMALL_N = 30;
+
 function roundTo(amount, step) {
   return Math.round(amount / step) * step;
 }
@@ -95,16 +99,11 @@ let lastAmount = 0;
 
 function calc() {
   const ageTier = getChipValue(chipAge);
-  const attend = document.querySelector('input[name="attend"]:checked').value;
   const base = AGE_TABLE[ageTier];
   if (!base) return;
 
-  let amount = base;
-  let adviceText = '結婚式(披露宴)に出席する場合の目安です。';
-  if (attend === 'absent') {
-    amount = Math.max(10000, roundTo(base / 3, 5000));
-    adviceText = '欠席する場合は、出席時の約3分の1を目安にお祝い金として贈るか、贈り物やメッセージを添えるのが一般的です。出席の返信後や直前の欠席は、出席時と同額とする解説が多くあります。';
-  }
+  const amount = base;
+  const adviceText = '結婚式(披露宴)に出席する場合の目安です。';
 
   const rangeLow = Math.max(1000, roundTo(amount * 0.8, 1000));
   const rangeHigh = roundTo(amount * 1.2, 1000);
@@ -114,13 +113,12 @@ function calc() {
   resultAdvice.textContent = adviceText;
   const ageLabel = ageTier === '70s' ? '70代以上' : ageTier.replace('s', '代');
   const baseLabel = ageTier === '50s' ? '最多回答額(3万円/5万円)の中間的な目安' : '最多回答額';
-  resultBreakdown.textContent = attend === 'present'
-    ? `内訳の目安: 全互協調査における${ageLabel}の${baseLabel}¥${base.toLocaleString('ja-JP')}`
-    : `内訳の目安: 出席時の目安¥${base.toLocaleString('ja-JP')} × 欠席係数1/3`;
+  const n = AGE_N[ageTier];
+  const nNote = n < SMALL_N ? `(回答${n}件のため参考値)` : `(回答${n}件)`;
+  resultBreakdown.textContent = `内訳の目安: 全互協調査における${ageLabel}の${baseLabel}¥${base.toLocaleString('ja-JP')}${nNote}`;
   resultCard.classList.add('show');
   if (nextTools) nextTools.classList.add('show');
   lastAmount = amount;
-  updateShareUrl();
   shareRow.classList.add('show');
   document.querySelector('.survey-banner')?.classList.add('show');
 
@@ -130,9 +128,6 @@ function calc() {
 
 document.querySelectorAll('#chip-age .chip').forEach((btn) => {
   btn.addEventListener('click', () => selectChip(chipAge, btn.dataset.value));
-});
-document.querySelectorAll('input[name="attend"]').forEach((input) => {
-  input.addEventListener('change', calc);
 });
 
 document.getElementById('product-grid')?.addEventListener('click', (e) => {
@@ -152,16 +147,9 @@ document.querySelector('.survey-banner a')?.addEventListener('click', () => {
   gtag('event', 'survey_click', {});
 });
 
-function paramsFromState() {
-  const params = new URLSearchParams();
-  params.set('age', getChipValue(chipAge));
-  params.set('attend', document.querySelector('input[name="attend"]:checked').value);
-  return params;
-}
-
-function updateShareUrl() {
-  const params = paramsFromState();
-  history.replaceState(null, '', `${location.pathname}?${params.toString()}`);
+// 共有URLは、共有ボタンを押したときに作る(入力のたびにアドレスバーを書き換えない。履歴変更によるPVの水増しを避けるため)。
+function shareUrl() {
+  return `${location.origin}${location.pathname}?age=${encodeURIComponent(getChipValue(chipAge))}`;
 }
 
 function shareText(amount) {
@@ -190,37 +178,32 @@ btnCopyLink.addEventListener('click', async () => {
     btnCopyLink.textContent = 'コピーしました✓';
     setTimeout(() => { btnCopyLink.textContent = original; }, 2000);
   };
+  const url = shareUrl();
   try {
     const timeout = new Promise((_, reject) => setTimeout(() => reject(new Error('clipboard-timeout')), 1500));
-    await Promise.race([navigator.clipboard.writeText(location.href), timeout]);
+    await Promise.race([navigator.clipboard.writeText(url), timeout]);
     showCopied();
   } catch (e) {
-    if (legacyCopyFallback(location.href)) showCopied();
+    if (legacyCopyFallback(url)) showCopied();
   }
 });
 btnShareX.addEventListener('click', () => {
   const text = shareText(lastAmount);
-  const intentUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(location.href)}`;
+  const intentUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(shareUrl())}`;
   window.open(intentUrl, '_blank', 'noopener');
 });
 btnShareLine.addEventListener('click', () => {
   const text = shareText(lastAmount);
-  const lineUrl = `https://social-plugins.line.me/lineit/share?url=${encodeURIComponent(location.href)}&text=${encodeURIComponent(text)}`;
+  const lineUrl = `https://social-plugins.line.me/lineit/share?url=${encodeURIComponent(shareUrl())}&text=${encodeURIComponent(text)}`;
   window.open(lineUrl, '_blank', 'noopener');
 });
 
-// 共有URLからの復元: took.jp型UXではページ読み込み直後にcalc()が自動発火しupdateShareUrl()が
-// URLをデフォルト値で上書きしてしまうため、「本来のクエリ」を先に退避しておく
-// (詳細はgoshugi-koden/script.jsの同名コメント参照)。
+// 共有URLからの復元。値は検証してから使う(旧URLの attend= は無視する)。
 const initialParams = new URLSearchParams(location.search);
 function initFromQuery() {
-  const params = initialParams;
-  const age = params.get('age');
-  const attend = params.get('attend');
-  if (!age || !AGE_TABLE[age]) return;
-  if (attend !== 'present' && attend !== 'absent') return;
+  const age = initialParams.get('age');
+  if (!Object.prototype.hasOwnProperty.call(AGE_TABLE, age)) return;
   setChipActive(chipAge, age);
-  document.querySelector(`input[name="attend"][value="${attend}"]`).checked = true;
   calc();
 }
 

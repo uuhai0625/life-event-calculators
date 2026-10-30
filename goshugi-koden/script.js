@@ -75,7 +75,9 @@ const RELATIONS = {
     { value: 'cousin',    label: 'いとこなどの親族',          base: 30000, scalable: false, kin: true },
     // 全互協 令和5年度の叔父/叔母区分(回答者が叔父・叔母の側)の年代別最多回答額。50sは50〜60代(10万円)。
     { value: 'uncle_aunt', label: '甥・姪の結婚式に出る叔父叔母', base: 50000, scalable: true, kin: true, ageAmountsLabel: '最多回答額',
-      ageAmounts: { '20s': 30000, '30s': 50000, '40s': 50000, '50s': 100000 } },
+      ageAmounts: { '20s': 30000, '30s': 50000, '40s': 50000, '50s': 100000 },
+      breakdownNote: (age) => age === '20s' ? '。この年代の回答は14件と少なく、参考値です'
+        : age === '30s' ? '。この年代の回答は6件と少なく、参考値です' : '' },
     // 兄弟姉妹: 全互協 令和5年度の年代別平均額(20代43,891円・30代54,920円・40代82,375円)に近いモデル値。最多回答額は20代5万円・30代3万円と分かれる。50代以上は回答9件以下。
     { value: 'sibling',   label: '兄弟姉妹',                base: 50000, scalable: true, kin: true,
       breakdownNote: (age) => age === '50s'
@@ -104,7 +106,7 @@ const RELATIONS = {
 const ADVICE = {
   wedding: {
     present: '結婚式に出席する場合の目安です。会場やご祝儀相場は地域差が大きいため、同世代の親族・友人と事前にすり合わせておくと安心です。',
-    absent: '欠席する場合は、出席時の約3分の1を目安にお祝い金として贈るか、贈り物やメッセージを添えるのが一般的です。出席の返信後や直前の欠席は、出席時と同額とする解説が多くあります。',
+    absent: '欠席する場合は、出席時の約3分の1を目安にお祝い金として贈るか、贈り物やメッセージを添えるのが一般的とされています(公的な調査ではなく、解説記事の目安です)。出席の返信後や直前の欠席は、出席時と同額とする解説が多くあります。',
   },
   funeral: {
     base: '通夜・葬儀に参列する場合の目安です。',
@@ -264,7 +266,7 @@ function calc() {
   resultAdvice.textContent = adviceText;
   const breakdownNote = typeof config.breakdownNote === 'function' ? config.breakdownNote(ageTier) : (config.breakdownNote || '');
   resultBreakdown.textContent = config.ageAmounts
-    ? `内訳の目安: ${config.label}の${AGE_LABEL[ageTier]}の${config.ageAmountsLabel || '平均額'}(全互協の調査)¥${config.ageAmounts[ageTier].toLocaleString('ja-JP')}`
+    ? `内訳の目安: ${config.label}の${AGE_LABEL[ageTier]}の${config.ageAmountsLabel || '平均額'}(全互協の調査)¥${config.ageAmounts[ageTier].toLocaleString('ja-JP')}${breakdownNote}`
     : config.tierOverrides && config.tierOverrides[ageTier] != null
       ? `内訳の目安: ${config.label}の基準額¥${config.base.toLocaleString('ja-JP')}をもとに、${AGE_LABEL[ageTier]}は全互協の調査(最多回答額)に合わせた¥${config.tierOverrides[ageTier].toLocaleString('ja-JP')}`
     : config.scalable

@@ -131,7 +131,11 @@ async function fetchRakutenRanking(genreId, hits) {
       // 構造が返ってきた場合にも対応できるようにしておく。
       const raw = data.items || data.Items || [];
       const kind = RAKUTEN_RANKING_ENVELOPE[genreId] || '';
-      return raw.map((entry) => entry.Item || entry).filter((item) => rakutenItemAllowed(item, kind)).slice(0, hits || 4);
+      // APIは順位の降順(30位→1位)で返すことがある(2026-10-31に本番で確認)。順位の昇順に並べ替えてから、上位だけを使う。
+      // 並べ替えずに先頭から「1位・2位…」と表示すると、実際は30位や12位の商品を1位と見せてしまう。
+      const items = raw.map((entry) => entry.Item || entry);
+      if (items.every((item) => Number(item.rank) > 0)) items.sort((x, y) => Number(x.rank) - Number(y.rank));
+      return items.filter((item) => rakutenItemAllowed(item, kind)).slice(0, hits || 4);
     } catch (e) {
       return [];
     }

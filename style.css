@@ -895,6 +895,20 @@ section:first-of-type .tool-section-heading { margin-top: 28px; }
 .survey-banner.show { display: block; }
 .survey-banner a { color: var(--navy-text); font-weight: 700; }
 
+.result-jump {
+  margin: 12px 0 0;
+  font-size: 0.85rem;
+  line-height: 1.9;
+  text-align: left;
+}
+.result-jump span { color: var(--ink-sub); margin-right: 4px; }
+.result-jump a {
+  display: inline-block;
+  margin: 0 10px 0 0;
+  padding: 10px 0;
+  color: var(--navy-text);
+  font-weight: 700;
+}
 /* ---- 結果の共有 ---- */
 .share-row {
   display: none;

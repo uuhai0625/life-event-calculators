@@ -73,6 +73,27 @@ document.addEventListener('DOMContentLoaded', markStaleSources);
 // から実機確認して取得(2026-09-06時点、祝儀袋=210194、香典袋=567467)。
 const RAKUTEN_RANKING_VERSION = '20220601';
 
+// 2026-10-31: 袋(祝儀袋・不祝儀袋)の検索・ランキングで、用途違いの商品を除く。香典袋のランキングに「御祝」の封筒、
+// 祝儀袋の検索にゴム印が出ていた(サイト全体レビュー)。袋の文脈(キーワード・ジャンル)のときだけ働き、他の商品は変えない。
+function rakutenEnvelopeKind(text) {
+  const t = String(text || '');
+  if (!/袋|金封/.test(t)) return ''; // 「香典返し ギフト」などの贈り物の検索は対象外
+  if (/不祝儀|香典|御霊前|御仏前/.test(t)) return 'condolence';
+  if (/祝儀|のし袋|祝い袋/.test(t)) return 'celebration';
+  return '';
+}
+function rakutenItemAllowed(item, kind) {
+  if (!kind) return true;
+  const name = String(item.itemName || '');
+  if (/スタンプ|ゴム印|はんこ|ハンコ|シャチハタ|印鑑/.test(name)) return false;
+  if (kind === 'condolence') {
+    if (/不祝儀|香典|御霊前|御仏前/.test(name)) return true; // 「祝儀袋 香典袋」など検索語詰めの本物の不祝儀袋は残す
+    return !/御祝|内祝|祝儀|結婚|出産/.test(name);
+  }
+  return !/不祝儀|香典|御霊前|御仏前|御供|御弔/.test(name);
+}
+const RAKUTEN_RANKING_ENVELOPE = { 567467: 'condolence', 210194: 'celebration' };
+
 // 2026-10-17: 楽天APIが一時的な制限(429/503)や通信エラーを返したときだけ、少し待って1回だけ再試行する。
 // 読み込み直後に商品検索とランキングが同時に呼ばれ、片方が制限で落ちて「初回だけ商品カードが0件」になるのを防ぐ。
 // 結果が0件の正常な応答(200)や、その他のエラー(400・403など)は再試行しない。再試行は1回まで(連打しない)。
@@ -109,7 +130,8 @@ async function fetchRakutenRanking(genreId, hits) {
       // formatVersion=2はitems(小文字)直下に商品情報が並ぶが、念のため商品検索APIと同じItems/Item
       // 構造が返ってきた場合にも対応できるようにしておく。
       const raw = data.items || data.Items || [];
-      return raw.map((entry) => entry.Item || entry).slice(0, hits || 4);
+      const kind = RAKUTEN_RANKING_ENVELOPE[genreId] || '';
+      return raw.map((entry) => entry.Item || entry).filter((item) => rakutenItemAllowed(item, kind)).slice(0, hits || 4);
     } catch (e) {
       return [];
     }
@@ -128,7 +150,7 @@ function rankingCardHtml(item, rank) {
     <a class="product-card" href="${String(item.itemUrl || '').replace(/"/g, '&quot;')}" target="_blank" rel="noopener sponsored" data-ga-name="${name.replace(/"/g, '&quot;').slice(0, 60)}" data-ga-price="${Number(item.itemPrice) || 0}">
       <div class="product-image-wrap">
         <img src="${img.replace(/"/g, '&quot;')}" alt="${name.replace(/"/g, '&quot;')}" loading="lazy"><span class="product-pr">PR</span>
-        <div class="product-badges"><span class="product-badge product-badge--rank">${rank}位</span></div>
+        ${rank > 0 ? `<div class="product-badges"><span class="product-badge product-badge--rank">${rank}位</span></div>` : ''}
       </div>
       <p class="product-name">${name}</p>
       <p class="product-price">¥${price}</p>
@@ -141,7 +163,9 @@ async function showRanking(genreId, containerId) {
   try {
     const items = await fetchRakutenRanking(genreId, 4);
     if (!items.length) { grid.classList.remove('show'); return; }
-    grid.innerHTML = '<div class="product-band-grid">' + items.map((item, i) => rankingCardHtml(item, i + 1)).join('') + '</div>';
+    // 順位バッジは楽天が返す実際の順位(item.rank)を使う。用途違いの商品を除いた詰め直しの順位は出さない(2026-10-31、法務レビュー)。
+    const filtered = !!RAKUTEN_RANKING_ENVELOPE[genreId];
+    grid.innerHTML = '<div class="product-band-grid">' + items.map((item, i) => rankingCardHtml(item, Number(item.rank) > 0 ? Number(item.rank) : (filtered ? 0 : i + 1))).join('') + '</div>';
     grid.classList.add('show');
   } catch (e) {
     grid.classList.remove('show');
@@ -168,7 +192,8 @@ async function fetchRakutenProducts(keyword, hits, minPrice, maxPrice) {
   url.searchParams.set('affiliateId', RAKUTEN_API_AFFILIATE_ID);
   url.searchParams.set('keyword', keyword);
   url.searchParams.set('sort', '-reviewCount');
-  url.searchParams.set('hits', String(hits));
+  const kind = rakutenEnvelopeKind(keyword);
+  url.searchParams.set('hits', String(kind ? Math.min(30, hits + 8) : hits)); // 袋は除外分を見込んで多めに取り、後で絞る
   if (minPrice != null) url.searchParams.set('minPrice', String(Math.max(1, Math.round(minPrice))));
   if (maxPrice != null) url.searchParams.set('maxPrice', String(Math.round(maxPrice)));
   url.searchParams.set('format', 'json');
@@ -176,7 +201,7 @@ async function fetchRakutenProducts(keyword, hits, minPrice, maxPrice) {
     try {
       const data = await fetchRakutenJson(url.toString());
       if (!data) return [];
-      return (data.Items || []).map((entry) => entry.Item || entry);
+      return (data.Items || []).map((entry) => entry.Item || entry).filter((item) => rakutenItemAllowed(item, kind)).slice(0, hits);
     } catch (e) {
       return [];
     }
@@ -217,3 +242,9 @@ function initAffCardThumb() {
 }
 if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initAffCardThumb);
 else initAffCardThumb();
+
+// 結果直下の「マナーメモを見る/楽天の商品を見る/お返しの品を探す」(2026-10-31)。どこへ進んだかだけ数える
+document.addEventListener('click', (e) => {
+  const a = e.target.closest && e.target.closest('.result-jump a');
+  if (a && typeof gtag === 'function') gtag('event', 'result_jump_click', { jump_to: a.dataset.jump || '', page_path: location.pathname });
+});
